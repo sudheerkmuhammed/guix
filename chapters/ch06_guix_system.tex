@@ -94,6 +94,41 @@ You can add services with \texttt{append} or \texttt{cons}, or modify existing s
 \end{lstlisting}
 \end{alchemybox}
 
+\section{Real-World Hardware: Using Nonguix for Laptops \& Wi-Fi}
+
+By default, Guix System uses the 100\% free \textbf{Linux-Libre} kernel. If you are running on modern ThinkPads, MacBooks, or gaming laptops with proprietary Intel/Realtek Wi-Fi and Bluetooth chips, you can use the \textbf{Nonguix} channel to declare the standard non-libre Linux kernel and firmware:
+
+\begin{lstlisting}[style=guixscheme]
+;; Laptop configuration with Nonguix kernel and firmware
+(use-modules (gnu)
+             (nongnu packages linux)     ; From nonguix channel
+             (nongnu system linux-initrd))
+
+(operating-system
+  (inherit %base-operating-system)
+  (host-name "nomad-laptop")
+
+  ;; Use vanilla Linux kernel with proprietary binary blob drivers
+  (kernel linux)
+  (initrd microcode-initrd)
+  (firmware (list linux-firmware))
+
+  ;; Automatically authorize the Nonguix pre-built substitute server!
+  (services
+    (modify-services %desktop-services
+      (guix-service-type config =>
+        (guix-configuration
+          (inherit config)
+          (substitute-urls
+            (append (list "https://substitutes.nonguix.org")
+                    %default-substitute-urls))
+          (authorized-keys
+            (append (list (local-file "/etc/nonguix-key.pub"))
+                    %default-authorized-guix-keys)))))))
+\end{lstlisting}
+
+With this declaration, your laptop gets full hardware acceleration, functional Wi-Fi, and CPU microcode security patches without losing any of Guix System's declarative purity or atomic rollback powers!
+
 \section{Applying the System: \texttt{guix system reconfigure}}
 
 To apply your changes, you execute:
