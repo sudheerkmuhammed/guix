@@ -164,6 +164,12 @@ You hit \texttt{Enter}, and the system boots into the exact, known-working state
 Every veteran Linux user has an emotional scar from a bad kernel upgrade breaking their graphics drivers or Wi-Fi. In Guix System, an operating system update is never destructive. Every past system generation remains independently bootable in GRUB until you explicitly choose to garbage-collect it.
 \end{tearsbox}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{images/rollback_button.jpg}
+\caption*{\textit{Figure 6.1: The ultimate sysadmin superpower: When an experimental update catches fire, casually tap the GRUB Rollback button to rewind reality.}}
+\end{figure}
+
 \section{Building Images: ISOs, VMs, and Cloud AMIs}
 
 Because your system is a pure Scheme function, Guix can transform your \texttt{config.scm} into any output format with a single command:

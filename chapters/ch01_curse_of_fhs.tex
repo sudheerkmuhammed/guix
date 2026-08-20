@@ -54,6 +54,12 @@ If even a single compiler flag or dependency changes by one bit, the hash change
 
 Because of this, you can have 14 different versions of Python, 5 versions of GCC, and 3 different builds of OpenSSL coexisting peacefully in \texttt{/gnu/store}. They never collide. They never overwrite each other.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{images/store_vs_fridge.jpg}
+\caption*{\textit{Figure 1.1: A Tale of Two Stores: The chaotic communal dorm fridge of \texttt{/usr/bin} versus the immutable crystal vault of \texttt{/gnu/store}.}}
+\end{figure}
+
 \section{Derivations: The Recipe Behind the Magic}
 
 Before Guix builds anything, it generates a low-level recipe called a \textbf{Derivation} (stored as a \texttt{.drv} file in \texttt{/gnu/store}). 

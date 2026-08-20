@@ -80,6 +80,12 @@ Docker requires a root-privileged daemon listening on a Unix socket, custom over
 \guixcmd{guix shell -C} uses native Linux kernel namespaces directly, boots in 50 milliseconds, shares the immutable \texttt{/gnu/store} directly with zero copy-on-write overhead, and is completely unprivileged.
 \end{tearsbox}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{images/docker_vs_guix_shell.jpg}
+\caption*{\textit{Figure 4.1: Containerization contrast: 50 tons of root-privileged Docker overhead crushing a 3-line script versus the weightless, unprivileged bubble of \guixcmd{guix shell --container}.}}
+\end{figure}
+
 \section{Fine-Grained Sharing: Filesystems and Network}
 
 What if your containerized application needs access to a local dataset or needs to make HTTP requests? Guix provides granular flags:
