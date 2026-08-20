@@ -1,0 +1,86 @@
+\chapter*{Preface: The Imperative Hellscape and the Functional Cure}
+\addcontentsline{toc}{chapter}{Preface: The Imperative Hellscape and the Functional Cure}
+
+\epigraph{``Computers are fast because they do exactly what you tell them to do. Computers are broken because what you told them to do was insane.''}{--- Anonymous Systems Engineer}
+
+\noindent
+Let us begin with a moment of silence for the countless hard drives, continuous integration servers, and weekend plans destroyed by the following phrase:
+
+\begin{center}
+\textbf{\color{footgunred}\texttt{sudo apt-get upgrade -y}}
+\end{center}
+
+You know the feeling. You run the command innocently because you wanted a slightly newer version of a text editor. Suddenly, 412 packages are being downloaded. \texttt{libc6} is being replaced in-place while your running processes are actively executing its memory pages. A post-install script written by an overcaffeinated maintainer in 2008 runs an interactive dialog box in the background, locks the DPKG database, and when your machine reboots, your graphical interface has been replaced by a blinking cursor and an existential dread.
+
+Welcome to the \textbf{Imperative Hellscape}.
+
+\section*{The Root of All Sysadmin Evil: Mutable State}
+
+For fifty years, the Unix philosophy built miraculous tools on a foundation of sand: the \textbf{Filesystem Hierarchy Standard (FHS)}. In FHS, there is exactly one place where shared libraries go: \texttt{/usr/lib}. There is one place where binary executables go: \texttt{/usr/bin}.
+
+Think of \texttt{/usr/bin} as a communal refrigerator in a student dorm shared by thirty messy roommates:
+\begin{itemize}
+  \item Alice puts her carton of milk (Python 3.9) in the fridge.
+  \item Bob comes along, decides he needs oat milk (Python 3.11), throws Alice's milk in the dumpster, and puts his oat milk in the exact same spot.
+  \item Carol tries to make coffee with Alice's milk, discovers an oat-flavored disaster, and the entire kitchen explodes with \texttt{ImportError: symbol not found}.
+\end{itemize}
+
+Every time you run \texttt{apt}, \texttt{dnf}, \texttt{pacman}, or \texttt{brew}, you are mutating a single global state. When two programs need different versions of the same shared library, traditional systems resort to terrifying hacks:
+\begin{enumerate}
+  \item \textbf{Virtual environments} (e.g., Python \texttt{venv}, Node \texttt{node\_modules}): Dumping 80,000 duplicated tiny files in every single directory on your hard drive until your SSD groans in agony.
+  \item \textbf{Docker containers}: Shipping an entire 2-gigabyte Debian operating system just to run a 10-line Python script because you gave up on resolving dependencies cleanly.
+  \item \textbf{Flatpak / Snap}: Bundling runtime runtimes inside bundles inside sandbox layers.
+\end{enumerate}
+
+\begin{tearsbox}[The Packaging Band-Aid Pyramid]
+First, we had \texttt{tar.gz}. Then we had \texttt{dpkg} and \texttt{rpm} to track what was overwritten. When dependencies tangled into knots, we created \texttt{apt} and \texttt{yum} to untangle the knots. When global dependencies broke, we invented Python virtualenvs, Ruby rbenv, and Node nvm. When those still leaked system libraries, we shoved everything into 1.5GB Docker images. When Docker images drifted over time, we invented Kubernetes to orchestrate the chaos.
+
+At no point did anyone pause and ask: \emph{``What if we stopped overwriting files in \texttt{/usr/lib} like cavemen?''}
+\end{tearsbox}
+
+\section*{The Functional Epiphany}
+
+In 2006, a Dutch computer scientist named Eelco Dolstra published a doctoral dissertation introducing \textbf{purely functional package management}. The core thesis is mind-bendingly simple:
+
+\begin{center}
+\Large
+$\text{Package} = f(\text{Source Code}, \text{Compiler}, \text{Dependencies}, \text{Build Flags})$
+\end{center}
+
+In pure mathematics, $2 + 2$ is always $4$. If you call $f(x)$, you get the same result every time, without setting fire to the chalkboard. Why should compiling software be any different?
+
+If a package is a pure mathematical function of its inputs, then:
+\begin{itemize}
+  \item Every package build can live in an immutable, read-only directory named after the cryptographic hash of all its inputs:
+  \begin{center}
+  \storepath{/gnu/store/8h3j2n9k4...-python-3.10.7}
+  \end{center}
+  \item Multiple versions of Python, OpenSSL, or GCC can coexist simultaneously without knowing or caring about each other.
+  \item Upgrading a package is simply moving a symlink. If you don't like the upgrade, moving the symlink back is an instantaneous, zero-risk \textbf{rollback}.
+\end{itemize}
+
+\section*{Why GNU Guix? (And Why Scheme?)}
+
+While Nix pioneered functional package management, it invented its own idiosyncratic, domain-specific configuration language.
+
+\textbf{GNU Guix} took this functional paradigm and made a radical, glorious choice: \textbf{Everything is GNU Guile Scheme.}
+
+\begin{alchemybox}[The Power of Scheme]
+In Guix, your package definitions are Scheme. Your system configuration is Scheme. Your init system (GNU Shepherd) is Scheme. Your build phases are Scheme. Your dotfiles are Scheme.
+
+There is no boundary between ``configuration data'' and ``real code''. You have the full power of a battle-tested, general-purpose, Lisp-dialect programming language with macros, first-class functions, and interactive REPL debugging at every layer of the operating system stack.
+\end{alchemybox}
+
+Yes, there will be parentheses. Many parentheses. But do not be afraid! As you read through this book, you will discover that those parentheses are not visual noise; they are the armor that protects your operating system from corruption.
+
+\section*{How This Book Is Structured}
+
+\begin{itemize}
+  \item \textbf{Part I: The Grand Illusion (Package Management)}: We explore the immutable store (\texttt{/gnu/store}), how transactions and rollbacks work, profiles, channels, and how \texttt{guix time-machine} lets you travel back in time.
+  \item \textbf{Part II: The Development Wonderland}: We ditch Docker and virtualenvs for \texttt{guix shell}, explore isolated containers, write \texttt{manifest.scm} files, and integrate with \texttt{direnv}.
+  \item \textbf{Part III: The Operating System (Guix System \& Guix Home)}: We build declarative, fully reproducible operating systems using a single \texttt{config.scm}, explore the Scheme-powered Shepherd init system, and manage our personal dotfiles with \texttt{guix home}.
+  \item \textbf{Part IV: The Master Craftsman (Packaging with Guix)}: We learn how to write our own package recipes, master build systems, tame build phases, write G-Expressions (\texttt{\#\~{}}), and publish our own custom channels.
+  \item \textbf{Appendices}: The ultimate cheat sheet and troubleshooting guide for escaping any bind.
+\end{itemize}
+
+Buckle your seatbelt, fire up your terminal, and let us venture into the serene, reproducible promised land of GNU Guix.

@@ -1,0 +1,106 @@
+\chapter{Rolling Your Own Custom Channel}
+\label{chap:custom-channels}
+
+\epigraph{``Give a developer a package, and you feed them for a day. Teach a developer to write a Guix channel, and their entire team never suffers from dependency issues again.''}{--- The Ancient Guild of Guixers}
+
+\noindent
+Once you start writing your own Guix package definitions, you will quickly want to share them with your colleagues, your organization, or the broader world.
+
+Rather than emailing \texttt{.scm} files around or maintaining fragile private PPA repositories, GNU Guix allows anyone to turn any Git repository into an authenticated, first-class \textbf{Guix Channel}.
+
+\section{The Anatomy of a Channel Repository}
+
+A custom channel is simply a Git repository structured with standard Scheme module paths. Here is a recommended layout:
+
+\begin{lstlisting}[style=guixcli]
+my-guix-channel/
+|-- .guix-channel          # Channel metadata file
+|-- etc/
+|   \-- news.txt           # Announcements displayed on `guix pull`
+\-- mychannel/
+    |-- packages/
+    |   |-- web.scm        # Web applications & services
+    |   \-- science.scm    # Scientific computation packages
+    \-- services/
+        \-- custom.scm     # Custom Shepherd system services
+\end{lstlisting}
+
+\section{The \texttt{.guix-channel} Metadata File}
+
+At the root of your repository, create a \texttt{.guix-channel} file:
+
+\begin{lstlisting}[style=guixscheme]
+;; .guix-channel
+(channel
+  (version 0)
+  (directory ".")
+  ;; Optional: Declare channel dependencies
+  (dependencies
+    (list (channel
+            (name 'guix)
+            (url "https://git.savannah.gnu.org/git/guix.git")))))
+\end{lstlisting}
+
+\section{Writing Package Modules Inside the Channel}
+
+In \texttt{mychannel/packages/science.scm}, declare your module matching the directory path:
+
+\begin{lstlisting}[style=guixscheme]
+(define-module (mychannel packages science)
+  #:use-module (guix packages)
+  #:use-module (guix download)
+  #:use-module (guix build-system gnu)
+  #:use-module ((guix licenses) #:prefix license:))
+
+(define-public custom-simulator
+  (package
+    (name "custom-simulator")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri "https://internal.example.org/sim-2.0.0.tar.gz")
+              (sha256
+               (base32
+                "0123456789abcdef0123456789abcdef0123456789abcdef0123"))))
+    (build-system gnu-build-system)
+    (synopsis "Proprietary internal physics simulation engine")
+    (description "High performance simulator for organizational workflows.")
+    (home-page "https://internal.example.org")
+    (license license:gpl3+)))
+\end{lstlisting}
+
+\section{Testing Your Channel Locally: \texttt{-L}}
+
+Before committing and pushing your channel to Git, you can test your new packages immediately using the \texttt{-L} (load path) flag:
+
+\begin{lstlisting}[style=guixcli]
+# Build the package directly using the local channel directory
+guix build -L /path/to/my-guix-channel custom-simulator
+
+# Test running the package in a containerized shell
+guix shell -L /path/to/my-guix-channel custom-simulator -- custom-simulator --version
+\end{lstlisting}
+
+\section{Channel News: \texttt{etc/news.txt}}
+
+Guix provides a built-in notification system. When users of your channel run \guixcmd{guix pull}, Guix will display formatted news items for new releases or breaking changes:
+
+\begin{lstlisting}[style=guixscheme]
+(channel-news
+  (version 0)
+  (entry (tag "v2.0.0")
+         (title (en "Major upgrade: Custom Simulator 2.0 Released!"))
+         (body (en "Version 2.0 introduces GPU acceleration and fixes memory leaks."))))
+\end{lstlisting}
+
+\begin{protipbox}[Subscribing Teammates to Your Channel]
+To enable your team to use your new channel, they simply add this snippet to their \texttt{\textasciitilde/.config/guix/channels.scm}:
+\begin{lstlisting}[style=guixscheme]
+(cons (channel
+        (name 'mychannel)
+        (url "https://git.example.org/my-guix-channel.git")
+        (branch "main"))
+      %default-channels)
+\end{lstlisting}
+After running \guixcmd{guix pull}, your entire company's internal software library is available directly via \guixcmd{guix install} and \guixcmd{guix shell}!
+\end{protipbox}

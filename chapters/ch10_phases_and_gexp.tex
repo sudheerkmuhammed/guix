@@ -1,0 +1,119 @@
+\chapter{Build Phases, G-Expressions, and Shebangs}
+\label{chap:phases-and-gexp}
+
+\epigraph{``In ordinary programming, you write code that runs now. In Guix packaging, you write Scheme code that constructs Scheme code that will run in an isolated chroot sandbox tomorrow on another machine.''}{--- The Wizard of G-Expressions}
+
+\noindent
+Most software projects build cleanly with standard flags. But occasionally, you will encounter upstream software that commits unforgivable sins: hardcoding \texttt{/bin/bash}, expecting files to exist in \texttt{/usr/share}, failing test suites because network access is disabled, or requiring complex wrapper scripts to set environment variables.
+
+To tame these unruly packages, GNU Guix gives you two formidable tools: \textbf{Phase Modification} and \textbf{G-Expressions}.
+
+\section{The Build Phase Pipeline}
+
+Every build system in Guix executes a sequential pipeline of \textbf{Phases}. For example, the \texttt{gnu-build-system} runs:
+
+\begin{enumerate}
+  \item \texttt{unpack}: Extracts the source tarball or git archive.
+  \item \texttt{patch-source-shebangs}: Replaces hardcoded \texttt{/bin/sh} with the store path of GNU Bash.
+  \item \texttt{configure}: Runs \texttt{./configure} with appropriate \texttt{--prefix=/gnu/store/...} flags.
+  \item \texttt{build}: Runs \texttt{make -j N}.
+  \item \texttt{check}: Runs the automated test suite (\texttt{make check}).
+  \item \texttt{install}: Runs \texttt{make install}.
+  \item \texttt{patch-shebangs}: Replaces shebangs in installed scripts.
+  \item \texttt{strip}: Strips debug symbols (unless requested).
+  \item \texttt{validate-runpath}: Verifies that all dynamic ELF libraries point to valid \texttt{/gnu/store} paths.
+\end{enumerate}
+
+\section{Modifying Phases with \texttt{modify-phases}}
+
+You can intercept, alter, delete, or inject custom Scheme code at any point in this pipeline using the \texttt{modify-phases} macro:
+
+\begin{lstlisting}[style=guixscheme]
+(arguments
+  (list
+    #:phases
+    #~(modify-phases %standard-phases
+        ;; 1. Delete a phase (e.g. if tests require internet)
+        (delete 'check)
+
+        ;; 2. Add a custom phase before 'configure
+        (add-before 'configure 'set-environment-flags
+          (lambda _
+            (setenv "C_INCLUDE_PATH"
+                    (string-append #$(this-package-input "zlib") "/include"))))
+
+        ;; 3. Replace a phase entirely
+        (replace 'build
+          (lambda* (#:key (make-flags '()) (#:allow-other-keys))
+            (apply invoke "make" "all-optimized" make-flags)))
+
+        ;; 4. Add a custom wrapper phase after 'install
+        (add-after 'install 'wrap-executable
+          (lambda* (#:key outputs #:allow-other-keys)
+            (let* ((out (assoc-ref outputs "out"))
+                   (bin (string-append out "/bin/my-app")))
+              (wrap-program bin
+                `("PATH" ":" prefix
+                  (,(string-append #$(this-package-input "coreutils") "/bin"))))))))))
+\end{lstlisting}
+
+\section{The Glory of G-Expressions (\texttt{\#\~{}} and \texttt{\#\$})}
+
+Why are there funny characters like \texttt{\#\~{}} and \texttt{\#\$} in modern Guix code?
+
+In Guix, code is divided into two distinct worlds:
+\begin{enumerate}
+  \item \textbf{Host-side Code}: Evaluated on your current machine when calculating the derivation graph.
+  \item \textbf{Build-side Code}: Evaluated inside the isolated build daemon sandbox when actually compiling the package.
+\end{enumerate}
+
+\textbf{G-Expressions (G-Exps)} provide a type-safe, hygienic mechanism for staging code that will be executed in the build sandbox:
+
+\begin{itemize}
+  \item \textbf{\texttt{\#\~{}}} (\emph{G-Exp Quoting}): Begins a staged code block to be sent to the builder.
+  \item \textbf{\texttt{\#\$}} (\emph{Ungexp}): Unquotes an object from the host environment, resolving packages to their exact \texttt{/gnu/store/...} paths!
+  \item \textbf{\texttt{\#\$@}} (\emph{Ungexp-Splicing}): Unquotes and splices a list of items into the staged code.
+\end{itemize}
+
+\begin{alchemybox}[The Magic of \texttt{\#\$(file-append ...)}]
+When you write:
+\begin{lstlisting}[style=guixscheme]
+#$(file-append bash "/bin/sh")
+\end{lstlisting}
+Guix automatically:
+\begin{enumerate}
+  \item Records a build-time and runtime dependency on the \texttt{bash} package.
+  \item During derivation expansion, replaces the expression with the exact immutable store path:
+  \begin{center}
+  \storepath{/gnu/store/12345...-bash-5.1.16/bin/sh}
+  \end{center}
+\end{enumerate}
+You never have to hardcode or guess store paths!
+\end{alchemybox}
+
+\section{The Battle Against Hardcoded Paths and Shebangs}
+
+The single most common bug in porting software to Guix is an upstream script with a header like \texttt{\#!/bin/bash} or \texttt{\#!/usr/bin/env python3}.
+
+Remember: In Guix, \textbf{\texttt{/bin/bash} does not exist!} (There is only \texttt{/bin/sh} for POSIX compatibility on Guix System).
+
+\begin{footgunbox}[The Missing Shebang Gotcha]
+If an installed script has \texttt{\#!/usr/bin/python}, executing it will result in the infamous:
+\begin{lstlisting}[style=guixcli]
+bash: ./my-script.py: No such file or directory
+\end{lstlisting}
+The kernel is telling you that the interpreter binary named in the shebang line does not exist on the filesystem.
+\end{footgunbox}
+
+Guix provides \texttt{patch-shebangs} automatically, but for dynamically invoked scripts or custom build steps, you can resolve binaries cleanly using \texttt{search-input-file}:
+
+\begin{lstlisting}[style=guixscheme]
+(lambda* (#:key inputs outputs #:allow-other-keys)
+  (let ((bash (search-input-file inputs "/bin/bash"))
+        (sed  (search-input-file inputs "/bin/sed")))
+    (substitute* "generate-data.sh"
+      (("/bin/bash") bash)
+      (("/usr/bin/sed") sed))))
+\end{lstlisting}
+
+With \texttt{substitute*} and \texttt{search-input-file}, even the most stubborn legacy codebase can be brought into pristine functional compliance.

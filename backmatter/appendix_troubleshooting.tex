@@ -1,0 +1,102 @@
+\chapter{Troubleshooting and Common Footguns}
+\label{appendix:troubleshooting}
+
+\epigraph{``Experience is simply the name we give our past build failures.''}{--- Oscar Wilde (adapted)}
+
+\noindent
+Even the most seasoned functional alchemists occasionally run into a cryptic error or a failed derivation. Here is a curated diagnostic guide for the most common Guix pitfalls.
+
+\section{Footgun 1: ``No such file or directory'' on Existing Scripts}
+
+\begin{tcolorbox}[colback=footgunred!5!white,colframe=footgunred,title=Symptom]
+You run an executable Python or Bash script with \texttt{./script.sh} and get:
+\begin{lstlisting}[style=guixcli]
+bash: ./script.sh: No such file or directory
+\end{lstlisting}
+even though \texttt{ls -l script.sh} shows the file exists and has executable (\texttt{+x}) permissions!
+\end{tcolorbox}
+
+\textbf{Diagnosis}: The script begins with \texttt{\#!/bin/bash}, \texttt{\#!/usr/bin/env}, or \texttt{\#!/usr/bin/python}, but that interpreter does not exist at that absolute path on a pure Guix system.
+
+\textbf{Solution}:
+\begin{enumerate}
+  \item In a package definition, let \texttt{patch-shebangs} run, or use \texttt{search-input-file}:
+  \begin{lstlisting}[style=guixscheme]
+  (substitute* "script.sh"
+    (("/bin/bash") (search-input-file inputs "/bin/bash")))
+  \end{lstlisting}
+  \item In a development shell, run the script explicitly with the interpreter:
+  \begin{lstlisting}[style=guixcli]
+  guix shell python -- python3 ./script.py
+  \end{lstlisting}
+\end{enumerate}
+
+\section{Footgun 2: Scheme Error: ``Unbound Variable''}
+
+\begin{tcolorbox}[colback=footgunred!5!white,colframe=footgunred,title=Symptom]
+When running \guixcmd{guix build} or \guixcmd{guix system reconfigure}, you see:
+\begin{lstlisting}[style=guixcli]
+error: openssl: unbound variable
+hint: Did you forget `(use-modules (gnu packages tls))'?
+\end{lstlisting}
+\end{tcolorbox}
+
+\textbf{Diagnosis}: Guix organizes packages into granular Scheme modules. Unlike Python where global namespace pollution is common, Guile requires you to explicitly import the module that defines the variable.
+
+\textbf{Solution}: Add the corresponding module to your \texttt{use-modules} or \texttt{use-package-modules} header at the top of the file.
+
+\section{Footgun 3: Test Suite Fails Because of No Network Access}
+
+\begin{tcolorbox}[colback=footgunred!5!white,colframe=footgunred,title=Symptom]
+A package build fails during the \texttt{check} phase with socket or DNS resolution errors (e.g. \texttt{getaddrinfo failed}).
+\end{tcolorbox}
+
+\textbf{Diagnosis}: The \texttt{guix-daemon} executes builds in a network-isolated container to ensure hermetic reproducibility. Upstream test suites that attempt to ping \texttt{google.com} or download test fixtures on the fly will fail.
+
+\textbf{Solution}:
+\begin{enumerate}
+  \item If the tests are non-essential network checks, disable the test phase:
+  \begin{lstlisting}[style=guixscheme]
+  (arguments (list #:tests? #f))
+  \end{lstlisting}
+  \item Or use \texttt{modify-phases} to disable only the specific offending unit tests:
+  \begin{lstlisting}[style=guixscheme]
+  (add-before 'check 'disable-network-tests
+    (lambda _
+      (setenv "SKIP_NETWORK_TESTS" "1")))
+  \end{lstlisting}
+\end{enumerate}
+
+\section{Footgun 4: Disk Space Running Out in \texttt{/tmp}}
+
+\begin{tcolorbox}[colback=footgunred!5!white,colframe=footgunred,title=Symptom]
+Compiling a massive package (like \texttt{gcc}, \texttt{llvm}, or \texttt{chromium}) fails with \texttt{No space left on device} while building in \texttt{/tmp/guix-build-...}.
+\end{tcolorbox}
+
+\textbf{Diagnosis}: The build daemon extracts source trees and object files into \texttt{TMPDIR}, which is often mounted on a RAM disk (\texttt{tmpfs}) with limited size.
+
+\textbf{Solution}: Set \texttt{TMPDIR} to a disk directory with ample storage before running the build:
+\begin{lstlisting}[style=guixcli]
+export TMPDIR=/var/tmp
+guix build large-package
+\end{lstlisting}
+
+\section{Footgun 5: ``Why didn't \texttt{guix gc} free any space?''}
+
+\begin{tcolorbox}[colback=footgunred!5!white,colframe=footgunred,title=Symptom]
+You run \guixcmd{guix gc}, but the disk usage of \texttt{/gnu/store} barely changes.
+\end{tcolorbox}
+
+\textbf{Diagnosis}: Old generations of your user profile, system profile, or custom profiles are still referencing those packages as active GC roots.
+
+\textbf{Solution}: First delete old profile generations:
+\begin{lstlisting}[style=guixcli]
+# Delete old user profile generations
+guix package --delete-generations
+
+# Delete old system generations (if using Guix System)
+sudo guix system delete-generations
+
+# Reclaim store space
+guix gc
+\end{lstlisting}

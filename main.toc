@@ -1,0 +1,79 @@
+\contentsline {chapter}{Preface: The Imperative Hellscape and the Functional Cure}{v}{chapter*.3}%
+\contentsline {part}{I\hspace {1em}The Grand Illusion: Package Management Done Right}{1}{part.1}%
+\contentsline {chapter}{\numberline {1}The Curse of FHS and the Salvation of the Store}{2}{chapter.1}%
+\contentsline {section}{\numberline {1.1}The Myth of the Shared Library}{2}{section.1.1}%
+\contentsline {section}{\numberline {1.2}The Holy Store: /gnu/store}{3}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Derivations: The Recipe Behind the Magic}{3}{section.1.3}%
+\contentsline {section}{\numberline {1.4}The Isolated Build Sandbox}{4}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Profiles and Generations: The Symlink Forest}{4}{section.1.5}%
+\contentsline {chapter}{\numberline {2}Daily Life with the Guix CLI}{6}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Installing and Removing Packages}{6}{section.2.1}%
+\contentsline {section}{\numberline {2.2}The Miraculous Undo Button: Rollbacks}{7}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Inspecting and Navigating Generations}{7}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Multiple Custom Profiles}{8}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Garbage Collection and Disk Space Management}{8}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Substitutes: Why You Do Not Have to Compile Everything}{9}{section.2.6}%
+\contentsline {chapter}{\numberline {3}Channels, Pins, and Time Travel}{10}{chapter.3}%
+\contentsline {section}{\numberline {3.1}The Heartbeat: \texttt {guix pull}}{10}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Declaring Channels in Scheme}{11}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Capturing Your Exact State: \texttt {guix describe}}{11}{section.3.3}%
+\contentsline {section}{\numberline {3.4}The Superpower: \texttt {guix time-machine}}{12}{section.3.4}%
+\contentsline {part}{II\hspace {1em}The Development Wonderland: Escaping Dependency Hell}{13}{part.2}%
+\contentsline {chapter}{\numberline {4}Goodbye Virtualenvs, Hello \texttt {guix shell}}{14}{chapter.4}%
+\contentsline {section}{\numberline {4.1}The Concept: Disposable, Ephemeral Environments}{14}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Achieving True Isolation: \texttt {--pure}}{15}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Containers Without Docker: The \texttt {-C} Flag}{15}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Fine-Grained Sharing: Filesystems and Network}{16}{section.4.4}%
+\contentsline {section}{\numberline {4.5}The Instant Development Environment: \texttt {-D}}{16}{section.4.5}%
+\contentsline {chapter}{\numberline {5}Project Manifests and Package Transformations}{17}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Writing a \texttt {manifest.scm}}{17}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}1. The Specification Approach: \texttt {specifications->manifest}}{17}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}2. The Programmatic Approach: \texttt {packages->manifest}}{18}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Automatic Manifest Discovery}{18}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Package Transformations: Rewriting the Dependency Graph}{18}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Manifest Transformations in Scheme}{19}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Seamless IDE Integration with \texttt {direnv}}{19}{section.5.5}%
+\contentsline {part}{III\hspace {1em}The Operating System: Declarative Computing \& Shepherd}{21}{part.3}%
+\contentsline {chapter}{\numberline {6}Guix System: One File to Rule Them All}{22}{chapter.6}%
+\contentsline {section}{\numberline {6.1}The Imperative OS Trap vs The Declarative OS}{22}{section.6.1}%
+\contentsline {section}{\numberline {6.2}The Anatomy of \texttt {config.scm}}{22}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Applying the System: \texttt {guix system reconfigure}}{24}{section.6.3}%
+\contentsline {section}{\numberline {6.4}The Unbreakable Bootloader: GRUB Generations}{24}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Building Images: ISOs, VMs, and Cloud AMIs}{25}{section.6.5}%
+\contentsline {chapter}{\numberline {7}GNU Shepherd: The Lisp-Powered Init System}{26}{chapter.7}%
+\contentsline {section}{\numberline {7.1}The Philosophy of Shepherd}{26}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Managing Services: The \texttt {herd} Command}{26}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Writing a Custom Shepherd Service}{27}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Unprivileged User Services}{28}{section.7.4}%
+\contentsline {chapter}{\numberline {8}Guix Home: Declarative Dotfiles and Userland}{29}{chapter.8}%
+\contentsline {section}{\numberline {8.1}The Philosophy of Guix Home}{29}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Writing a \texttt {home-configuration.scm}}{29}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Applying Your Home Configuration}{31}{section.8.3}%
+\contentsline {section}{\numberline {8.4}Navigating Home Generations and Rollbacks}{31}{section.8.4}%
+\contentsline {part}{IV\hspace {1em}The Master Craftsman: Packaging with Scheme}{32}{part.4}%
+\contentsline {chapter}{\numberline {9}The Anatomy of a Package: \texttt {(define-public ...)}}{33}{chapter.9}%
+\contentsline {section}{\numberline {9.1}A Complete Package Recipe from Scratch}{33}{section.9.1}%
+\contentsline {section}{\numberline {9.2}Deconstructing the Package Fields}{34}{section.9.2}%
+\contentsline {subsection}{\numberline {9.2.1}1. Source and Integrity (\texttt {origin})}{34}{subsection.9.2.1}%
+\contentsline {subsection}{\numberline {9.2.2}2. The Build System (\texttt {build-system})}{35}{subsection.9.2.2}%
+\contentsline {subsection}{\numberline {9.2.3}3. Input Classification: The Golden Rule}{35}{subsection.9.2.3}%
+\contentsline {section}{\numberline {9.3}Instant Importers: \texttt {guix import}}{35}{section.9.3}%
+\contentsline {chapter}{\numberline {10}Build Phases, G-Expressions, and Shebangs}{37}{chapter.10}%
+\contentsline {section}{\numberline {10.1}The Build Phase Pipeline}{37}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Modifying Phases with \texttt {modify-phases}}{38}{section.10.2}%
+\contentsline {section}{\numberline {10.3}The Glory of G-Expressions (\texttt {\#\~{}} and \texttt {\#\$})}{38}{section.10.3}%
+\contentsline {section}{\numberline {10.4}The Battle Against Hardcoded Paths and Shebangs}{39}{section.10.4}%
+\contentsline {chapter}{\numberline {11}Rolling Your Own Custom Channel}{40}{chapter.11}%
+\contentsline {section}{\numberline {11.1}The Anatomy of a Channel Repository}{40}{section.11.1}%
+\contentsline {section}{\numberline {11.2}The \texttt {.guix-channel} Metadata File}{40}{section.11.2}%
+\contentsline {section}{\numberline {11.3}Writing Package Modules Inside the Channel}{41}{section.11.3}%
+\contentsline {section}{\numberline {11.4}Testing Your Channel Locally: \texttt {-L}}{41}{section.11.4}%
+\contentsline {section}{\numberline {11.5}Channel News: \texttt {etc/news.txt}}{42}{section.11.5}%
+\contentsline {part}{Appendices}{44}{part*.4}%
+\contentsline {chapter}{The Ultimate Guix Cheat Sheet}{44}{chapter*.5}%
+\contentsline {chapter}{Troubleshooting and Common Footguns}{46}{chapter*.6}%
+\contentsline {section}{\numberline {11.6}Footgun 1: ``No such file or directory'' on Existing Scripts}{46}{section.11.6}%
+\contentsline {section}{\numberline {11.7}Footgun 2: Scheme Error: ``Unbound Variable''}{47}{section.11.7}%
+\contentsline {section}{\numberline {11.8}Footgun 3: Test Suite Fails Because of No Network Access}{47}{section.11.8}%
+\contentsline {section}{\numberline {11.9}Footgun 4: Disk Space Running Out in \texttt {/tmp}}{47}{section.11.9}%
+\contentsline {section}{\numberline {11.10}Footgun 5: ``Why didn't \texttt {guix gc} free any space?''}{48}{section.11.10}%

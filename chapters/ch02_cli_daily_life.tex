@@ -1,0 +1,148 @@
+\chapter{Daily Life with the Guix CLI}
+\label{chap:cli-daily-life}
+
+\epigraph{``There are two types of sysadmins: those who have broken production with an update, and those who are about to.''}{--- Murphy's Law of Operations}
+
+\noindent
+Now that you understand that \texttt{/gnu/store} is a cryptographic citadel of immutable purity, let us roll up our sleeves and interact with the Guix command-line interface.
+
+Unlike traditional package managers that demand \texttt{sudo} permissions to modify the global system state, Guix package management is entirely \textbf{unprivileged}. Every user on the system can install, upgrade, and remove software in their own user profile without ever asking the sysadmin for permission.
+
+\section{Installing and Removing Packages}
+
+The most basic operations will look pleasantly familiar, with a subtle functional twist:
+
+\begin{lstlisting}[style=guixcli]
+# Search for software (searches names, synopses, and descriptions)
+guix search emacs
+
+# Show detailed information about a package
+guix show emacs-ripgrep
+
+# Install a package into your active user profile
+guix install htop git ripgrep
+
+# Remove a package from your user profile
+guix remove htop
+
+# Upgrade all packages in your profile to their latest versions
+guix upgrade
+\end{lstlisting}
+
+\begin{protipbox}[Fast Searching with Recutils]
+When you run \guixcmd{guix search}, Guix evaluates the Scheme package records and outputs results formatted as \texttt{recutils} records. You can pipe the output into standard tools or filter fields:
+\begin{lstlisting}[style=guixcli]
+guix search emacs | grep -E '^name:'
+\end{lstlisting}
+Or search strictly by package name without scanning full descriptions:
+\begin{lstlisting}[style=guixcli]
+guix search '^emacs$'
+\end{lstlisting}
+\end{protipbox}
+
+\section{The Miraculous Undo Button: Rollbacks}
+
+Suppose you ran \guixcmd{guix upgrade} on a Monday morning. The new version of your favorite software contains a catastrophic regression, or perhaps you accidentally uninstalled your text editor right before a deadline.
+
+On an imperative distribution (Ubuntu, Arch, etc.), you would now be combing through cache archives, manually downloading \texttt{.deb} or \texttt{.pkg.tar.zst} files, and praying you don't trigger dynamic linker errors.
+
+On Guix, you simply invoke the undo button:
+
+\begin{lstlisting}[style=guixcli]
+# Instant rollback to the previous generation
+guix package --roll-back
+\end{lstlisting}
+
+\begin{tearsbox}[The 2-Millisecond Rescue]
+When you type \guixcmd{guix package --roll-back}, Guix does not download anything. It does not recompile anything. It merely updates the \texttt{\textasciitilde/.guix-profile} symlink to point back to Generation $N-1$. The entire rollback takes approximately 2 milliseconds. You can do it while running a live presentation and nobody in the audience will notice.
+\end{tearsbox}
+
+\section{Inspecting and Navigating Generations}
+
+Every transactional change to your profile creates a permanent historical record called a \textbf{Generation}. You can inspect the entire history of your user environment:
+
+\begin{lstlisting}[style=guixcli]
+guix package --list-generations
+\end{lstlisting}
+
+This displays an informative timeline:
+
+\begin{lstlisting}[style=guixcli]
+Generation 1    Oct 12 2025 14:02:11
+ + git          2.41.0          out     /gnu/store/7a3...-git-2.41.0
+ + ripgrep      13.0.0          out     /gnu/store/8bc...-ripgrep-13.0.0
+
+Generation 2    Oct 14 2025 09:15:30
+ + python       3.10.7          out     /gnu/store/9df...-python-3.10.7
+
+Generation 3 (current)  Oct 15 2025 11:22:04
+ - ripgrep      13.0.0          out     /gnu/store/8bc...-ripgrep-13.0.0
+ + ripgrep      14.0.1          out     /gnu/store/2ea...-ripgrep-14.0.1
+\end{lstlisting}
+
+You can switch to any arbitrary point in your history at will:
+
+\begin{lstlisting}[style=guixcli]
+# Travel directly to Generation 1
+guix package --switch-generation=1
+\end{lstlisting}
+
+\section{Multiple Custom Profiles}
+
+Why cram your video editor, your Haskell compiler, your audio synthesizer, and your scientific Python stack into a single bloated user profile?
+
+In Guix, you can instantiate as many independent profiles as you want by passing the \texttt{-p} or \texttt{--profile} flag:
+
+\begin{lstlisting}[style=guixcli]
+# Create a dedicated profile for audio production
+guix package -p ~/profiles/audio -i ardour jack2 audacity
+
+# Create a dedicated profile for data science
+guix package -p ~/profiles/datascience -i python python-numpy python-scipy
+
+# Activate a custom profile in your current shell
+source ~/profiles/audio/etc/profile
+\end{lstlisting}
+
+When you source \texttt{etc/profile}, Guix automatically configures your environment variables (\texttt{PATH}, \texttt{LIBRARY\_PATH}, \texttt{GUIX\_PYTHONPATH}, etc.) for that specific set of packages.
+
+\section{Garbage Collection and Disk Space Management}
+
+Because Guix keeps old generations around to make rollbacks instantaneous, your \texttt{/gnu/store} will eventually grow larger as you install and upgrade software over months.
+
+\begin{alchemybox}[How Garbage Collection Works]
+Guix uses a tracing garbage collector, similar to programming language runtimes (like Java, Go, or Guile).
+\begin{enumerate}
+  \item \textbf{GC Roots}: Guix scans known roots (active user profiles, system generations, running processes, and pins in \texttt{/var/guix/gcroots}).
+  \item \textbf{Liveness Trace}: Any store item that can be reached via symlinks or references from an active root is marked as \textbf{live}.
+  \item \textbf{Reclamation}: Any store item that is completely unreferenced is deleted from disk.
+\end{enumerate}
+\end{alchemybox}
+
+If you simply run \guixcmd{guix gc}, it will only remove packages that are not referenced by \textbf{any} generation of any profile. To reclaim significant space, you first delete historical generations you no longer need:
+
+\begin{lstlisting}[style=guixcli]
+# Delete all profile generations older than 30 days
+guix package --delete-generations=30d
+
+# Delete all generations except the current one
+guix package --delete-generations
+
+# Run the garbage collector to reclaim unused disk space
+guix gc
+
+# Free disk space down to a target size (e.g., free at least 10GB)
+guix gc -F 10G
+\end{lstlisting}
+
+\begin{footgunbox}[The Premature GC Trap]
+If you delete your old generations with \guixcmd{guix package --delete-generations} and then immediately run \guixcmd{guix gc}, your previous generations are gone forever. You will no longer be able to roll back to yesterday's profile! Keep at least a few days of generations around unless you are in desperate need of disk space.
+\end{footgunbox}
+
+\section{Substitutes: Why You Do Not Have to Compile Everything}
+
+A common fear among newcomers is: \emph{``If Guix is functional and source-based, am I going to spend the next four days compiling Firefox and Chromium from source?''}
+
+The answer is \textbf{no}. Guix uses \textbf{Substitutes} (pre-built binary caches signed by trusted continuous integration servers like \texttt{ci.guix.gnu.org} and \texttt{bordeaux.guix.gnu.org}).
+
+When Guix determines that a derivation hash \texttt{/gnu/store/abc123...-firefox-115.0.drv} is needed, it checks if a trusted substitute server already built that exact derivation. If it exists, Guix simply downloads the pre-built cryptographic narball (normalized archive) and unpacks it into your store. You get all the speed of a binary package manager with all the mathematical purity of a source-based functional system.

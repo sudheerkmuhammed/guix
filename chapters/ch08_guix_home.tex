@@ -1,0 +1,121 @@
+\chapter{Guix Home: Declarative Dotfiles and Userland}
+\label{chap:guix-home}
+
+\epigraph{``There are two kinds of developers: those whose dotfiles are a tangled web of broken symlinks in a forgotten GitHub repo, and those who use Guix Home.''}{--- The Unix Ascetic}
+
+\noindent
+So far, we have seen how Guix manages package binaries and how Guix System manages the root operating system. But what about your personal home directory?
+
+For decades, developers have managed their dotfiles (\texttt{.bashrc}, \texttt{.gitconfig}, \texttt{.config/nvim}, etc.) using ad-hoc shell scripts, GNU Stow symlink managers, or bare Git repositories. The result is almost always a brittle mess: symlinks point to deleted targets, local edits conflict with Git merges, and setting up a new laptop takes half a day of manual tinkering.
+
+Enter \textbf{Guix Home}.
+
+\section{The Philosophy of Guix Home}
+
+Guix Home applies the exact same declarative, functional paradigm of Guix System to your unprivileged \texttt{\$HOME} directory:
+\begin{itemize}
+  \item Your user packages, environment variables, dotfiles, and user daemons are declared in a single Scheme file (\texttt{home-configuration.scm}).
+  \item Every update creates a new immutable \textbf{Home Generation}.
+  \item If an update breaks your shell or editor config, you can \textbf{roll back} your home environment instantly.
+  \item It works on \textbf{any} Linux distribution running GNU Guix, not just Guix System!
+\end{itemize}
+
+\section{Writing a \texttt{home-configuration.scm}}
+
+Let us inspect a complete, elegant \texttt{home-configuration.scm}:
+
+\begin{lstlisting}[style=guixscheme]
+;; home-configuration.scm - Declarative personal userland
+(use-modules (gnu home)
+             (gnu home services)
+             (gnu home services shells)
+             (gnu home services version-control)
+             (gnu packages)
+             (gnu packages emacs)
+             (gnu packages version-control)
+             (gnu packages rust-apps)
+             (guix gexp))
+
+(home-environment
+  ;; Packages to install in the user's home profile
+  (packages (list emacs-no-x
+                  git
+                  ripgrep
+                  fd
+                  bat))
+
+  ;; Services configuring dotfiles and user daemons
+  (services
+    (list
+      ;; Declarative Bash Configuration
+      (service home-bash-service-type
+        (home-bash-configuration
+          (guix-defaults? #t)
+          (aliases '(("ll" . "ls -lha")
+                     ("gs" . "git status")
+                     ("gshell" . "guix shell --pure")))
+          (bashrc (list (plain-file "bashrc-custom"
+                          "export EDITOR=emacs\nexport HISTSIZE=50000\n")))))
+
+      ;; Declarative Git Configuration (~/.gitconfig)
+      (service home-git-service-type
+        (home-git-configuration
+          (user-name "Alice Hacker")
+          (user-email "alice@example.org")
+          (extra-config
+            '((init ((defaultBranch . "main")))
+              (pull ((rebase . #t)))
+              (color ((ui . "auto")))))))
+
+      ;; Deploying raw config files into ~/.config/
+      (simple-service 'my-editor-config
+        home-xdg-configuration-files-service-type
+        `(("alacritty/alacritty.toml"
+           ,(local-file "configs/alacritty.toml")))))))
+\end{lstlisting}
+
+\section{Applying Your Home Configuration}
+
+To instantiate or update your home environment, you simply run:
+
+\begin{lstlisting}[style=guixcli]
+guix home reconfigure home-configuration.scm
+\end{lstlisting}
+
+When you run this command:
+\begin{enumerate}
+  \item Guix validates your Scheme records.
+  \item It generates the necessary configuration files and places them immutably in \texttt{/gnu/store}.
+  \item It atomically updates symlinks in \texttt{\textasciitilde/.config/} and your home directory.
+  \item It creates a new Home Generation in \texttt{\textasciitilde/.guix-home}.
+\end{enumerate}
+
+\section{Navigating Home Generations and Rollbacks}
+
+Did you make an experimental edit to your shell configuration that broke your terminal startup?
+
+\begin{lstlisting}[style=guixcli]
+# List all historical generations of your home environment
+guix home list-generations
+
+# Roll back to the previous home generation in 2 milliseconds
+guix home roll-back
+
+# Switch directly to Generation 5
+guix home switch-generation 5
+\end{lstlisting}
+
+\begin{tearsbox}[The New Laptop Onboarding Experience]
+On traditional systems:
+\begin{enumerate}
+  \item Buy new laptop.
+  \item Spend 6 hours installing packages, copying SSH keys, cloning 14 git repos, debugging Python versions, and configuring shell themes.
+\end{enumerate}
+With Guix Home:
+\begin{enumerate}
+  \item Buy new laptop. Install GNU Guix.
+  \item Clone your \texttt{home-configuration.scm}.
+  \item Run \guixcmd{guix home reconfigure home-configuration.scm}.
+  \item In 45 seconds, your entire personalized computing environment is bit-for-bit identical to your previous machine.
+\end{enumerate}
+\end{tearsbox}

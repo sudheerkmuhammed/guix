@@ -1,0 +1,248 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=1.1in,headheight=14pt]{geometry}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{epigraph}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{amsmath,amssymb}
+\usepackage{bookmark}
+\usepackage{hyperref}
+
+% --- Color Palette ---
+\definecolor{guixdark}{RGB}{28, 33, 40}
+\definecolor{guixgold}{RGB}{185, 130, 10}
+\definecolor{guixbronze}{RGB}{140, 85, 20}
+\definecolor{schemeblue}{RGB}{30, 100, 175}
+\definecolor{footgunred}{RGB}{175, 35, 35}
+\definecolor{alchpurple}{RGB}{100, 45, 145}
+\definecolor{protipgreen}{RGB}{25, 120, 60}
+\definecolor{tearsamber}{RGB}{180, 80, 20}
+
+\definecolor{codebg}{RGB}{247, 249, 251}
+\definecolor{codeborder}{RGB}{220, 226, 235}
+\definecolor{commentgray}{RGB}{110, 120, 135}
+\definecolor{stringgreen}{RGB}{35, 125, 55}
+\definecolor{keywordblue}{RGB}{15, 80, 170}
+\definecolor{schemesym}{RGB}{135, 45, 120}
+
+% --- Hyperref Setup ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=schemeblue,
+    citecolor=guixbronze,
+    urlcolor=schemeblue,
+    pdftitle={The Joy of Guix: Or How I Learned to Stop Worrying and Love the Parentheses},
+    pdfauthor={Antigravity Guix Wizard},
+    pdfsubject={GNU Guix, Functional Package Management, Operating Systems, Reproducible Builds},
+    pdfkeywords={Guix, GNU, Scheme, Guile, Package Manager, Linux, Shepherd, Reproducibility}
+}
+
+% --- Typography & Spacing ---
+\setlength{\parindent}{1.5em}
+\setlength{\parskip}{0.4em plus 0.1em minus 0.1em}
+\linespread{1.07}
+
+% --- Epigraph Styling ---
+\setlength{\epigraphwidth}{0.75\textwidth}
+\setlength{\epigraphrule}{0.4pt}
+\renewcommand{\epigraphsize}{\small\itshape}
+
+% --- Section & Chapter Headings ---
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{guixdark}}
+  {\filleft\Huge\color{guixgold}Chapter \thechapter}
+  {1ex}
+  {\titlerule[1.5pt]\vspace{1.5ex}\filright}
+  [\vspace{1ex}{\titlerule[0.5pt]}]
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{guixdark}}{\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{schemeblue}}{\thesubsection}{1em}{}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{guixbronze}}{\thesubsubsection}{1em}{}
+
+% --- Headers & Footers ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{commentgray}\nouppercase{\leftmark}}
+\fancyhead[R]{\small\color{guixgold}\textbf{The Joy of Guix}}
+\fancyfoot[C]{\small\color{guixdark}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\small\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+% --- Listings / Code Highlighting ---
+\lstdefinelanguage{Scheme}{
+  morekeywords=[1]{
+    define, define-public, define-syntax, define-module, use-modules,
+    package, origin, git-reference, git-checkout, file-append,
+    modify-phases, replace, add-before, add-after, delete,
+    operating-system, file-system, user-account, user-group,
+    services, service, simple-service, service-extension,
+    home-environment, home-bash-configuration, home-git-configuration,
+    manifest, specifications->manifest, packages->manifest,
+    gexp, ungexp, ungexp-splicing, with-imported-modules,
+    lambda, let, let*, letrec, match, cond, if, when, unless,
+    and, or, not, begin, quote, quasiquote, unquote, list, cons
+  },
+  morekeywords=[2]{
+    name, version, source, build-system, arguments, inputs, native-inputs,
+    propagated-inputs, outputs, synopsis, description, license, home-page,
+    host-name, timezone, locale, bootloader, file-systems, users, packages,
+    phases, uri, method, commit, hash, base32, sha256
+  },
+  sensitive=true,
+  morecomment=[l]{;},
+  morestring=[b]",
+  alsoletter={*->?\#:}
+}
+
+\lstdefinelanguage{GuixCLI}{
+  morekeywords=[1]{
+    guix, pull, install, remove, upgrade, search, show,
+    package, shell, environment, system, home, container,
+    time-machine, gc, size, graph, edit, build, hash,
+    import, refresh, describe, repl, challenge, weather,
+    herd, status, start, stop, restart
+  },
+  morekeywords=[2]{
+    --pure, --container, --network, --expose, --share, --nesting,
+    --manifest, --file, --expression, --development, --profile,
+    --roll-back, --switch-generation, --list-generations, --delete-generations,
+    --with-source, --with-input, --with-git-url, --with-branch, --with-commit,
+    --with-c-toolchain, --with-debug-info, --dry-run, --cores, --max-jobs
+  },
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]"
+}
+
+\lstdefinestyle{guixscheme}{
+  language=Scheme,
+  backgroundcolor=\color{codebg},
+  basicstyle=\small\ttfamily,
+  keywordstyle=[1]\color{keywordblue}\bfseries,
+  keywordstyle=[2]\color{schemesym}\bfseries,
+  commentstyle=\color{commentgray}\itshape,
+  stringstyle=\color{stringgreen},
+  numbers=none,
+  breaklines=true,
+  breakatwhitespace=true,
+  frame=single,
+  rulecolor=\color{codeborder},
+  framesep=5pt,
+  xleftmargin=10pt,
+  xrightmargin=10pt,
+  showstringspaces=false,
+  tabsize=2
+}
+
+\lstdefinestyle{guixcli}{
+  language=GuixCLI,
+  backgroundcolor=\color{codebg},
+  basicstyle=\small\ttfamily,
+  keywordstyle=[1]\color{guixgold}\bfseries,
+  keywordstyle=[2]\color{schemeblue}\bfseries,
+  commentstyle=\color{commentgray}\itshape,
+  stringstyle=\color{stringgreen},
+  numbers=none,
+  breaklines=true,
+  breakatwhitespace=true,
+  frame=single,
+  rulecolor=\color{codeborder},
+  framesep=5pt,
+  xleftmargin=10pt,
+  xrightmargin=10pt,
+  showstringspaces=false,
+  tabsize=2
+}
+
+\lstset{style=guixscheme}
+
+% --- Custom Callout Boxes (TColorBox) ---
+
+% 1. Tears of Imperative Devs Box (Funny rants/comparisons with apt, npm, pip, docker)
+\newtcolorbox{tearsbox}[1][]{
+  enhanced,
+  breakable,
+  colback=tearsamber!6!white,
+  colframe=tearsamber!90!black,
+  coltitle=white,
+  fonttitle=\bfseries,
+  title={Tears of the Imperative Developer: #1},
+  arc=3mm,
+  boxrule=1pt,
+  leftrule=4mm,
+  top=2mm, bottom=2mm, left=3mm, right=3mm,
+  before skip=10pt, after skip=10pt
+}
+
+% 2. Alchemy & Arcana Box (Deep technical mechanics of the store, hash derivation, pure functions)
+\newtcolorbox{alchemybox}[1][]{
+  enhanced,
+  breakable,
+  colback=alchpurple!6!white,
+  colframe=alchpurple!90!black,
+  coltitle=white,
+  fonttitle=\bfseries,
+  title={Functional Alchemy \& Arcana: #1},
+  arc=3mm,
+  boxrule=1pt,
+  leftrule=4mm,
+  top=2mm, bottom=2mm, left=3mm, right=3mm,
+  before skip=10pt, after skip=10pt
+}
+
+% 3. Footgun Box (Common mistakes, forgotten flags, gotchas)
+\newtcolorbox{footgunbox}[1][]{
+  enhanced,
+  breakable,
+  colback=footgunred!6!white,
+  colframe=footgunred!90!black,
+  coltitle=white,
+  fonttitle=\bfseries,
+  title={Caution: Footgun Detected! #1},
+  arc=3mm,
+  boxrule=1pt,
+  leftrule=4mm,
+  top=2mm, bottom=2mm, left=3mm, right=3mm,
+  before skip=10pt, after skip=10pt
+}
+
+% 4. Pro-Tip Box (Practical tricks, productivity hacks)
+\newtcolorbox{protipbox}[1][]{
+  enhanced,
+  breakable,
+  colback=protipgreen!6!white,
+  colframe=protipgreen!90!black,
+  coltitle=white,
+  fonttitle=\bfseries,
+  title={Guix Wizard Pro-Tip: #1},
+  arc=3mm,
+  boxrule=1pt,
+  leftrule=4mm,
+  top=2mm, bottom=2mm, left=3mm, right=3mm,
+  before skip=10pt, after skip=10pt
+}
+
+% Inline code shortcut
+\newcommand{\code}[1]{\texttt{\color{schemeblue}#1}}
+\newcommand{\guixcmd}[1]{\texttt{\textbf{\color{guixdark}#1}}}
+\newcommand{\storepath}[1]{\texttt{\color{commentgray}#1}}

@@ -1,0 +1,83 @@
+\chapter{The Ultimate Guix Cheat Sheet}
+\label{appendix:cheatsheet}
+
+\section*{Daily Package Management}
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Command} & \textbf{Description} \\
+\midrule
+\guixcmd{guix search <query>} & Search available packages by name and description \\
+\guixcmd{guix show <pkg>} & Display detailed package metadata and store hash \\
+\guixcmd{guix install <pkg>} & Install one or more packages into active profile \\
+\guixcmd{guix remove <pkg>} & Remove packages from active profile \\
+\guixcmd{guix upgrade} & Upgrade all installed packages to latest versions \\
+\guixcmd{guix package --roll-back} & Instantly roll back user profile to previous generation \\
+\guixcmd{guix package -l} & List all profile generations and timeline \\
+\guixcmd{guix package -S <gen>} & Switch directly to a specific generation number \\
+\guixcmd{guix gc} & Run garbage collection to delete unreferenced store items \\
+\guixcmd{guix gc -F 10G} & Reclaim disk space until at least 10GB is free \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{Development with \texttt{guix shell}}
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Command} & \textbf{Description} \\
+\midrule
+\guixcmd{guix shell pkg1 pkg2} & Enter temporary shell with specified packages \\
+\guixcmd{guix shell --pure pkg1} & Enter isolated shell stripping host environment vars \\
+\guixcmd{guix shell -C -N pkg1} & Enter unprivileged Linux container with networking \\
+\guixcmd{guix shell -D <pkg>} & Enter shell with all build dependencies of package \\
+\guixcmd{guix shell -m manifest.scm} & Load environment defined in a Scheme manifest \\
+\guixcmd{guix shell --expose=/data} & Mount host directory read-only inside container \\
+\guixcmd{guix shell --share=/work} & Mount host directory read-write inside container \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{Package Transformations}
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Transformation Flag} & \textbf{Effect} \\
+\midrule
+\guixcmd{--with-source=pkg=tarball} & Replace upstream source with local archive/dir \\
+\guixcmd{--with-branch=pkg=main} & Fetch and build from a specific Git branch \\
+\guixcmd{--with-commit=pkg=commit} & Fetch and build from a specific Git commit hash \\
+\guixcmd{--with-input=old=new} & Graph rewrite: replace dependency across whole DAG \\
+\guixcmd{--with-c-toolchain=pkg=clang} & Recompile package using Clang instead of GCC \\
+\guixcmd{--with-debug-info=pkg} & Build and preserve full GDB debugging symbols \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{System, Home, and Shepherd Administration}
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Command} & \textbf{Description} \\
+\midrule
+\guixcmd{sudo guix system reconfigure cfg.scm} & Build and apply system configuration \\
+\guixcmd{guix system build cfg.scm} & Dry-run test build of system configuration \\
+\guixcmd{guix system image -t qcow2 cfg.scm} & Generate bootable QEMU QCOW2 virtual machine \\
+\guixcmd{guix home reconfigure home.scm} & Instantiate declarative user dotfiles/env \\
+\guixcmd{guix home roll-back} & Roll back user dotfile generation \\
+\guixcmd{herd status} & List all running/stopped Shepherd services \\
+\guixcmd{sudo herd restart <service>} & Restart a Shepherd background daemon \\
+\guixcmd{guix pull} & Update Guix tool and pull latest package definitions \\
+\guixcmd{guix describe -f channels} & Export current channel commits to \texttt{channels.scm} \\
+\guixcmd{guix time-machine -C ch.scm -- ...} & Execute commands in a locked historic environment \\
+\bottomrule
+\end{tabularx}
+\end{table}

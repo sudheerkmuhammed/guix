@@ -1,0 +1,89 @@
+\chapter{GNU Shepherd: The Lisp-Powered Init System}
+\label{chap:shepherd}
+
+\epigraph{``Why should PID 1 be written in 1.5 million lines of C with twenty auxiliary binary utilities, when it could be written in elegant, functional Scheme?''}{--- The GNU Hacker Manifesto}
+
+\noindent
+In the Linux world, few topics provoke as much religious fervor and flame wars as the init system. While the mainstream Linux ecosystem standardized on Systemd (a massive monolithic suite of daemons written in C and configured via thousands of INI files), GNU Guix chose a delightfully distinct path: \textbf{GNU Shepherd}.
+
+Formerly known as \texttt{dmd} (\emph{Daemon Managing Daemons}), the GNU Shepherd is an init system and service manager written entirely in \textbf{GNU Guile Scheme}.
+
+\section{The Philosophy of Shepherd}
+
+The Shepherd's design philosophy is straightforward:
+\begin{enumerate}
+  \item \textbf{PID 1 is a Guile REPL}: The process that initializes your computer and supervises your daemons is a Scheme interpreter.
+  \item \textbf{Services are First-Class Objects}: A service is not an opaque INI text file parsed by a custom grammar; it is a native Scheme record object with first-class start and stop closures.
+  \item \textbf{Minimalism \& Transparency}: The core codebase of Shepherd is compact, readable, and easy to audit.
+\end{enumerate}
+
+\section{Managing Services: The \texttt{herd} Command}
+
+To manage running system services, you interact with the \guixcmd{herd} command:
+
+\begin{lstlisting}[style=guixcli]
+# List all running and stopped services
+herd status
+
+# Get detailed status and logs for a specific service
+herd status ssh-daemon
+herd status networking
+
+# Start, stop, or restart a service
+sudo herd stop ssh-daemon
+sudo herd start ssh-daemon
+sudo herd restart nscd
+
+# View built-in documentation for a service
+herd doc guix-daemon
+\end{lstlisting}
+
+\begin{tearsbox}[INI Syntax Hell vs Scheme Functions]
+In systemd, if you want a custom pre-start check, you must learn thirty different directives like \texttt{ExecStartPre=}, \texttt{EnvironmentFile=}, \texttt{RuntimeDirectory=}, and escape quoting quirks.
+
+In Shepherd, a pre-start check is just a standard Scheme expression executed before spawning the process. You can check network interfaces, write files, or compute dynamic configuration files directly in pure Scheme.
+\end{tearsbox}
+
+\section{Writing a Custom Shepherd Service}
+
+How do you declare a custom daemon service in GNU Guix? You define a service using Shepherd's \texttt{make-forkexec-constructor}:
+
+\begin{lstlisting}[style=guixscheme]
+;; Defining a custom background backup daemon service
+(define my-backup-service
+  (shepherd-service
+    (provision '(my-backup-daemon))
+    (requirement '(networking user-homes))
+    (documentation "Runs an automated background data backup.")
+    (start #~(make-forkexec-constructor
+               (list #$(file-append rsync "/bin/rsync")
+                     "-avz" "/var/data/" "backup.internal:/backups/")
+               #:user "alice"
+               #:group "users"
+               #:log-file "/var/log/my-backup.log"))
+    (stop #~(make-kill-destructor))
+    (respawn? #t)))
+\end{lstlisting}
+
+Let us dissect this definition:
+\begin{itemize}
+  \item \textbf{\texttt{provision}}: The symbolic name of this service (what other services can depend on).
+  \item \textbf{\texttt{requirement}}: Services that must be started before this service can launch (in this case, \texttt{networking} and \texttt{user-homes}).
+  \item \textbf{\texttt{start}}: A G-Expression returning the execution constructor (\texttt{make-forkexec-constructor}).
+  \item \textbf{\texttt{stop}}: The destructor to gracefully terminate the process (\texttt{make-kill-destructor}).
+  \item \textbf{\texttt{respawn?}}: If \texttt{\#t}, Shepherd will automatically restart the daemon if it crashes!
+\end{itemize}
+
+\section{Unprivileged User Services}
+
+You can also run your own personal GNU Shepherd instance inside your user session without root privileges:
+
+\begin{lstlisting}[style=guixcli]
+# Start an unprivileged user shepherd
+shepherd
+
+# Manage user-level services (e.g. mpd, fetchmail, syncthing)
+herd start syncthing
+\end{lstlisting}
+
+This integrates seamlessly with \textbf{Guix Home}, which we will explore in the next chapter.

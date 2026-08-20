@@ -1,0 +1,134 @@
+\chapter{The Anatomy of a Package: \texttt{(define-public ...)}}
+\label{chap:anatomy-of-package}
+
+\epigraph{``In other operating systems, writing a package recipe involves writing 300 lines of arcane Bash scripts and cryptic SPEC files. In Guix, it is an elegant mathematical declaration in Scheme.''}{--- The GNU Guix Contributor Guide}
+
+\noindent
+At the heart of GNU Guix is the package definition. A package in Guix is not a script that gets run blindly; it is a first-class \textbf{Scheme record object} that formally describes the inputs, source code, build system, and metadata required to produce an immutable store path.
+
+\section{A Complete Package Recipe from Scratch}
+
+Let us examine a real-world, complete package definition for a fictional modern C/C++ tool called \texttt{fast-grep}:
+
+\begin{lstlisting}[style=guixscheme]
+(define-module (my-channel packages fast-grep)
+  #:use-module (guix packages)
+  #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages pcre)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages check))
+
+(define-public fast-grep
+  (package
+    (name "fast-grep")
+    (version "1.4.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/example/fast-grep")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+            "0n62f928z11j4p2q19r345c2x48k631k1v38d4a9v18z0147f9lm"))))
+    (build-system cmake-build-system)
+    (arguments
+      '(#:configure-flags '("-DENABLE_AVX2=ON"
+                           "-DBUILD_SHARED_LIBS=ON")
+        #:tests? #t))
+    (native-inputs
+      (list pkg-config
+            googletest))
+    (inputs
+      (list zlib
+            pcre2))
+    (home-page "https://example.org/fast-grep")
+    (synopsis "Blazingly fast parallel regular expression search tool")
+    (description
+      "Fast-Grep is a high-performance multithreaded regex search tool
+designed to traverse vast directory trees.  It leverages PCRE2 and AVX2
+vector instructions for near-instantaneous indexing.")
+    (license license:gpl3+)))
+\end{lstlisting}
+
+\section{Deconstructing the Package Fields}
+
+Let us dissect the crucial components of this definition:
+
+\subsection{1. Source and Integrity (\texttt{origin})}
+Guix requires the source code to be cryptographically verified:
+\begin{itemize}
+  \item \textbf{\texttt{method}}: Can be \texttt{url-fetch} (for tarballs) or \texttt{git-fetch} (for Git repositories).
+  \item \textbf{\texttt{sha256}}: The expected cryptographic checksum in Nix-base32 format. If the upstream repository changes even a single whitespace character in a release, the hash will not match and Guix will abort the build with a security violation.
+\end{itemize}
+
+\begin{protipbox}[Computing Source Hashes]
+You don't need to guess hashes! Use Guix's built-in hashing tools:
+\begin{lstlisting}[style=guixcli]
+# Download a tarball and output its base32 hash:
+guix download https://example.org/tarball-1.0.tar.gz
+
+# Compute the base32 hash of a local git checkout or directory:
+guix hash -rx ./my-git-clone/
+\end{lstlisting}
+\end{protipbox}
+
+\subsection{2. The Build System (\texttt{build-system})}
+Guix provides dozens of pre-configured build systems that encode the standard conventions of various ecosystems:
+\begin{itemize}
+  \item \texttt{gnu-build-system}: For traditional \texttt{./configure}, \texttt{make}, and \texttt{make install}.
+  \item \texttt{cmake-build-system}: For CMake-based C/C++ projects.
+  \item \texttt{python-build-system}: For standard Python packages (\texttt{setup.py} and PEP 517/518).
+  \item \texttt{cargo-build-system}: For Rust crates and binaries.
+  \item \texttt{go-build-system}: For Go modules and packages.
+  \item \texttt{meson-build-system}: For Meson/Ninja based software.
+\end{itemize}
+
+\subsection{3. Input Classification: The Golden Rule}
+
+Guix makes a strict, critical distinction between three types of inputs:
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Input Type} & \textbf{Purpose and Behavior} \\
+\midrule
+\textbf{\texttt{inputs}} & Libraries and runtime dependencies compiled for the \textbf{target architecture} (e.g., \texttt{zlib}, \texttt{openssl}). Embedded into the final binary via RUNPATH. \\
+\addlinespace
+\textbf{\texttt{native-inputs}} & Tools and compilers executed on the \textbf{build host machine} during compilation (e.g., \texttt{pkg-config}, \texttt{gcc}, test frameworks like \texttt{googletest}). Not needed at runtime when cross-compiling! \\
+\addlinespace
+\textbf{\texttt{propagated-inputs}} & Dependencies that must be automatically pulled into the user's profile whenever this package is installed (e.g., Python runtime library dependencies or C header files required by a library's public API). \\
+\bottomrule
+\end{tabularx}
+\caption{The Three Classes of Package Inputs in GNU Guix}
+\end{table}
+
+\begin{footgunbox}[The Propagated Inputs Trap]
+Do NOT use \texttt{propagated-inputs} unless absolutely necessary! Overusing propagated inputs pollutes user profiles with transitive dependencies and re-introduces the collision risks of traditional package managers. Use standard \texttt{inputs} whenever possible.
+\end{footgunbox}
+
+\section{Instant Importers: \texttt{guix import}}
+
+Don't want to write package recipes by hand from scratch? Guix comes with automatic importers for almost every major language ecosystem:
+
+\begin{lstlisting}[style=guixcli]
+# Import a Python package from PyPI
+guix import pypi requests
+
+# Import an R package from CRAN
+guix import cran ggplot2
+
+# Import a Rust crate from crates.io (recursively importing dependencies!)
+guix import crate --recursive ripgrep
+
+# Import a Go module
+guix import go github.com/schollz/croc
+\end{lstlisting}
+
+The importer connects to the upstream API, downloads the metadata and checksums, resolves dependencies, and prints out a pristine, syntactically valid Guile Scheme package recipe directly into your terminal!

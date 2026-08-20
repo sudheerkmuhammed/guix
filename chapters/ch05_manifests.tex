@@ -1,0 +1,142 @@
+\chapter{Project Manifests and Package Transformations}
+\label{chap:manifests}
+
+\epigraph{``Tell me what your software depends on, and I will tell you who you are: a reproducible wizard or an imperative gambler.''}{--- The Guix Hacker's Catechism}
+
+\noindent
+Typing \texttt{guix shell python python-numpy gcc-toolchain make git ...} every time you open a terminal quickly becomes tedious. Furthermore, passing command-line arguments does not capture custom package variants or programmatic dependencies.
+
+To turn your project's development environment into a version-controlled, shareable artifact, GNU Guix provides \textbf{Manifests} and \textbf{Package Transformations}.
+
+\section{Writing a \texttt{manifest.scm}}
+
+A manifest is a small Guile Scheme file that returns a list of packages to be included in an environment.
+
+There are two primary ways to write a manifest:
+
+\subsection{1. The Specification Approach: \texttt{specifications->manifest}}
+
+If you simply want a list of packages by name, \texttt{specifications->manifest} is the most concise:
+
+\begin{lstlisting}[style=guixscheme]
+;; manifest.scm - Simple specification manifest
+(specifications->manifest
+  '("python"
+    "python-numpy"
+    "python-pandas"
+    "python-matplotlib"
+    "jupyter"
+    "gcc-toolchain"
+    "make"))
+\end{lstlisting}
+
+\subsection{2. The Programmatic Approach: \texttt{packages->manifest}}
+
+Because manifests are written in a full general-purpose programming language, you can construct package lists using Scheme logic, conditionals, and module imports:
+
+\begin{lstlisting}[style=guixscheme]
+;; manifest.scm - Programmatic manifest
+(use-modules (gnu packages python)
+             (gnu packages python-science)
+             (gnu packages python-xyz)
+             (gnu packages gcc)
+             (gnu packages base)
+             (guix packages))
+
+(packages->manifest
+  (list python
+        python-scipy
+        python-pytorch
+        gcc-toolchain
+        gnu-make))
+\end{lstlisting}
+
+\section{Automatic Manifest Discovery}
+
+When you run \guixcmd{guix shell} in a directory containing a \texttt{manifest.scm} file without specifying package arguments, Guix automatically detects and loads the manifest:
+
+\begin{lstlisting}[style=guixcli]
+$ ls
+manifest.scm  src/  Makefile
+
+$ guix shell
+[env]$ # All packages from manifest.scm are automatically active!
+\end{lstlisting}
+
+If you want to run your automated tests in a hermetic container using this manifest, it is as simple as:
+
+\begin{lstlisting}[style=guixcli]
+guix shell --container --manifest=manifest.scm -- make test
+\end{lstlisting}
+
+\section{Package Transformations: Rewriting the Dependency Graph}
+
+What happens when you need to test your application against a custom Git branch of an upstream dependency, or compile your library with Clang instead of GCC, or replace OpenSSL with a patched security release?
+
+In traditional package managers, this requires editing upstream spec files, maintaining custom binary repositories, or manually rebuilding dozens of packages.
+
+Guix solves this with \textbf{Package Transformations}---dynamic, on-the-fly graph rewrites:
+
+\begin{lstlisting}[style=guixcli]
+# 1. Swap source code with a local tarball or directory
+guix shell --with-source=python-numpy=./custom-numpy.tar.gz python-numpy
+
+# 2. Pin a dependency to a bleeding-edge Git branch
+guix shell --with-branch=libpng=feature-neon inkscape
+
+# 3. Swap one dependency for another across the ENTIRE graph!
+guix shell --with-input=openssl=openssl@1.1 node
+
+# 4. Build a package with Clang instead of default GCC
+guix shell --with-c-toolchain=ffmpeg=clang-toolchain ffmpeg
+
+# 5. Enable full debug symbols for gdb debugging
+guix shell --with-debug-info=glibc --with-debug-info=python python
+\end{lstlisting}
+
+\begin{alchemybox}[How Graph Rewriting Works]
+When you pass \guixcmd{--with-input=A=B}, Guix performs a recursive transformation on the derivation graph:
+\begin{enumerate}
+  \item It traverses all packages in the requested dependency DAG.
+  \item Every node that lists \texttt{A} as an input has its dependency pointer updated to \texttt{B}.
+  \item All downstream packages are automatically rebuilt with their newly derived cryptographic store hashes.
+\end{enumerate}
+This happens deterministically without mutating any files on your host system.
+\end{alchemybox}
+
+\section{Manifest Transformations in Scheme}
+
+You can also embed package transformations directly inside your \texttt{manifest.scm} file so that your entire team inherits them automatically:
+
+\begin{lstlisting}[style=guixscheme]
+;; manifest.scm with embedded transformation
+(use-modules (guix transformations)
+             (gnu packages python)
+             (gnu packages python-science))
+
+(define transform-numpy
+  (options->transformation
+    '((with-branch . "python-numpy=main"))))
+
+(packages->manifest
+  (list (transform-numpy python-numpy)
+        python-scipy))
+\end{lstlisting}
+
+\section{Seamless IDE Integration with \texttt{direnv}}
+
+Manually typing \guixcmd{guix shell} every time you \texttt{cd} into a project directory is good, but automatic activation upon entering the directory is even better.
+
+Using \texttt{direnv}, you can automatically activate your Guix development environment whenever you enter the project directory:
+
+\begin{lstlisting}[style=guixcli]
+# In your project root, create a .envrc file:
+cat << 'EOF' > .envrc
+eval "$(guix shell --search-paths)"
+EOF
+
+# Allow direnv to execute in this directory:
+direnv allow
+\end{lstlisting}
+
+Now, whenever you open VS Code, Emacs, Neovim, or \texttt{cd} into the folder in your terminal, all compiler tools, language servers (like \texttt{pyright}, \texttt{rust-analyzer}, or \texttt{clangd}), and libraries are immediately available in your environment!

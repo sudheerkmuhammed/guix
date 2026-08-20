@@ -1,0 +1,48 @@
+\documentclass[11pt,a4paper,oneside]{book}
+
+% Load custom styling, packages, environments
+\input{preamble}
+
+\begin{document}
+
+% --- Front Matter ---
+\frontmatter
+\input{frontmatter/titlepage}
+\input{frontmatter/dedication}
+\tableofcontents
+\input{frontmatter/preface}
+
+% --- Main Content ---
+\mainmatter
+
+% Part I: The Package Management Sorcery
+\part{The Grand Illusion: Package Management Done Right}
+\input{chapters/ch01_curse_of_fhs}
+\input{chapters/ch02_cli_daily_life}
+\input{chapters/ch03_channels_time_travel}
+
+% Part II: The Development Wonderland
+\part{The Development Wonderland: Escaping Dependency Hell}
+\input{chapters/ch04_guix_shell}
+\input{chapters/ch05_manifests}
+
+% Part III: The Operating System
+\part{The Operating System: Declarative Computing \& Shepherd}
+\input{chapters/ch06_guix_system}
+\input{chapters/ch07_shepherd}
+\input{chapters/ch08_guix_home}
+
+% Part IV: Packaging & Craftsmanship
+\part{The Master Craftsman: Packaging with Scheme}
+\input{chapters/ch09_anatomy_of_package}
+\input{chapters/ch10_phases_and_gexp}
+\input{chapters/ch11_custom_channels}
+
+% Part V: Zen & Appendices
+\backmatter
+\part*{Appendices}
+\addcontentsline{toc}{part}{Appendices}
+\input{backmatter/appendix_cheatsheet}
+\input{backmatter/appendix_troubleshooting}
+
+\end{document}

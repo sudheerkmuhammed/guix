@@ -1,0 +1,145 @@
+\chapter{Guix System: One File to Rule Them All}
+\label{chap:guix-system}
+
+\epigraph{``A configuration management system like Ansible or Puppet is like a robot that walks around your kitchen moving spices. Guix System is a 3D printer that manufactures a pristine kitchen from scratch on every change.''}{--- Overheard at FOSDEM}
+
+\noindent
+Up to this point, we have used Guix on top of a foreign distribution (like Debian, Fedora, or Arch). But Guix is not just a package manager; it is also a complete, standalone operating system: \textbf{Guix System}.
+
+In Guix System, your entire machine---kernel, init system, system daemons, user accounts, filesystems, network configuration, and desktop environment---is declared inside a single Guile Scheme file, typically called \texttt{/etc/config.scm}.
+
+\section{The Imperative OS Trap vs The Declarative OS}
+
+On an ordinary Linux system:
+\begin{itemize}
+  \item You edit \texttt{/etc/network/interfaces} or fiddle with NetworkManager.
+  \item You manually edit \texttt{/etc/fstab} and pray you didn't typo the UUID.
+  \item You run \texttt{useradd}, \texttt{usermod}, and \texttt{visudo}.
+  \item You install PostgreSQL, tweak \texttt{postgresql.conf}, and run \texttt{systemctl enable postgresql}.
+\end{itemize}
+
+Six months later, your server is a delicate, undocumented snowflake. Nobody knows which packages were installed manually, which configuration files were edited, or how to recreate the machine if the hardware dies.
+
+In Guix System, \textbf{the file is the machine}. If a service or package is not declared in your Scheme configuration, it does not exist on your system.
+
+\section{The Anatomy of \texttt{config.scm}}
+
+Let us examine a complete, fully functional \texttt{config.scm} for a desktop workstation:
+
+\begin{lstlisting}[style=guixscheme]
+;; /etc/config.scm - Declarative Guix System configuration
+(use-modules (gnu)
+             (gnu system nss))
+(use-service-modules desktop networking ssh sddm)
+(use-package-modules certs fonts gnome linux package-management)
+
+(operating-system
+  (host-name "guix-battlestation")
+  (timezone "Europe/Paris")
+  (locale "en_US.utf8")
+
+  ;; Bootloader Configuration (UEFI GRUB)
+  (bootloader (bootloader-configuration
+                (bootloader grub-efi-bootloader)
+                (targets '("/boot/efi"))
+                (keyboard-layout keyboard-layout)))
+
+  ;; Storage & Filesystems
+  (file-systems (cons* (file-system
+                         (mount-point "/")
+                         (device (file-system-label "my-root"))
+                         (type "ext4"))
+                       (file-system
+                         (mount-point "/boot/efi")
+                         (device (uuid "1234-ABCD" 'fat))
+                         (type "vfat"))
+                       %base-file-systems))
+
+  ;; User Accounts
+  (users (cons (user-account
+                 (name "alice")
+                 (group "users")
+                 (supplementary-groups '("wheel" "netdev" "audio" "video" "kvm"))
+                 (home-directory "/home/alice"))
+               %base-user-accounts))
+
+  ;; System-wide packages
+  (packages (append (list nss-certs     ; HTTPS Certificates
+                          font-dejavu   ; Core fonts
+                          git
+                          emacs)
+                    %base-packages))
+
+  ;; System Daemons and Desktop Services
+  (services (append (list (service openssh-service-type
+                            (openssh-configuration
+                              (port-number 2222)
+                              (permit-root-login #f)))
+                          (service gnome-desktop-service-type))
+                    %desktop-services)))
+\end{lstlisting}
+
+\begin{alchemybox}[Service Composition with \texttt{append} and \texttt{modify-services}]
+Notice how services are combined using standard Scheme list operations!
+\texttt{\%desktop-services} is simply a Scheme list containing dozens of core services (udev, elogind, dbus, network-manager, polkit, etc.).
+You can add services with \texttt{append} or \texttt{cons}, or modify existing service configurations using the \texttt{modify-services} macro:
+\begin{lstlisting}[style=guixscheme]
+(modify-services %desktop-services
+  (guix-service-type config =>
+    (guix-configuration
+      (inherit config)
+      (substitute-urls
+        '("https://ci.guix.gnu.org"
+          "https://bordeaux.guix.gnu.org")))))
+\end{lstlisting}
+\end{alchemybox}
+
+\section{Applying the System: \texttt{guix system reconfigure}}
+
+To apply your changes, you execute:
+
+\begin{lstlisting}[style=guixcli]
+sudo guix system reconfigure /etc/config.scm
+\end{lstlisting}
+
+When you run this command:
+\begin{enumerate}
+  \item Guix instantiates and validates all Scheme definitions.
+  \item It builds all required store paths in \texttt{/gnu/store}.
+  \item It builds an entirely new operating system generation.
+  \item It signals the Shepherd init system to reload modified daemon configurations, spawn new services, and stop retired services.
+  \item It updates the GRUB bootloader menu with a new entry: \textbf{Generation $N+1$}.
+\end{enumerate}
+
+\section{The Unbreakable Bootloader: GRUB Generations}
+
+What happens if you accidentally misconfigure your X server or build a kernel that kernel-panics on boot?
+
+On other distributions, you are frantically reaching for a live USB stick and mounting partitions via \texttt{chroot}.
+
+On Guix System, you simply reboot your machine. When the GRUB boot menu appears, you select:
+
+\begin{center}
+\textbf{GNU Guix System --- Generation 42 (Yesterday at 18:30)}
+\end{center}
+
+You hit \texttt{Enter}, and the system boots into the exact, known-working state of yesterday's operating system. 
+
+\begin{tearsbox}[The Broken Kernel Nightmare]
+Every veteran Linux user has an emotional scar from a bad kernel upgrade breaking their graphics drivers or Wi-Fi. In Guix System, an operating system update is never destructive. Every past system generation remains independently bootable in GRUB until you explicitly choose to garbage-collect it.
+\end{tearsbox}
+
+\section{Building Images: ISOs, VMs, and Cloud AMIs}
+
+Because your system is a pure Scheme function, Guix can transform your \texttt{config.scm} into any output format with a single command:
+
+\begin{lstlisting}[style=guixcli]
+# 1. Build a bootable installation ISO image
+guix system image -t iso9660 /etc/config.scm
+
+# 2. Build a QEMU virtual machine image (QCOW2)
+guix system image -t qcow2 /etc/config.scm
+
+# 3. Build a Docker container image representing the complete OS
+guix system image -t docker /etc/config.scm
+\end{lstlisting}
