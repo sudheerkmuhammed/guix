@@ -1,10 +1,12 @@
 # The Joy of Guix: Or How I Learned to Stop Worrying and Love the Parentheses
 
-A practical, sarcastic, and deeply technical book on **GNU Guix**, functional package management, declarative operating systems, and modern development workflows.
-
-**Author**: Sudheer K. Mohammed  
-**Format**: \LaTeX{} Book (`book` document class)  
-**Output**: [`main.pdf`](./main.pdf)
+<div align="center">
+  <img src="images/book_cover.jpg" width="420" alt="The Joy of Guix Book Cover"/>
+  <br/><br/>
+  <em>A practical, sarcastic, and deeply technical book on <strong>GNU Guix</strong>, functional package management, declarative operating systems, and reproducible computing.</em>
+  <br/><br/>
+  <strong>Author</strong>: Sudheer K. Mohammed &nbsp;|&nbsp; <strong>Formats</strong>: PDF & EPUB
+</div>
 
 ---
 
@@ -44,17 +46,25 @@ This book demystifies GNU Guix for developers, sysadmins, and curious hackers. I
 
 ### Prerequisites
 - `pdflatex` (TeX Live distribution)
+- `pandoc` (for EPUB generation)
 - `make`
+- `python3`
 
-### Compilation
+### Compilation Commands
 ```bash
-# Compile the PDF (2 passes for TOC and cross-references)
-make
+# Build both PDF and EPUB editions
+make all
 
-# Clean temporary auxiliary files (*.aux, *.log, *.toc)
+# Build only the PDF (2 passes for TOC and cross-references)
+make pdf
+
+# Build only the EPUB edition
+make epub
+
+# Clean temporary auxiliary files
 make clean
 
-# Remove the generated PDF and all auxiliary files
+# Remove all generated books and temporary files
 make distclean
 ```
 
