@@ -1,170 +1,119 @@
 \chapter{Channels, Pins, and Time Travel}
-\label{chap:channels-time-travel}
+\label{chap:channels-and-time-travel}
 
-\epigraph{``Time travel used to be thought of as just science fiction, but Einstein's general theory of relativity allows for the possibility of warping spacetime... and GNU Guix implemented it in Scheme.''}{--- Stephen Hawking (paraphrased by a Guix hacker)}
+\epigraph{``Those who cannot remember their dependencies are condemned to repeat their compilation errors.''}{--- George Santayana (adapted for sysadmins)}
 
 \noindent
-In standard Linux distributions, the concept of ``updating your packages'' is a one-way street into the unknown. When you type \texttt{apt update}, you fetch whatever package definitions happen to be on Debian's mirrors right now. If a scientist wrote code against Python 3.8 and Scipy 1.4 in 2020, attempting to run that same code on an updated 2026 system will usually result in an avalanche of syntax errors, deprecated APIs, and broken wheels.
+By default, GNU Guix provides thousands of packages in its official repository. But what if you need packages that are not in the main tree, proprietary drivers for your laptop's Wi-Fi card, cutting-edge bioinformatics pipelines, or your company's proprietary microservices?
 
-In GNU Guix, the package collection itself is versioned as a Git repository. Updating Guix is not a chaotic roll of the dice; it is a tracked, reproducible Git checkout called a \textbf{Channel}.
+Welcome to the world of \textbf{Channels}.
 
-\section{The Heartbeat: \texttt{guix pull}}
+\section{What Is a Channel?}
 
-To update your Guix package definitions and the \texttt{guix} binary itself, you run:
+In Guix, a \textbf{Channel} is not an opaque binary PPA or an unverified APT repository. 
 
-\begin{lstlisting}[style=guixcli]
-guix pull
-\end{lstlisting}
+A channel is simply a \textbf{Git repository} containing Scheme source files that define packages and services. When you run \guixcmd{guix pull}, Guix clones each channel repository, verifies its cryptographic commit signatures, compiles the Scheme modules, and builds a brand-new \texttt{guix} executable and package database.
 
-Unlike \texttt{apt update} (which merely downloads package indices), \guixcmd{guix pull} downloads the latest Guile Scheme source files from the official Guix Git repository, verifies their cryptographic OpenPGP signatures against a trusted keyring, compiles the Scheme modules with GNU Guile's optimizing byte-compiler, and creates a new generation of your Guix tool itself!
+\section{Configuring Channels: \texttt{\textasciitilde/.config/guix/channels.scm}}
 
-\begin{alchemybox}[Channel Authentication \& The OpenPGP Web of Trust]
-How do you know an attacker hasn't compromised the Guix Git repository and injected malicious package recipes?
-Guix includes built-in OpenPGP authentication. Every commit in the official Guix channel must be signed by an authorized maintainer. When you run \guixcmd{guix pull}, Guix verifies the signature chain all the way back to the channel's historic ``introduction commit''. If an unsigned or unauthorized commit is pushed, \guixcmd{guix pull} refuses to execute it.
-\end{alchemybox}
+You configure your active channels by creating a Scheme file at \texttt{\textasciitilde/.config/guix/channels.scm}.
 
-\section{The Separation of Church and State: Free vs Custom Channels}
-
-The official GNU Guix repository adheres strictly to the \textbf{GNU Free System Distribution Guidelines (FSDG)}. This means the default Guix channel will never contain proprietary binary blobs, non-free firmware, or software with restrictive licenses.
-
-However, in the real world:
-\begin{itemize}
-  \item Your laptop might have an Intel or Broadcom Wi-Fi chip that stubbornly refuses to transmit radio waves without proprietary microcode firmware.
-  \item Your research laboratory might require proprietary GPU drivers (like NVIDIA CUDA) or specialized scientific simulators.
-  \item You might want to relax after a long day of functional programming by playing games on Steam.
-\end{itemize}
-
-Because Guix channels are completely decentralized, the community maintains powerful, curated third-party channels that integrate smoothly with your system.
-
-\section{Notable Community Channels in the Wild}
-
-Let us explore the most famous and widely used custom channels in the Guix ecosystem:
-
-\subsection{1. Nonguix: The Unofficial Non-Free Repository}
-
-\textbf{Nonguix} is the essential channel for desktop and laptop users who need hardware compatibility with proprietary firmware and non-free software.
-
-It provides:
-\begin{itemize}
-  \item The vanilla \textbf{\texttt{linux}} kernel (with non-free binary blob drivers) and \textbf{\texttt{linux-firmware}} for Intel, AMD, Realtek, and Broadcom Wi-Fi/Bluetooth.
-  \item Proprietary desktop applications: \textbf{Steam}, \textbf{Spotify}, \textbf{Google Chrome}, \textbf{Discord}, and \textbf{Visual Studio Code}.
-  \item The \textbf{NVIDIA} proprietary graphics driver stack.
-  \item Pre-built binary substitutes hosted on a dedicated build farm (\url{https://substitutes.nonguix.org}).
-\end{itemize}
-
-\subsection{2. Guix Science \& Guix HPC: High-Performance Research}
-
-Maintained by research institutions including Inria, the Max Delbr\"uck Center, and academic high-performance computing centers, \textbf{Guix Science} extends Guix with specialized computational research software:
-
-\begin{itemize}
-  \item \textbf{Bioinformatics \& Genomics}: High-throughput sequencing pipelines, Bioconductor packages, and bioinformatics CLI tools.
-  \item \textbf{Machine Learning \& AI}: Accelerated PyTorch, TensorFlow, JAX, CUDA/ROCm bindings, and optimized BLAS/LAPACK implementations.
-  \item \textbf{HPC \& Clusters}: SLURM integrations, OpenMPI fabrics, and parallel simulation toolkits.
-\end{itemize}
-
-\subsection{3. Guix Past: The Museum of Computational History}
-
-Have you ever tried running a 15-year-old computational biology script that strictly requires GCC 4.8, Python 2.7, and an obsolete version of Autotools that fails to build on modern Linux?
-
-\textbf{Guix Past} packages historic software stacks using modern Guix packaging standards. It allows researchers to resurrect legacy environments with 100\% mathematical fidelity.
-
-\section{Configuring Multiple Channels in \texttt{channels.scm}}
-
-To use these community channels, you declare them in your \texttt{\textasciitilde/.config/guix/channels.scm} file:
+Let us examine a typical multi-channel configuration:
 
 \begin{lstlisting}[style=guixscheme]
 ;; ~/.config/guix/channels.scm
-(use-modules (guix ci))
-
 (list
-  ;; 1. The official GNU Guix Channel
+  ;; 1. The official GNU Guix channel (always required)
   (channel
     (name 'guix)
     (url "https://git.savannah.gnu.org/git/guix.git")
     (branch "master")
+    ;; Cryptographic introduction for commit authentication
     (introduction
       (make-channel-introduction
-        "9edb3f66fd80fdac9e8b0f7b442a030d125b6dd7"
+        "9edb3f66fd807b096b48283debd4ddcc33ab9a99"
         (openpgp-fingerprint
           "BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"))))
 
-  ;; 2. Nonguix Channel (Non-free firmware, Steam, Spotify, Linux kernel)
+  ;; 2. Nonguix: Non-free drivers, firmware, and proprietary software
   (channel
     (name 'nonguix)
     (url "https://gitlab.com/nonguix/nonguix")
+    (branch "master")
     (introduction
       (make-channel-introduction
-        "2a97032c462432673b8cdab8598463e8006e8b4e"
+        "2a97b46e96194b703221a074ddb4402d5dd99708"
         (openpgp-fingerprint
-          "2A39 3FFF 68F4 EF7A 3D29  12AC 040F D0D4 8845 7307"))))
+          "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5"))))
 
-  ;; 3. Guix Science Channel (PyTorch, Bioinformatics, HPC)
+  ;; 3. Guix Science: Scientific software and HPC packages
   (channel
     (name 'guix-science)
     (url "https://codeberg.org/guix-science/guix-science.git")
+    (branch "master")
     (introduction
       (make-channel-introduction
-        "b3898b58df8e0f6314f8ab4f86f780e03e4ee4d4"
+        "b3a5e796aa404a60773b06cf317b3e51240366eb"
         (openpgp-fingerprint
-          "CA4F 8CF4 37D7 478F DA05  5FD4 4213 7701 1A37 8446"))))
+          "CA4D 7EB7 5D15 73A8 E426  3850 5F12 30A0 CFFB 97BE")))))
+\end{lstlisting}
 
-  ;; 4. Guix Past (Legacy software for ancient workflows)
+\section{Notable Custom Channels}
+
+The Guix ecosystem features several essential community channels that expand your package universe:
+
+\begin{itemize}
+  \item \textbf{Nonguix}: Provides packages that cannot be included in upstream GNU Guix due to the GNU Free System Distribution Guidelines (FSDG). This includes the vanilla Linux kernel (\texttt{linux}), proprietary Wi-Fi firmware (\texttt{linux-firmware}), Steam, Spotify, Google Chrome, and NVIDIA drivers.
+  \item \textbf{Guix Science}: High-Performance Computing (HPC), bioinformatics, computational biology, machine learning (PyTorch, JAX), and computer vision pipelines maintained by academic research institutes worldwide.
+  \item \textbf{Guix Past}: A historical channel containing legacy toolchains, GCC 2.95, Python 2.4, and ancient libraries needed to reproduce scientific papers published 15 years ago.
+\end{itemize}
+
+\begin{alchemybox}[Channel Authentication with OpenPGP]
+Notice the \texttt{introduction} block in each channel definition! Guix uses cryptographic OpenPGP signatures on every single Git commit in a channel. 
+If an attacker compromises GitHub or GitLab and pushes a malicious commit without a valid signature from an authorized developer key, \guixcmd{guix pull} will abort with a security failure before executing any code.
+\end{alchemybox}
+
+\section{Authorizing Pre-Built Substitutes for Channels}
+
+When using external channels like Nonguix or Guix Science, you don't have to compile large software packages (like the Linux kernel or PyTorch) locally from scratch. Each channel maintains dedicated build farms that serve pre-built binaries (substitutes).
+
+To authorize these substitute servers, add their signing keys and URLs to your system configuration:
+
+\begin{lstlisting}[style=guixcli]
+# Download and authorize the Nonguix signing key
+wget https://substitutes.nonguix.org/signing-key.pub
+sudo guix archive --authorize < signing-key.pub
+
+# Update your Guix daemon with the substitute URL
+sudo herd set-substitute-urls guix-daemon \
+  https://substitutes.nonguix.org \
+  https://bordeaux.guix.gnu.org \
+  https://ci.guix.gnu.org
+\end{lstlisting}
+
+\section{Channel Pins: Locking Reality}
+
+How do you guarantee that a colleague running \guixcmd{guix pull} gets the exact same package versions you have today?
+
+You \textbf{pin} your channels to specific Git commit hashes:
+
+\begin{lstlisting}[style=guixscheme]
+;; Pinned channels.scm for guaranteed reproducibility
+(list
   (channel
-    (name 'guix-past)
-    (url "https://gitlab.inria.fr/guix-hpc/guix-past")
-    (introduction
-      (make-channel-introduction
-        "0c119db2ea86a30971be5906cb493389ab73ed7b"
-        (openpgp-fingerprint
-          "3CE4 6455 8A84 FDC6 9DB4  0CFB 090B 1199 3D9A EEE0")))))
+    (name 'guix)
+    (url "https://git.savannah.gnu.org/git/guix.git")
+    (commit "a84ef2b9d3e817921a415a77c3e53381a1795c64"))
+  (channel
+    (name 'nonguix)
+    (url "https://gitlab.com/nonguix/nonguix")
+    (commit "92e104c8f01bcf5594b2efc8f74f1b8a5b23d9b0")))
 \end{lstlisting}
 
-\begin{protipbox}[Authorizing the Nonguix Substitute Server]
-To avoid compiling the Linux kernel or Chromium from source, authorize the Nonguix pre-built binary substitute server:
-\begin{lstlisting}[style=guixcli]
-# Download and authorize Nonguix's signing key:
-guix archive --authorize < /path/to/nonguix-signing-key.pub
-
-# In your /etc/config.scm or guix-daemon flags, add the substitute server:
-# https://substitutes.nonguix.org
-\end{lstlisting}
-\end{protipbox}
-
-\section{Real-World Examples: Using Nonguix \& Guix Science}
-
-Once you run \guixcmd{guix pull} with the channels above, your package universe expands instantly:
-
-\subsection{Example A: Launching Steam or Spotify with Nonguix}
+You can generate this pinned configuration automatically from your current system state with:
 
 \begin{lstlisting}[style=guixcli]
-# Install Spotify and Steam into your user profile
-guix install spotify steam
-
-# Or launch Steam inside a disposable container
-guix shell --container --network --expose=/dev/dri steam -- steam
-\end{lstlisting}
-
-\subsection{Example B: High-Performance Data Science with Guix Science}
-
-Suppose you need a Python environment with PyTorch and CUDA support for machine learning:
-
-\begin{lstlisting}[style=guixcli]
-# Spawn a pure shell with PyTorch from Guix Science
-guix shell --pure python python-pytorch python-torchvision -- python3 -c "
-import torch
-print('CUDA Available:', torch.cuda.is_available())
-print('PyTorch Version:', torch.__version__)
-"
-\end{lstlisting}
-
-\section{Capturing Your Exact State: \texttt{guix describe}}
-
-How do you communicate the exact state of your multi-channel operating system to a colleague?
-
-You run:
-
-\begin{lstlisting}[style=guixcli]
-guix describe -f channels
+guix describe -f channels > channels.scm
 \end{lstlisting}
 
 This produces an exact, machine-readable Scheme file representing the precise Git commit hashes of all active channels (\texttt{guix}, \texttt{nonguix}, \texttt{guix-science}).
@@ -184,6 +133,12 @@ guix time-machine -C channels.scm -- shell python-pytorch r-ggplot2 -- python3 p
 # Or travel to a specific historic commit on the fly!
 guix time-machine --commit=a84ef2b9d3... -- install emacs
 \end{lstlisting}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{images/time_machine.jpg}
+\caption*{\textit{Figure 3.1: Traveling through the cosmic timeline: \guixcmd{guix time-machine} seamlessly executing 10-year-old scientific code with zero dependency drift.}}
+\end{figure}
 
 \begin{tearsbox}[Scientific Reproducibility: A Solved Problem]
 In 2016, a survey in \emph{Nature} revealed that over 70\% of researchers had failed to reproduce another scientist's computational experiments due to dependency drift.
