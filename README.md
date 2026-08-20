@@ -32,6 +32,8 @@ This book demystifies GNU Guix for developers, sysadmins, and curious hackers. I
   - **Chapter 9**: The Anatomy of a Package: `(define-public ...)`
   - **Chapter 10**: Build Phases, G-Expressions (`#~`, `#$`), and Shebangs
   - **Chapter 11**: Rolling Your Own Custom Channel
+- **Part V: The Real-World Frontier — Domains & Pragmatic Hardware**
+  - **Chapter 12**: Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix
 - **Appendices**
   - **Appendix A**: The Ultimate Guix Cheat Sheet
   - **Appendix B**: Troubleshooting & Common Footguns
