@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  20 AUG 2026 10:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  20 AUG 2026 10:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1035,25 +1035,25 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 11.
 [10
 
-] [11]) [12] [13
+] [11] [12] [13]) [14] [15
 
 ] (./chapters/ch04_guix_shell.tex
 Chapter 4.
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <20.74> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1.
-[14
+[16
 
-] [15]) (./chapters/ch05_manifests.tex [16]
+] [17]) (./chapters/ch05_manifests.tex [18]
 Chapter 5.
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 17.
-[17
+[19
 
-] [18] [19]) [20] [21
+] [20] [21]) [22] [23
 
 ] (./chapters/ch06_guix_system.tex
 Chapter 6.
-[22
+[24
 
 ]
 Underfull \hbox (badness 2293) in paragraph at lines 82--82
@@ -1061,26 +1061,26 @@ Underfull \hbox (badness 2293) in paragraph at lines 82--82
 ith \T1/lmtt/b/n/10 append \T1/lmr/bx/n/10 (+20) and
  []
 
-[23] [24]) (./chapters/ch07_shepherd.tex [25]
+[25] [26] [27]) (./chapters/ch07_shepherd.tex [28]
 Chapter 7.
-[26
-
-] [27]) (./chapters/ch08_guix_home.tex [28]
-Chapter 8.
 [29
 
-] [30]) [31] [32
+] [30]) (./chapters/ch08_guix_home.tex [31]
+Chapter 8.
+[32
+
+] [33]) [34] [35
 
 ] (./chapters/ch09_anatomy_of_package.tex
 Chapter 9.
-[33
+[36
 
 ]
 Overfull \hbox (22.49149pt too wide) in paragraph at lines 38--39
 [][][][][][][][][][][][][][][][][][][][]  
  []
 
-[34] [35]) (./chapters/ch10_phases_and_gexp.tex [36]
+[37] [38]) (./chapters/ch10_phases_and_gexp.tex [39]
 Chapter 10.
 
 Overfull \hbox (11.09355pt too wide) in paragraph at lines 13--14
@@ -1089,18 +1089,18 @@ line of \T1/lmr/bx/n/10 (-20) Phases\T1/lmr/m/n/10 (-20) . For ex-am-ple, the \
 T1/lmtt/m/n/10 gnu-build-system
  []
 
-[37
-
-] [38]) (./chapters/ch11_custom_channels.tex [39]
-Chapter 11.
 [40
+
+] [41]) (./chapters/ch11_custom_channels.tex [42]
+Chapter 11.
+[43
 
 ]
 Overfull \hbox (47.69174pt too wide) in paragraph at lines 64--65
 [][][][][][][][][][][][][][][][][][][][]  
  []
 
-[41]) [42] [43
+[44]) [45] [46
 
 
 ] (./backmatter/appendix_cheatsheet.tex
@@ -1108,36 +1108,40 @@ Underfull \hbox (badness 10000) in paragraph at lines 82--82
 []|\T1/lmr/m/n/10.95 (+20) Export cur-rent chan-nel com-mits to
  []
 
-) (./backmatter/appendix_troubleshooting.tex [44
+) (./backmatter/appendix_troubleshooting.tex [47
 
-] [45] [46
+] [48] [49
 
-] [47]) [48]
-(./main.aux) ) 
+] [50]) [51]
+(./main.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 30719 strings out of 480238
- 576910 string characters out of 5895851
- 1004204 words of memory out of 5000000
- 47157 multiletter control sequences out of 15000+600000
- 563791 words of font info for 203 fonts, out of 8000000 for 9000
+ 30821 strings out of 480238
+ 578361 string characters out of 5895851
+ 1006066 words of memory out of 5000000
+ 47189 multiletter control sequences out of 15000+600000
+ 563979 words of font info for 205 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 104i,12n,107p,1001b,1963s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/
-fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc
-}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/enc/dv
-ips/lm/lm-mathsy.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/s
-hare/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/publi
-c/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/
-texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/l
-mr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/texmf/fon
-ts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pf
-b></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/ty
-pe1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></u
-sr/share/texmf/fonts/type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (56 pages, 495206 bytes).
+ 104i,12n,107p,1001b,2039s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dv
+ips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share
+/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ma
+thsy.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/f
+onts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.
+pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/texmf/fonts/
+type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr12.pfb></u
+sr/share/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/texmf/fonts/type1/pub
+lic/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr/shar
+e/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/l
+m/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/tex
+mf/fonts/type1/public/lm/lmtti10.pfb>
+Output written on main.pdf (59 pages, 509584 bytes).
 PDF statistics:
- 1509 PDF objects out of 1728 (max. 8388607)
- 1407 compressed objects within 15 object streams
- 755 named destinations out of 1000 (max. 500000)
- 54405 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 1627 PDF objects out of 1728 (max. 8388607)
+ 1521 compressed objects within 16 object streams
+ 821 named destinations out of 1000 (max. 500000)
+ 54477 words of extra memory for PDF output out of 61914 (max. 10000000)
 
