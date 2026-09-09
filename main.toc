@@ -14,25 +14,19 @@
 \contentsline {section}{\numberline {2.5}Garbage Collection and Disk Space Management}{8}{section.2.5}%
 \contentsline {section}{\numberline {2.6}Substitutes: Why You Do Not Have to Compile Everything}{9}{section.2.6}%
 \contentsline {chapter}{\numberline {3}Channels, Pins, and Time Travel}{10}{chapter.3}%
-\contentsline {section}{\numberline {3.1}The Heartbeat: \texttt {guix pull}}{10}{section.3.1}%
-\contentsline {section}{\numberline {3.2}The Separation of Church and State: Free vs Custom Channels}{11}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Notable Community Channels in the Wild}{11}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}1. Nonguix: The Unofficial Non-Free Repository}{11}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}2. Guix Science \& Guix HPC: High-Performance Research}{11}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}3. Guix Past: The Museum of Computational History}{12}{subsection.3.3.3}%
-\contentsline {section}{\numberline {3.4}Configuring Multiple Channels in \texttt {channels.scm}}{12}{section.3.4}%
-\contentsline {section}{\numberline {3.5}Real-World Examples: Using Nonguix \& Guix Science}{13}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Example A: Launching Steam or Spotify with Nonguix}{13}{subsection.3.5.1}%
-\contentsline {subsection}{\numberline {3.5.2}Example B: High-Performance Data Science with Guix Science}{13}{subsection.3.5.2}%
-\contentsline {section}{\numberline {3.6}Capturing Your Exact State: \texttt {guix describe}}{13}{section.3.6}%
-\contentsline {section}{\numberline {3.7}The Superpower: \texttt {guix time-machine}}{14}{section.3.7}%
-\contentsline {part}{II\hspace {1em}The Development Wonderland: Escaping Dependency Hell}{15}{part.2}%
-\contentsline {chapter}{\numberline {4}Goodbye Virtualenvs, Hello \texttt {guix shell}}{16}{chapter.4}%
-\contentsline {section}{\numberline {4.1}The Concept: Disposable, Ephemeral Environments}{16}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Achieving True Isolation: \texttt {--pure}}{17}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Containers Without Docker: The \texttt {-C} Flag}{17}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Fine-Grained Sharing: Filesystems and Network}{18}{section.4.4}%
-\contentsline {section}{\numberline {4.5}The Instant Development Environment: \texttt {-D}}{18}{section.4.5}%
+\contentsline {section}{\numberline {3.1}What Is a Channel?}{10}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Configuring Channels: \texttt {\textasciitilde /.config/guix/channels.scm}}{10}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Notable Custom Channels}{11}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Authorizing Pre-Built Substitutes for Channels}{12}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Channel Pins: Locking Reality}{12}{section.3.5}%
+\contentsline {section}{\numberline {3.6}The Superpower: \texttt {guix time-machine}}{12}{section.3.6}%
+\contentsline {part}{II\hspace {1em}The Development Wonderland: Escaping Dependency Hell}{14}{part.2}%
+\contentsline {chapter}{\numberline {4}Goodbye Virtualenvs, Hello \texttt {guix shell}}{15}{chapter.4}%
+\contentsline {section}{\numberline {4.1}The Concept: Disposable, Ephemeral Environments}{15}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Achieving True Isolation: \texttt {--pure}}{16}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Containers Without Docker: The \texttt {-C} Flag}{16}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Fine-Grained Sharing: Filesystems and Network}{17}{section.4.4}%
+\contentsline {section}{\numberline {4.5}The Instant Development Environment: \texttt {-D}}{17}{section.4.5}%
 \contentsline {chapter}{\numberline {5}Project Manifests and Package Transformations}{19}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Writing a \texttt {manifest.scm}}{19}{section.5.1}%
 \contentsline {subsection}{\numberline {5.1.1}1. The Specification Approach: \texttt {specifications->manifest}}{19}{subsection.5.1.1}%
@@ -78,11 +72,23 @@
 \contentsline {section}{\numberline {11.3}Writing Package Modules Inside the Channel}{44}{section.11.3}%
 \contentsline {section}{\numberline {11.4}Testing Your Channel Locally: \texttt {-L}}{44}{section.11.4}%
 \contentsline {section}{\numberline {11.5}Channel News: \texttt {etc/news.txt}}{45}{section.11.5}%
-\contentsline {part}{Appendices}{47}{part*.4}%
-\contentsline {chapter}{The Ultimate Guix Cheat Sheet}{47}{chapter*.5}%
-\contentsline {chapter}{Troubleshooting and Common Footguns}{49}{chapter*.6}%
-\contentsline {section}{\numberline {11.6}Footgun 1: ``No such file or directory'' on Existing Scripts}{49}{section.11.6}%
-\contentsline {section}{\numberline {11.7}Footgun 2: Scheme Error: ``Unbound Variable''}{50}{section.11.7}%
-\contentsline {section}{\numberline {11.8}Footgun 3: Test Suite Fails Because of No Network Access}{50}{section.11.8}%
-\contentsline {section}{\numberline {11.9}Footgun 4: Disk Space Running Out in \texttt {/tmp}}{50}{section.11.9}%
-\contentsline {section}{\numberline {11.10}Footgun 5: ``Why didn't \texttt {guix gc} free any space?''}{51}{section.11.10}%
+\contentsline {part}{V\hspace {1em}The Real-World Frontier: Domains \& Pragmatic Hardware}{46}{part.5}%
+\contentsline {chapter}{\numberline {12}Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix}{47}{chapter.12}%
+\contentsline {section}{\numberline {12.1}Guix in Science \& Industry: The Reproducibility Revolution}{47}{section.12.1}%
+\contentsline {subsection}{\numberline {12.1.1}1. High-Performance Computing (HPC) \& Supercomputing}{47}{subsection.12.1.1}%
+\contentsline {subsection}{\numberline {12.1.2}2. Bioinformatics \& Computational Biology}{48}{subsection.12.1.2}%
+\contentsline {subsection}{\numberline {12.1.3}3. Data Science, Machine Learning \& AI}{48}{subsection.12.1.3}%
+\contentsline {subsection}{\numberline {12.1.4}4. Verifiable Software Supply Chains (SLSA Level 4)}{49}{subsection.12.1.4}%
+\contentsline {section}{\numberline {12.2}The Imperfect World: Consumer Hardware \& The Driver Dilemma}{49}{section.12.2}%
+\contentsline {subsection}{\numberline {12.2.1}The Reality of Modern Laptops}{49}{subsection.12.2.1}%
+\contentsline {section}{\numberline {12.3}Nonguix: The Pragmatic Bridge}{50}{section.12.3}%
+\contentsline {section}{\numberline {12.4}Case Study: The Ultimate Real-World Workstation / Laptop}{50}{section.12.4}%
+\contentsline {section}{\numberline {12.5}The Best of Both Worlds}{52}{section.12.5}%
+\contentsline {part}{Appendices}{54}{part*.11}%
+\contentsline {chapter}{The Ultimate Guix Cheat Sheet}{54}{chapter*.12}%
+\contentsline {chapter}{Troubleshooting and Common Footguns}{56}{chapter*.17}%
+\contentsline {section}{\numberline {12.6}Footgun 1: ``No such file or directory'' on Existing Scripts}{56}{section.12.6}%
+\contentsline {section}{\numberline {12.7}Footgun 2: Scheme Error: ``Unbound Variable''}{57}{section.12.7}%
+\contentsline {section}{\numberline {12.8}Footgun 3: Test Suite Fails Because of No Network Access}{57}{section.12.8}%
+\contentsline {section}{\numberline {12.9}Footgun 4: Disk Space Running Out in \texttt {/tmp}}{57}{section.12.9}%
+\contentsline {section}{\numberline {12.10}Footgun 5: ``Why didn't \texttt {guix gc} free any space?''}{58}{section.12.10}%
