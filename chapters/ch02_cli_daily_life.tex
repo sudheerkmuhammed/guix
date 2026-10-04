@@ -8,6 +8,49 @@ Now that you understand that \texttt{/gnu/store} is a cryptographic citadel of i
 
 Unlike traditional package managers that demand \texttt{sudo} permissions to modify the global system state, Guix package management is entirely \textbf{unprivileged}. Every user on the system can install, upgrade, and remove software in their own user profile without ever asking the sysadmin for permission.
 
+\section{The Non-Declarative CLI: A Foreign Distro Lifeline}
+
+Before typing our first installation command, we must address an essential philosophical question: \emph{How does the Guix command-line interface fit into the functional, declarative vision of GNU Guix?}
+
+The commands introduced in this chapter---\guixcmd{guix install}, \guixcmd{guix remove}, and \guixcmd{guix upgrade}---represent the \textbf{imperative}, or \textbf{non-declarative}, style of package management. In an imperative model, you type sequential commands to mutate your active user profile step by step over time.
+
+It is crucial to understand that \textbf{this non-declarative way of installing packages mainly applies when Guix is used as an auxiliary package manager on a distribution other than Guix System} (what the Guix community terms a \textbf{foreign distribution}, such as Debian, Ubuntu, Fedora, openSUSE, or Arch Linux).
+
+\subsection{Why the Non-Declarative Model Thrives on Foreign Distros}
+
+When you install GNU Guix on top of Ubuntu or Debian, you do not control the base operating system with Guix; your host kernel, systemd init system, display manager, and base utilities are all governed by the host distribution. In this environment, your goals are practical and immediate:
+\begin{itemize}
+  \item You want cutting-edge software or specific development tools without waiting for your host distribution's slow release cycle.
+  \item You lack \texttt{sudo} or root privileges on a shared university cluster or corporate workstation.
+  \item You need to run conflicting libraries side-by-side without contaminating the host system's \texttt{/usr/lib}.
+\end{itemize}
+
+In this foreign distribution setting, running \guixcmd{guix install} is wonderfully liberating. It acts as a direct, unprivileged replacement for traditional package managers like \texttt{apt} or \texttt{brew}, yet bestows the mathematical superpowers of the Store: atomic transactions, zero dependency conflicts, and instantaneous rollbacks.
+
+\subsection{Why Guix System Purists Avoid \texttt{guix install}}
+
+Conversely, if you are running \textbf{Guix System}---where Guix is the standalone operating system---this non-declarative approach is largely considered an \textbf{anti-pattern} and is discouraged for permanent workstation setups.
+
+Why? Because Guix System is built on the core tenet that \textbf{the file is the machine}:
+\begin{itemize}
+  \item System packages belong in the \texttt{packages} field of your declarative \texttt{/etc/config.scm} (Chapter~\ref{chap:guix-system}).
+  \item User tools and dotfiles belong in a declarative home environment managed by \textbf{Guix Home} (Chapter~\ref{chap:guix-home}) or project-specific manifests (Chapter~\ref{chap:manifests}).
+  \item Temporary, disposable tools are best invoked on-demand using ephemeral \guixcmd{guix shell} environments (Chapter~\ref{chap:guix-shell}).
+\end{itemize}
+
+If you run \guixcmd{guix install} on Guix System, you create an unversioned, mutable profile under \texttt{\textasciitilde/.guix-profile}. If your hard drive fails or you replicate your environment on another computer, those imperatively installed packages will be completely absent because they were never committed to your declarative Scheme configuration!
+
+\begin{alchemybox}[Non-Declarative CLI vs. Declarative Configuration]
+\begin{itemize}
+  \item \textbf{Non-Declarative (\texttt{guix install}, \texttt{guix remove})}:
+  Best suited for foreign distros (Debian, Ubuntu, Fedora) and fast ad-hoc experimentation. State is tracked via profile generations in \texttt{/var/guix/profiles}, but cannot be fully reproduced on another machine without replaying your shell history.
+  \item \textbf{Declarative (\texttt{config.scm}, Guix Home, Manifests)}:
+  The standard way on Guix System. State is declared in Scheme files tracked with Git. You reconfigure your system with \guixcmd{guix system reconfigure} or your user environment with \guixcmd{guix home reconfigure}. Any machine can be cloned with 100\% mathematical precision.
+\end{itemize}
+\end{alchemybox}
+
+Why, then, do we begin our journey with the non-declarative CLI? Because it is the gentlest and most intuitive bridge from traditional package managers. It allows you to grasp profiles, generations, rollbacks, and garbage collection hands-on before we ascend to the declarative peaks of manifests and Guix System.
+
 \section{Installing and Removing Packages}
 
 The most basic operations will look pleasantly familiar, with a subtle functional twist:
@@ -28,6 +71,10 @@ guix remove htop
 # Upgrade all packages in your profile to their latest versions
 guix upgrade
 \end{lstlisting}
+
+\begin{footgunbox}[The Imperative Trap on Guix System]
+If you are reading this while running Guix System, resist the urge to turn \guixcmd{guix install} into your daily routine! Imperatively installed packages live in an isolated profile outside your system's declarative \texttt{config.scm}. Treat the commands in this chapter as mastering the transactional mechanics of profiles and rollbacks, but save your permanent workstation setup for the declarative configurations in Part~II and Part~III.
+\end{footgunbox}
 
 \begin{protipbox}[Fast Searching with Recutils]
 When you run \guixcmd{guix search}, Guix evaluates the Scheme package records and outputs results formatted as \texttt{recutils} records. You can pipe the output into standard tools or filter fields:
@@ -106,6 +153,14 @@ source ~/profiles/audio/etc/profile
 
 When you source \texttt{etc/profile}, Guix automatically configures your environment variables (\texttt{PATH}, \texttt{LIBRARY\_PATH}, \texttt{GUIX\_PYTHONPATH}, etc.) for that specific set of packages.
 
+\begin{protipbox}[Declarative Profiles with Manifests]
+While we create custom profiles imperatively in this chapter using \guixcmd{-i}, Guix also lets you instantiate and update profiles \textbf{declaratively} from a Scheme manifest file:
+\begin{lstlisting}[style=guixcli]
+guix package -p ~/profiles/datascience -m manifest.scm
+\end{lstlisting}
+This combines the isolation of separate profiles with the reproducibility of source-controlled configuration, which we explore in Chapter~\ref{chap:manifests}.
+\end{protipbox}
+
 \section{Garbage Collection and Disk Space Management}
 
 Because Guix keeps old generations around to make rollbacks instantaneous, your \texttt{/gnu/store} will eventually grow larger as you install and upgrade software over months.
@@ -146,3 +201,14 @@ A common fear among newcomers is: \emph{``If Guix is functional and source-based
 The answer is \textbf{no}. Guix uses \textbf{Substitutes} (pre-built binary caches signed by trusted continuous integration servers like \texttt{ci.guix.gnu.org} and \texttt{bordeaux.guix.gnu.org}).
 
 When Guix determines that a derivation hash \texttt{/gnu/store/abc123...-firefox-115.0.drv} is needed, it checks if a trusted substitute server already built that exact derivation. If it exists, Guix simply downloads the pre-built cryptographic narball (normalized archive) and unpacks it into your store. You get all the speed of a binary package manager with all the mathematical purity of a source-based functional system.
+
+\section{The Road Ahead: Beyond Non-Declarative Mutations}
+
+The non-declarative CLI commands covered in this chapter provide an immediate, dependable upgrade for anyone running Guix on a foreign distribution. You can install, upgrade, and rollback software without root privileges and without fear of library collision.
+
+Yet, imperative management has a fundamental ceiling: your environment remains an artifact of whatever sequence of commands you typed into your terminal over the past six months. In the upcoming chapters, we will transcend imperative mutations:
+\begin{itemize}
+  \item In Chapter~\ref{chap:channels-and-time-travel}, we pin the package tree to precise Git revisions and travel through time.
+  \item In Chapter~\ref{chap:guix-shell} and Chapter~\ref{chap:manifests}, we replace permanent profile installations with ephemeral shells and version-controlled manifests.
+  \item In Chapter~\ref{chap:guix-system} and Chapter~\ref{chap:guix-home}, we achieve full declarative mastery over entire operating systems and user homes.
+\end{itemize}

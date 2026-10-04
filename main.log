@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  20 AUG 2026 15:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  4 OCT 2026 11:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1060,22 +1060,22 @@ l.27 \cleardoublepage
 
 ]) (./main.toc
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 24.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 29.
 pdfTeX warning (ext4): destination with the same identifier (name{page.ii}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.29 ...nvironment: \texttt {-D}}{17}{section.4.5}
+l.29 ...Hello \texttt {guix shell}}{17}{chapter.4}
                                                   % [2
 
 
-] [3])
+] [3] [4])
 \tf@toc=\write4
 \openout4 = `main.toc'.
 
 
-(./frontmatter/preface.tex [4]
-<images/preface_hellscape_zen.jpg, id=237, 331.4784pt x 185.0112pt>
+(./frontmatter/preface.tex [5]
+<images/preface_hellscape_zen.jpg, id=261, 331.4784pt x 185.0112pt>
 File: images/preface_hellscape_zen.jpg Graphic file (type jpg)
 <use images/preface_hellscape_zen.jpg>
 Package pdftex.def Info: images/preface_hellscape_zen.jpg  used on input line 1
@@ -1086,27 +1086,21 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2
  (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-[5
+[6
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <14.4> on input line 53.
- [6 <./images/preface_hellscape_zen.jpg>]
-Overfull \hbox (14.05228pt too wide) in paragraph at lines 85--86
-\T1/lmr/m/n/10 (-20) (\T1/lmtt/m/n/10 /gnu/store\T1/lmr/m/n/10 (-20) ), how tra
-ns-ac-tions and roll-backs work, pro-files, chan-nels, and how \T1/lmtt/m/n/10 
-guix time-machine
- []
-
-) [7] [1
+ [7 <./images/preface_hellscape_zen.jpg>]) [8] [1
 
 
-] (./chapters/ch01_curse_of_fhs.tex
+]
+(./chapters/ch01_curse_of_fhs.tex
 Chapter 1.
 [2
 
 ]
-<images/store_vs_fridge.jpg, id=267, 331.4784pt x 185.0112pt>
+<images/store_vs_fridge.jpg, id=292, 331.4784pt x 185.0112pt>
 File: images/store_vs_fridge.jpg Graphic file (type jpg)
 <use images/store_vs_fridge.jpg>
 Package pdftex.def Info: images/store_vs_fridge.jpg  used on input line 59.
@@ -1116,14 +1110,17 @@ Package pdftex.def Info: images/store_vs_fridge.jpg  used on input line 59.
 Chapter 2.
 [6
 
-] [7] [8]) (./chapters/ch03_channels_time_travel.tex [9]
+]
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 30.
+ [7] [8] [9] [10]) (./chapters/ch03_channels_time_travel.tex [11]
 Chapter 3.
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 17.
-[10
+[12
 
-] [11] [12]
-<images/time_machine.jpg, id=444, 331.4784pt x 185.0112pt>
+] [13] [14]
+<images/time_machine.jpg, id=491, 331.4784pt x 185.0112pt>
 File: images/time_machine.jpg Graphic file (type jpg)
 <use images/time_machine.jpg>
 Package pdftex.def Info: images/time_machine.jpg  used on input line 139.
@@ -1133,66 +1130,68 @@ Package pdftex.def Info: images/time_machine.jpg  used on input line 139.
 LaTeX Font Warning: Font shape `T1/lmtt/bx/it' in size <10.95> not available
 (Font)              Font shape `T1/lmtt/b/sl' tried instead on input line 140.
 
-) [13 <./images/time_machine.jpg>] [14
+) [15 <./images/time_machine.jpg>] [16
 
 ] (./chapters/ch04_guix_shell.tex
 Chapter 4.
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <20.74> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1.
-[15
+[17
 
 ]
-<images/docker_vs_guix_shell.jpg, id=482, 331.4784pt x 185.0112pt>
+<images/docker_vs_guix_shell.jpg, id=528, 331.4784pt x 185.0112pt>
 File: images/docker_vs_guix_shell.jpg Graphic file (type jpg)
 <use images/docker_vs_guix_shell.jpg>
 Package pdftex.def Info: images/docker_vs_guix_shell.jpg  used on input line 85
 .
 (pdftex.def)             Requested size: 403.43115pt x 225.17412pt.
- [16] [17 <./images/docker_vs_guix_shell.jpg>])
-(./chapters/ch05_manifests.tex [18]
+ [18] [19 <./images/docker_vs_guix_shell.jpg>])
+(./chapters/ch05_manifests.tex [20]
 Chapter 5.
-LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 17.
-[19
+[21
 
-] [20] [21]) [22] [23
+] [22] [23]) [24] [25
 
 ] (./chapters/ch06_guix_system.tex
 Chapter 6.
-[24
+[26
 
-]
-Underfull \hbox (badness 2293) in paragraph at lines 82--82
+] [27] [28]
+Underfull \hbox (badness 2293) in paragraph at lines 138--138
 []\T1/lmr/bx/n/10 (+20) Functional Alchemy & Ar-cana: Ser-vice Com-po-si-tion w
 ith \T1/lmtt/b/n/10 append \T1/lmr/bx/n/10 (+20) and
  []
 
-[25] [26]
-<images/rollback_button.jpg, id=709, 331.4784pt x 185.0112pt>
+[29] [30]
+<images/rollback_button.jpg, id=787, 331.4784pt x 185.0112pt>
 File: images/rollback_button.jpg Graphic file (type jpg)
 <use images/rollback_button.jpg>
-Package pdftex.def Info: images/rollback_button.jpg  used on input line 169.
+Package pdftex.def Info: images/rollback_button.jpg  used on input line 225.
 (pdftex.def)             Requested size: 403.43115pt x 225.17412pt.
- [27]) (./chapters/ch07_shepherd.tex [28 <./images/rollback_button.jpg>]
+) (./chapters/ch07_shepherd.tex [31 <./images/rollback_button.jpg>]
 Chapter 7.
-[29
-
-] [30]) (./chapters/ch08_guix_home.tex [31]
-Chapter 8.
 [32
 
-] [33]) [34] [35
+] [33]) (./chapters/ch08_guix_home.tex [34]
+Chapter 8.
+
+LaTeX Font Warning: Font shape `T1/lmtt/bx/it' in size <10> not available
+(Font)              Font shape `T1/lmtt/b/sl' tried instead on input line 27.
+
+[35
+
+] [36] [37] [38]) [39] [40
 
 ] (./chapters/ch09_anatomy_of_package.tex
 Chapter 9.
-[36
+[41
 
 ]
 Overfull \hbox (22.49149pt too wide) in paragraph at lines 38--39
 [][][][][][][][][][][][][][][][][][][][]  
  []
 
-[37] [38]) (./chapters/ch10_phases_and_gexp.tex [39]
+[42] [43]) (./chapters/ch10_phases_and_gexp.tex [44]
 Chapter 10.
 
 Overfull \hbox (11.09355pt too wide) in paragraph at lines 13--14
@@ -1201,40 +1200,40 @@ line of \T1/lmr/bx/n/10 (-20) Phases\T1/lmr/m/n/10 (-20) . For ex-am-ple, the \
 T1/lmtt/m/n/10 gnu-build-system
  []
 
-[40
+[45
 
-] [41]) (./chapters/ch11_custom_channels.tex [42]
+] [46]) (./chapters/ch11_custom_channels.tex [47]
 Chapter 11.
-[43
+[48
 
 ]
 Overfull \hbox (47.69174pt too wide) in paragraph at lines 64--65
 [][][][][][][][][][][][][][][][][][][][]  
  []
 
-[44]) [45] [46
+[49]) [50] [51
 
 ] (./chapters/ch12_domain_impact_and_nonguix.tex
 Chapter 12.
-[47
+[52
 
-] [48] [49]
+] [53] [54]
 Overfull \hbox (8.05975pt too wide) in paragraph at lines 109--110
 []\T1/lmr/bx/n/10 (-20) Pre-Built Bi-nary Sub-sti-tutes\T1/lmr/m/n/10 (-20) : A
  ded-i-cated build farm at \T1/lmtt/m/n/10 https://substitutes.nonguix.org
  []
 
-<images/nonguix_laptop.jpg, id=1116, 331.4784pt x 185.0112pt>
+<images/nonguix_laptop.jpg, id=1204, 331.4784pt x 185.0112pt>
 File: images/nonguix_laptop.jpg Graphic file (type jpg)
 <use images/nonguix_laptop.jpg>
 Package pdftex.def Info: images/nonguix_laptop.jpg  used on input line 118.
 (pdftex.def)             Requested size: 403.43115pt x 225.17412pt.
-[50 <./images/nonguix_laptop.jpg>] [51]
+[55 <./images/nonguix_laptop.jpg>] [56]
 Overfull \hbox (67.69174pt too wide) in paragraph at lines 202--203
 [][][][][][][][][][][][][][][][][][][]  
  []
 
-) [52] [53
+) [57] [58
 
 
 ] (./backmatter/appendix_cheatsheet.tex
@@ -1242,18 +1241,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 82--82
 []|\T1/lmr/m/n/10.95 (+20) Export cur-rent chan-nel com-mits to
  []
 
-) (./backmatter/appendix_troubleshooting.tex [54
+) (./backmatter/appendix_troubleshooting.tex [59
 
-] [55] [56
+] [60] [61
 
-] [57]) [58]
+] [62]) [63]
 (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 32252 strings out of 480238
- 606433 string characters out of 5895851
- 1018537 words of memory out of 5000000
- 48472 multiletter control sequences out of 15000+600000
- 565585 words of font info for 218 fonts, out of 8000000 for 9000
+ 32332 strings out of 480238
+ 607373 string characters out of 5895851
+ 1018659 words of memory out of 5000000
+ 48491 multiletter control sequences out of 15000+600000
+ 566840 words of font info for 228 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  104i,12n,107p,1001b,2039s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/
@@ -1269,10 +1268,10 @@ b></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/ty
 pe1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtko10.pfb></
 usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/
 public/lm/lmtti10.pfb>
-Output written on main.pdf (68 pages, 7267793 bytes).
+Output written on main.pdf (74 pages, 7295515 bytes).
 PDF statistics:
- 1829 PDF objects out of 2073 (max. 8388607)
- 1703 compressed objects within 18 object streams
- 926 named destinations out of 1000 (max. 500000)
- 55072 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 1956 PDF objects out of 2073 (max. 8388607)
+ 1823 compressed objects within 19 object streams
+ 969 named destinations out of 1000 (max. 500000)
+ 55664 words of extra memory for PDF output out of 61914 (max. 10000000)
 

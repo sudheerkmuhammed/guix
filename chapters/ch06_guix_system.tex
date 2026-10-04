@@ -22,6 +22,26 @@ Six months later, your server is a delicate, undocumented snowflake. Nobody know
 
 In Guix System, \textbf{the file is the machine}. If a service or package is not declared in your Scheme configuration, it does not exist on your system.
 
+\subsection{The Imperative Temptation vs. Declarative Reproducibility}
+
+Having read about package management in Chapter~\ref{chap:cli-daily-life}, your very first instinct after booting into Guix System might be to open a shell and type:
+\begin{center}
+\guixcmd{guix install git emacs firefox htop}
+\end{center}
+
+\textbf{Do not do this!} This is the single most common pitfall for newcomers arriving from traditional distributions like Debian, Arch, or Fedora.
+
+In Chapter~\ref{chap:cli-daily-life}, we emphasized that the non-declarative, imperative workflow (\guixcmd{guix install}, \guixcmd{guix remove}) is primarily intended for users running Guix as a supplementary package manager on top of a \textbf{foreign distribution}. On Guix System, relying on \guixcmd{guix install} actively destroys one of the operating system's greatest superpowers: \textbf{complete, mathematical reproducibility}.
+
+Consider what happens if you install software imperatively on Guix System:
+\begin{itemize}
+  \item Packages are placed in an isolated, untracked profile under \texttt{\textasciitilde/.guix-profile}.
+  \item Those packages remain completely invisible to your declarative operating system definition.
+  \item If your SSD fails tomorrow, or you wish to provision an identical backup laptop or cloud server from your Git repository, those imperatively installed packages will be completely absent because they were never recorded in your configuration code!
+\end{itemize}
+
+On Guix System, \textbf{the official, recommended, and reproducible way to install new packages is declaratively through \texttt{/etc/config.scm}}. Instead of mutating the machine state with ad-hoc terminal commands, you declare your desired software in Scheme code, commit it to version control, and instantiate it with \guixcmd{guix system reconfigure}.
+
 \section{The Anatomy of \texttt{config.scm}}
 
 Let us examine a complete, fully functional \texttt{config.scm} for a desktop workstation:
@@ -78,6 +98,42 @@ Let us examine a complete, fully functional \texttt{config.scm} for a desktop wo
                           (service gnome-desktop-service-type))
                     %desktop-services)))
 \end{lstlisting}
+
+\subsection{Installing New Packages: The Declarative Workflow}
+
+Examine lines 67--71 in the configuration above. This \texttt{packages} field is where system-wide software installation actually happens on Guix System:
+
+\begin{lstlisting}[style=guixscheme]
+  ;; System-wide packages
+  (packages (append (list nss-certs     ; HTTPS Certificates
+                          font-dejavu   ; Core fonts
+                          git
+                          emacs)
+                    %base-packages))
+\end{lstlisting}
+
+When you want to install a new package on your machine, you do not execute an imperative terminal command. Instead, you follow a clean four-step declarative workflow:
+
+\begin{enumerate}
+  \item \textbf{Search}: Find the package name using \guixcmd{guix search <query>}.
+  \item \textbf{Import}: Ensure the module containing the package definition is imported at the top of your \texttt{config.scm} via \texttt{use-package-modules} (for example, \texttt{(use-package-modules admin)} for \texttt{htop}, or \texttt{(use-package-modules version-control)} for \texttt{git}).
+  \item \textbf{Declare}: Add the package variable name to the \texttt{(list ...)} inside the \texttt{packages} field.
+  \item \textbf{Reconfigure}: Apply your changes across the operating system:
+\begin{lstlisting}[style=guixcli]
+sudo guix system reconfigure /etc/config.scm
+\end{lstlisting}
+\end{enumerate}
+
+Guix immediately downloads pre-built substitutes or builds the package, creates a brand-new operating system generation, and links the binaries into the system profile. If you later decide to uninstall the software, you simply delete its line from \texttt{config.scm} and reconfigure again.
+
+\begin{alchemybox}[Why Declarative Code Trumps Imperative Commands]
+By declaring packages directly inside \texttt{config.scm}, you guarantee that:
+\begin{itemize}
+  \item \textbf{The Machine Is Source Code}: Your entire software environment is captured in plain text. You can commit your configuration to Git, review software additions in pull requests, and audit changes over years.
+  \item \textbf{Effortless Replication}: Setting up a second workstation or replacement laptop takes zero manual guesswork. Clone your configuration, run \guixcmd{guix system reconfigure}, and you get an identical system down to the last library.
+  \item \textbf{Synchronized Rollbacks}: If an added package introduces a bug or breaks your workflow, rolling back to the previous system generation in GRUB reverts the packages, kernel, and system daemons simultaneously as one cohesive unit.
+\end{itemize}
+\end{alchemybox}
 
 \begin{alchemybox}[Service Composition with \texttt{append} and \texttt{modify-services}]
 Notice how services are combined using standard Scheme list operations!

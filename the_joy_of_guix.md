@@ -136,7 +136,7 @@ Yes, there will be parentheses. Many parentheses. But do not be afraid! As you r
 ## How This Book Is Structured
 
 
-  - **Part I: The Grand Illusion (Package Management)**: We explore the immutable store (`/gnu/store`), how transactions and rollbacks work, profiles, channels, and how `guix time-machine` lets you travel back in time.
+  - **Part I: The Grand Illusion (Package Management)**: We explore the immutable store (`/gnu/store`), unprivileged package management on foreign Linux distributions, transactional profiles and rollbacks, channels, and time travel with `guix time-machine`.
   - **Part II: The Development Wonderland**: We ditch Docker and virtualenvs for `guix shell`, explore isolated containers, write `manifest.scm` files, and integrate with `direnv`.
   - **Part III: The Operating System (Guix System & Guix Home)**: We build declarative, fully reproducible operating systems using a single `config.scm`, explore the Scheme-powered Shepherd init system, and manage our personal dotfiles with `guix home`.
   - **Part IV: The Master Craftsman (Packaging with Guix)**: We learn how to write our own package recipes, master build systems, tame build phases, write G-Expressions (`#\~{`}), and publish our own custom channels.
@@ -292,7 +292,17 @@ Because switching generations is literally just changing a single symbolic link,
 
 And if you hate the new version? You simply flip the symlink back to the previous generation.
 
-Let us see how that works in practice in Chapter~\ref{chap:cli-daily-life}.
+## Two Operating Modes: Foreign Distros and Guix System
+
+Before we jump into the command line, one foundational distinction must be highlighted. GNU Guix can be operated in two fundamentally different modes:
+
+
+  - **As a Package Manager on a "Foreign" Distribution**: You install Guix on top of an existing, traditional Linux distribution such as Debian, Ubuntu, Fedora, openSUSE, or Arch Linux. In this setup, Guix coexists harmoniously alongside your host system's native package manager (`apt`, `dnf`, `pacman`). The host OS continues to handle your kernel, hardware drivers, and system daemons, while Guix provides an unprivileged, isolated `/gnu/store` and per-user profiles. You get reproducible packages, atomic rollbacks, and multi-version library coexistence without altering the underlying OS.
+  - **As a Complete Operating System (Guix System)**: Guix can also replace your entire traditional distribution. In Guix System, everything—from the Linux kernel, bootloader, Shepherd init system, and background daemons to user accounts and desktop environments—is declared within a unified Scheme configuration file (`/etc/config.scm`).
+
+
+Throughout Part~I and Part~II of this book, we will primarily explore Guix through the lens of a package manager running on a foreign distribution. As you will see in Chapter~\ref{chap:cli-daily-life}, the familiar, non-declarative commands for installing software (`guix install`) are uniquely suited to foreign distributions—whereas on Guix System, declarative configuration takes center stage.
+
 
 
 
@@ -311,6 +321,52 @@ Let us see how that works in practice in Chapter~\ref{chap:cli-daily-life}.
 Now that you understand that `/gnu/store` is a cryptographic citadel of immutable purity, let us roll up our sleeves and interact with the Guix command-line interface.
 
 Unlike traditional package managers that demand `sudo` permissions to modify the global system state, Guix package management is entirely **unprivileged**. Every user on the system can install, upgrade, and remove software in their own user profile without ever asking the sysadmin for permission.
+
+## The Non-Declarative CLI: A Foreign Distro Lifeline
+
+Before typing our first installation command, we must address an essential philosophical question: *How does the Guix command-line interface fit into the functional, declarative vision of GNU Guix?*
+
+The commands introduced in this chapter—`guix install`, `guix remove`, and `guix upgrade`—represent the **imperative**, or **non-declarative**, style of package management. In an imperative model, you type sequential commands to mutate your active user profile step by step over time.
+
+It is crucial to understand that **this non-declarative way of installing packages mainly applies when Guix is used as an auxiliary package manager on a distribution other than Guix System** (what the Guix community terms a **foreign distribution**, such as Debian, Ubuntu, Fedora, openSUSE, or Arch Linux).
+
+### Why the Non-Declarative Model Thrives on Foreign Distros
+
+When you install GNU Guix on top of Ubuntu or Debian, you do not control the base operating system with Guix; your host kernel, systemd init system, display manager, and base utilities are all governed by the host distribution. In this environment, your goals are practical and immediate:
+
+  - You want cutting-edge software or specific development tools without waiting for your host distribution's slow release cycle.
+  - You lack `sudo` or root privileges on a shared university cluster or corporate workstation.
+  - You need to run conflicting libraries side-by-side without contaminating the host system's `/usr/lib`.
+
+
+In this foreign distribution setting, running `guix install` is wonderfully liberating. It acts as a direct, unprivileged replacement for traditional package managers like `apt` or `brew`, yet bestows the mathematical superpowers of the Store: atomic transactions, zero dependency conflicts, and instantaneous rollbacks.
+
+### Why Guix System Purists Avoid `guix install`
+
+Conversely, if you are running **Guix System**—where Guix is the standalone operating system—this non-declarative approach is largely considered an **anti-pattern** and is discouraged for permanent workstation setups.
+
+Why? Because Guix System is built on the core tenet that **the file is the machine**:
+
+  - System packages belong in the `packages` field of your declarative `/etc/config.scm` (Chapter~\ref{chap:guix-system}).
+  - User tools and dotfiles belong in a declarative home environment managed by **Guix Home** (Chapter~\ref{chap:guix-home}) or project-specific manifests (Chapter~\ref{chap:manifests}).
+  - Temporary, disposable tools are best invoked on-demand using ephemeral `guix shell` environments (Chapter~\ref{chap:guix-shell}).
+
+
+If you run `guix install` on Guix System, you create an unversioned, mutable profile under `~/.guix-profile`. If your hard drive fails or you replicate your environment on another computer, those imperatively installed packages will be completely absent because they were never committed to your declarative Scheme configuration!
+
+
+> ### ✨ Functional Alchemy & Arcana: Non-Declarative CLI vs. Declarative Configuration
+>
+> 
+>   - **Non-Declarative (`guix install**, \texttt{guix remove`)}:
+>   Best suited for foreign distros (Debian, Ubuntu, Fedora) and fast ad-hoc experimentation. State is tracked via profile generations in `/var/guix/profiles`, but cannot be fully reproduced on another machine without replaying your shell history.
+>   - **Declarative (`config.scm**, Guix Home, Manifests)`:
+>   The standard way on Guix System. State is declared in Scheme files tracked with Git. You reconfigure your system with `guix system reconfigure` or your user environment with `guix home reconfigure`. Any machine can be cloned with 100% mathematical precision.
+> 
+
+
+
+Why, then, do we begin our journey with the non-declarative CLI? Because it is the gentlest and most intuitive bridge from traditional package managers. It allows you to grasp profiles, generations, rollbacks, and garbage collection hands-on before we ascend to the declarative peaks of manifests and Guix System.
 
 ## Installing and Removing Packages
 
@@ -333,6 +389,13 @@ guix remove htop
 # Upgrade all packages in your profile to their latest versions
 guix upgrade
 "`
+
+
+
+> ### ⚠️ Caution: Footgun Detected: The Imperative Trap on Guix System
+>
+> If you are reading this while running Guix System, resist the urge to turn `guix install` into your daily routine! Imperatively installed packages live in an isolated profile outside your system's declarative `config.scm`. Treat the commands in this chapter as mastering the transactional mechanics of profiles and rollbacks, but save your permanent workstation setup for the declarative configurations in Part~II and Part~III.
+
 
 
 
@@ -434,6 +497,20 @@ source ~/profiles/audio/etc/profile
 
 When you source `etc/profile`, Guix automatically configures your environment variables (`PATH`, `LIBRARY_PATH`, `GUIX_PYTHONPATH`, etc.) for that specific set of packages.
 
+
+> ### 💡 Guix Wizard Pro-Tip: Declarative Profiles with Manifests
+>
+> While we create custom profiles imperatively in this chapter using `-i`, Guix also lets you instantiate and update profiles **declaratively** from a Scheme manifest file:
+> 
+"`bash
+> guix package -p ~/profiles/datascience -m manifest.scm
+>
+"`
+
+> This combines the isolation of separate profiles with the reproducibility of source-controlled configuration, which we explore in Chapter~\ref{chap:manifests}.
+
+
+
 ## Garbage Collection and Disk Space Management
 
 Because Guix keeps old generations around to make rollbacks instantaneous, your `/gnu/store` will eventually grow larger as you install and upgrade software over months.
@@ -482,6 +559,17 @@ A common fear among newcomers is: *"If Guix is functional and source-based, am I
 The answer is **no**. Guix uses **Substitutes** (pre-built binary caches signed by trusted continuous integration servers like `ci.guix.gnu.org` and `bordeaux.guix.gnu.org`).
 
 When Guix determines that a derivation hash `/gnu/store/abc123...-firefox-115.0.drv` is needed, it checks if a trusted substitute server already built that exact derivation. If it exists, Guix simply downloads the pre-built cryptographic narball (normalized archive) and unpacks it into your store. You get all the speed of a binary package manager with all the mathematical purity of a source-based functional system.
+
+## The Road Ahead: Beyond Non-Declarative Mutations
+
+The non-declarative CLI commands covered in this chapter provide an immediate, dependable upgrade for anyone running Guix on a foreign distribution. You can install, upgrade, and rollback software without root privileges and without fear of library collision.
+
+Yet, imperative management has a fundamental ceiling: your environment remains an artifact of whatever sequence of commands you typed into your terminal over the past six months. In the upcoming chapters, we will transcend imperative mutations:
+
+  - In Chapter~\ref{chap:channels-and-time-travel}, we pin the package tree to precise Git revisions and travel through time.
+  - In Chapter~\ref{chap:guix-shell} and Chapter~\ref{chap:manifests}, we replace permanent profile installations with ephemeral shells and version-controlled manifests.
+  - In Chapter~\ref{chap:guix-system} and Chapter~\ref{chap:guix-home}, we achieve full declarative mastery over entire operating systems and user homes.
+
 
 
 
@@ -1010,6 +1098,26 @@ Six months later, your server is a delicate, undocumented snowflake. Nobody know
 
 In Guix System, **the file is the machine**. If a service or package is not declared in your Scheme configuration, it does not exist on your system.
 
+### The Imperative Temptation vs. Declarative Reproducibility
+
+Having read about package management in Chapter~\ref{chap:cli-daily-life}, your very first instinct after booting into Guix System might be to open a shell and type:
+\begin{center}
+`guix install git emacs firefox htop`
+\end{center}
+
+**Do not do this!** This is the single most common pitfall for newcomers arriving from traditional distributions like Debian, Arch, or Fedora.
+
+In Chapter~\ref{chap:cli-daily-life}, we emphasized that the non-declarative, imperative workflow (`guix install`, `guix remove`) is primarily intended for users running Guix as a supplementary package manager on top of a **foreign distribution**. On Guix System, relying on `guix install` actively destroys one of the operating system's greatest superpowers: **complete, mathematical reproducibility**.
+
+Consider what happens if you install software imperatively on Guix System:
+
+  - Packages are placed in an isolated, untracked profile under `~/.guix-profile`.
+  - Those packages remain completely invisible to your declarative operating system definition.
+  - If your SSD fails tomorrow, or you wish to provision an identical backup laptop or cloud server from your Git repository, those imperatively installed packages will be completely absent because they were never recorded in your configuration code!
+
+
+On Guix System, **the official, recommended, and reproducible way to install new packages is declaratively through `/etc/config.scm**`. Instead of mutating the machine state with ad-hoc terminal commands, you declare your desired software in Scheme code, commit it to version control, and instantiate it with `guix system reconfigure`.
+
 ## The Anatomy of `config.scm`
 
 Let us examine a complete, fully functional `config.scm` for a desktop workstation:
@@ -1067,6 +1175,49 @@ Let us examine a complete, fully functional `config.scm` for a desktop workstati
                           (service gnome-desktop-service-type))
                     %desktop-services)))
 "`
+
+
+### Installing New Packages: The Declarative Workflow
+
+Examine lines 67–71 in the configuration above. This `packages` field is where system-wide software installation actually happens on Guix System:
+
+
+"`scheme
+;; System-wide packages
+  (packages (append (list nss-certs     ; HTTPS Certificates
+                          font-dejavu   ; Core fonts
+                          git
+                          emacs)
+                    %base-packages))
+"`
+
+
+When you want to install a new package on your machine, you do not execute an imperative terminal command. Instead, you follow a clean four-step declarative workflow:
+
+
+  - **Search**: Find the package name using `guix search <query>`.
+  - **Import**: Ensure the module containing the package definition is imported at the top of your `config.scm` via `use-package-modules` (for example, `(use-package-modules admin)` for `htop`, or `(use-package-modules version-control)` for `git`).
+  - **Declare**: Add the package variable name to the `(list ...)` inside the `packages` field.
+  - **Reconfigure**: Apply your changes across the operating system:
+
+"`bash
+sudo guix system reconfigure /etc/config.scm
+"`
+
+
+
+Guix immediately downloads pre-built substitutes or builds the package, creates a brand-new operating system generation, and links the binaries into the system profile. If you later decide to uninstall the software, you simply delete its line from `config.scm` and reconfigure again.
+
+
+> ### ✨ Functional Alchemy & Arcana: Why Declarative Code Trumps Imperative Commands
+>
+> By declaring packages directly inside `config.scm`, you guarantee that:
+> 
+>   - **The Machine Is Source Code**: Your entire software environment is captured in plain text. You can commit your configuration to Git, review software additions in pull requests, and audit changes over years.
+>   - **Effortless Replication**: Setting up a second workstation or replacement laptop takes zero manual guesswork. Clone your configuration, run `guix system reconfigure`, and you get an identical system down to the last library.
+>   - **Synchronized Rollbacks**: If an added package introduces a bug or breaks your workflow, rolling back to the previous system generation in GRUB reverts the packages, kernel, and system daemons simultaneously as one cohesive unit.
+> 
+
 
 
 
@@ -1329,6 +1480,18 @@ Guix Home applies the exact same declarative, functional paradigm of Guix System
   - It works on **any** Linux distribution running GNU Guix, not just Guix System!
 
 
+### The Userland Paradox: Escaping `guix install in \texttt{$HOME`}
+
+In Chapter~\ref{chap:guix-system}, we established that system-wide packages must be declared in `/etc/config.scm`. However, many tools are personal: your preferred editor (Emacs, Neovim), CLI utilities (`ripgrep`, `fd`, `bat`), and shell customizations.
+
+It is tempting to think: *"System daemons go into `/etc/config.scm*, but for my personal CLI tools, I will just run `guix install ripgrep` in my terminal as I learned in Chapter~\ref{chap:cli-daily-life`."}
+
+**Do not fall into this trap!**
+
+Running `guix install` recreates the exact problem of imperative mutable state inside your home directory. You get an untracked profile at `~/.guix-profile` with no version control, no Git history, and no way to reliably reproduce your developer setup on another machine without re-typing months of shell history.
+
+**The recommended and idiomatic way to install user packages is declaratively through `home-configuration.scm**`. By declaring personal tools in your Guix Home configuration, your userland environment achieves the same mathematical reproducibility as the base operating system.
+
 ## Writing a `home-configuration.scm`
 
 Let us inspect a complete, elegant `home-configuration.scm`:
@@ -1385,6 +1548,30 @@ Let us inspect a complete, elegant `home-configuration.scm`:
 "`
 
 
+### Installing User Packages Declaratively
+
+Look at lines 40–45 in the configuration above. This `packages` field is where all your everyday personal applications and developer tools are installed:
+
+
+"`scheme
+;; Packages to install in the user's home profile
+  (packages (list emacs-no-x
+                  git
+                  ripgrep
+                  fd
+                  bat))
+"`
+
+
+Whenever you need a new tool in your daily workflow:
+
+  - Open your `home-configuration.scm`.
+  - Add the package to the `packages` list (making sure its module is imported at the top).
+  - Run `guix home reconfigure home-configuration.scm`.
+
+
+No `sudo` is needed. Guix builds or fetches the packages, links them into your active home profile at `~/.guix-home/profile/bin`, and creates an immutable new generation. If you decide a tool is cluttering your environment, simply remove it from the list and reconfigure.
+
 ## Applying Your Home Configuration
 
 To instantiate or update your home environment, you simply run:
@@ -1437,6 +1624,41 @@ guix home switch-generation 5
 > 
 
 
+
+## The Grand Architecture: The Three Declarative Tiers
+
+Having explored both Guix System and Guix Home, the overarching vision of GNU Guix becomes unmistakable. Package management is not a sequence of ad-hoc terminal mutations; it is a layered, declarative architecture:
+
+
+> ### ✨ Functional Alchemy & Arcana: The Three Tiers of Package Management in GNU Guix
+>
+> 
+>   - **Tier 1: System-Wide Declarative (`/etc/config.scm**)`:
+>   
+>     - *Tool*: `sudo guix system reconfigure /etc/config.scm`
+>     - *Target*: Linux kernel, system daemons, core fonts, certificates, display managers, virtualization.
+>     - *Scope*: Entire machine, managed by the administrator.
+>   
+> 
+>   - **Tier 2: Userland Declarative (`home-configuration.scm**)`:
+>   
+>     - *Tool*: `guix home reconfigure home-configuration.scm`
+>     - *Target*: Personal CLI tools, editors, terminal emulators, shell aliases, dotfiles, user daemons.
+>     - *Scope*: Personal `$HOME`, requiring zero root permissions. Works on Guix System **and** foreign distributions!
+>   
+> 
+>   - **Tier 3: Ephemeral & Project Declarative (`manifest.scm** & \texttt{guix shell`)}:
+>   
+>     - *Tool*: `guix shell` or `guix shell -m manifest.scm`
+>     - *Target*: Project-specific dependencies, compilers, libraries, temporary debugging sessions.
+>     - *Scope*: Isolated to the current shell or project directory; zero permanent disk pollution.
+>   
+> 
+
+
+
+
+Where does the imperative `guix install` from Chapter~\ref{chap:cli-daily-life} fit into this picture? It serves as an emergency spare tire: a quick, familiar mechanism for users on foreign distributions who want to test a tool for five minutes without updating a configuration file. But for everything you rely on daily, **declaring your environment in Scheme code is what delivers the holy grail of computing: 100% mathematical reproducibility**.
 
 
 

@@ -20,6 +20,18 @@ Guix Home applies the exact same declarative, functional paradigm of Guix System
   \item It works on \textbf{any} Linux distribution running GNU Guix, not just Guix System!
 \end{itemize}
 
+\subsection{The Userland Paradox: Escaping \texttt{guix install} in \texttt{\$HOME}}
+
+In Chapter~\ref{chap:guix-system}, we established that system-wide packages must be declared in \texttt{/etc/config.scm}. However, many tools are personal: your preferred editor (Emacs, Neovim), CLI utilities (\texttt{ripgrep}, \texttt{fd}, \texttt{bat}), and shell customizations.
+
+It is tempting to think: \emph{``System daemons go into \texttt{/etc/config.scm}, but for my personal CLI tools, I will just run \guixcmd{guix install ripgrep} in my terminal as I learned in Chapter~\ref{chap:cli-daily-life}.''}
+
+\textbf{Do not fall into this trap!}
+
+Running \guixcmd{guix install} recreates the exact problem of imperative mutable state inside your home directory. You get an untracked profile at \texttt{\textasciitilde/.guix-profile} with no version control, no Git history, and no way to reliably reproduce your developer setup on another machine without re-typing months of shell history.
+
+\textbf{The recommended and idiomatic way to install user packages is declaratively through \texttt{home-configuration.scm}}. By declaring personal tools in your Guix Home configuration, your userland environment achieves the same mathematical reproducibility as the base operating system.
+
 \section{Writing a \texttt{home-configuration.scm}}
 
 Let us inspect a complete, elegant \texttt{home-configuration.scm}:
@@ -74,6 +86,28 @@ Let us inspect a complete, elegant \texttt{home-configuration.scm}:
            ,(local-file "configs/alacritty.toml")))))))
 \end{lstlisting}
 
+\subsection{Installing User Packages Declaratively}
+
+Look at lines 40--45 in the configuration above. This \texttt{packages} field is where all your everyday personal applications and developer tools are installed:
+
+\begin{lstlisting}[style=guixscheme]
+  ;; Packages to install in the user's home profile
+  (packages (list emacs-no-x
+                  git
+                  ripgrep
+                  fd
+                  bat))
+\end{lstlisting}
+
+Whenever you need a new tool in your daily workflow:
+\begin{enumerate}
+  \item Open your \texttt{home-configuration.scm}.
+  \item Add the package to the \texttt{packages} list (making sure its module is imported at the top).
+  \item Run \guixcmd{guix home reconfigure home-configuration.scm}.
+\end{enumerate}
+
+No \texttt{sudo} is needed. Guix builds or fetches the packages, links them into your active home profile at \texttt{\textasciitilde/.guix-home/profile/bin}, and creates an immutable new generation. If you decide a tool is cluttering your environment, simply remove it from the list and reconfigure.
+
 \section{Applying Your Home Configuration}
 
 To instantiate or update your home environment, you simply run:
@@ -119,3 +153,35 @@ With Guix Home:
   \item In 45 seconds, your entire personalized computing environment is bit-for-bit identical to your previous machine.
 \end{enumerate}
 \end{tearsbox}
+
+\section{The Grand Architecture: The Three Declarative Tiers}
+
+Having explored both Guix System and Guix Home, the overarching vision of GNU Guix becomes unmistakable. Package management is not a sequence of ad-hoc terminal mutations; it is a layered, declarative architecture:
+
+\begin{alchemybox}[The Three Tiers of Package Management in GNU Guix]
+\begin{itemize}
+  \item \textbf{Tier 1: System-Wide Declarative (\texttt{/etc/config.scm})}:
+  \begin{itemize}
+    \item \emph{Tool}: \guixcmd{sudo guix system reconfigure /etc/config.scm}
+    \item \emph{Target}: Linux kernel, system daemons, core fonts, certificates, display managers, virtualization.
+    \item \emph{Scope}: Entire machine, managed by the administrator.
+  \end{itemize}
+
+  \item \textbf{Tier 2: Userland Declarative (\texttt{home-configuration.scm})}:
+  \begin{itemize}
+    \item \emph{Tool}: \guixcmd{guix home reconfigure home-configuration.scm}
+    \item \emph{Target}: Personal CLI tools, editors, terminal emulators, shell aliases, dotfiles, user daemons.
+    \item \emph{Scope}: Personal \texttt{\$HOME}, requiring zero root permissions. Works on Guix System \textbf{and} foreign distributions!
+  \end{itemize}
+
+  \item \textbf{Tier 3: Ephemeral \& Project Declarative (\texttt{manifest.scm} \& \texttt{guix shell})}:
+  \begin{itemize}
+    \item \emph{Tool}: \guixcmd{guix shell} or \guixcmd{guix shell -m manifest.scm}
+    \item \emph{Target}: Project-specific dependencies, compilers, libraries, temporary debugging sessions.
+    \item \emph{Scope}: Isolated to the current shell or project directory; zero permanent disk pollution.
+  \end{itemize}
+\end{itemize}
+\end{alchemybox}
+
+\noindent
+Where does the imperative \guixcmd{guix install} from Chapter~\ref{chap:cli-daily-life} fit into this picture? It serves as an emergency spare tire: a quick, familiar mechanism for users on foreign distributions who want to test a tool for five minutes without updating a configuration file. But for everything you rely on daily, \textbf{declaring your environment in Scheme code is what delivers the holy grail of computing: 100\% mathematical reproducibility}.

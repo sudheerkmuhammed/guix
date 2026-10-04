@@ -125,4 +125,14 @@ Because switching generations is literally just changing a single symbolic link,
 
 And if you hate the new version? You simply flip the symlink back to the previous generation.
 
-Let us see how that works in practice in Chapter~\ref{chap:cli-daily-life}.
+\section{Two Operating Modes: Foreign Distros and Guix System}
+
+Before we jump into the command line, one foundational distinction must be highlighted. GNU Guix can be operated in two fundamentally different modes:
+
+\begin{enumerate}
+  \item \textbf{As a Package Manager on a ``Foreign'' Distribution}: You install Guix on top of an existing, traditional Linux distribution such as Debian, Ubuntu, Fedora, openSUSE, or Arch Linux. In this setup, Guix coexists harmoniously alongside your host system's native package manager (\texttt{apt}, \texttt{dnf}, \texttt{pacman}). The host OS continues to handle your kernel, hardware drivers, and system daemons, while Guix provides an unprivileged, isolated \texttt{/gnu/store} and per-user profiles. You get reproducible packages, atomic rollbacks, and multi-version library coexistence without altering the underlying OS.
+  \item \textbf{As a Complete Operating System (Guix System)}: Guix can also replace your entire traditional distribution. In Guix System, everything---from the Linux kernel, bootloader, Shepherd init system, and background daemons to user accounts and desktop environments---is declared within a unified Scheme configuration file (\texttt{/etc/config.scm}).
+\end{enumerate}
+
+Throughout Part~I and Part~II of this book, we will primarily explore Guix through the lens of a package manager running on a foreign distribution. As you will see in Chapter~\ref{chap:cli-daily-life}, the familiar, non-declarative commands for installing software (\texttt{guix install}) are uniquely suited to foreign distributions---whereas on Guix System, declarative configuration takes center stage.
+
