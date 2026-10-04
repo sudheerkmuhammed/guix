@@ -19,7 +19,8 @@ LABEL_MAP = {
     "chap:anatomy-of-package": ("[Chapter 9](#chapter-9-the-anatomy-of-a-package)", "Chapter 9"),
     "chap:phases-and-gexp": ("[Chapter 10](#chapter-10-build-phases-g-expressions-and-shebangs)", "Chapter 10"),
     "chap:custom-channels": ("[Chapter 11](#chapter-11-rolling-your-own-custom-channel)", "Chapter 11"),
-    "chap:domain-impact-and-nonguix": ("[Chapter 12](#chapter-12-guix-in-the-wild-domain-impact-and-taming-real-hardware-with-nonguix)", "Chapter 12"),
+    "chap:guix-pack": ("[Chapter 12](#chapter-12-standalone-bundles-guix-pack-for-docker-appimage-and-hpc)", "Chapter 12"),
+    "chap:domain-impact-and-nonguix": ("[Chapter 13](#chapter-13-guix-in-the-wild-domain-impact-and-taming-real-hardware-with-nonguix)", "Chapter 13"),
     "appendix:cheatsheet": ("[Appendix A](#appendix-a-the-ultimate-guix-cheat-sheet)", "Appendix A"),
     "appendix:troubleshooting": ("[Appendix B](#appendix-b-troubleshooting-and-common-footguns)", "Appendix B"),
 }
@@ -331,7 +332,8 @@ def build_full_readme():
         ("chapters/ch09_anatomy_of_package.tex", "Part IV: The Master Craftsman — Packaging with Scheme", 9, "The Anatomy of a Package"),
         ("chapters/ch10_phases_and_gexp.tex", None, 10, "Build Phases, G-Expressions, and Shebangs"),
         ("chapters/ch11_custom_channels.tex", None, 11, "Rolling Your Own Custom Channel"),
-        ("chapters/ch12_domain_impact_and_nonguix.tex", "Part V: The Real-World Frontier — Domains & Pragmatic Hardware", 12, "Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix"),
+        ("chapters/ch12_guix_pack.tex", "Part V: The Real-World Frontier — Deployment, Domains & Pragmatic Hardware", 12, "Standalone Bundles: guix pack for Docker, AppImage, and HPC"),
+        ("chapters/ch13_domain_impact_and_nonguix.tex", None, 13, "Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix"),
         ("backmatter/appendix_cheatsheet.tex", "Appendices", None, "The Ultimate Guix Cheat Sheet", "A"),
         ("backmatter/appendix_troubleshooting.tex", None, None, "Troubleshooting and Common Footguns", "B"),
     ]
@@ -382,8 +384,9 @@ Whether you run Guix as an unprivileged, transactional package manager on top of
   - [Chapter 9: The Anatomy of a Package](#chapter-9-the-anatomy-of-a-package)
   - [Chapter 10: Build Phases, G-Expressions, and Shebangs](#chapter-10-build-phases-g-expressions-and-shebangs)
   - [Chapter 11: Rolling Your Own Custom Channel](#chapter-11-rolling-your-own-custom-channel)
-- [**Part V: The Real-World Frontier — Domains & Pragmatic Hardware**](#part-v-the-real-world-frontier--domains--pragmatic-hardware)
-  - [Chapter 12: Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix](#chapter-12-guix-in-the-wild-domain-impact-and-taming-real-hardware-with-nonguix)
+- [**Part V: The Real-World Frontier — Deployment, Domains & Pragmatic Hardware**](#part-v-the-real-world-frontier--deployment-domains--pragmatic-hardware)
+  - [Chapter 12: Standalone Bundles: `guix pack` for Docker, AppImage, and HPC](#chapter-12-standalone-bundles-guix-pack-for-docker-appimage-and-hpc)
+  - [Chapter 13: Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix](#chapter-13-guix-in-the-wild-domain-impact-and-taming-real-hardware-with-nonguix)
 - [**Appendices**](#appendices)
   - [Appendix A: The Ultimate Guix Cheat Sheet](#appendix-a-the-ultimate-guix-cheat-sheet)
   - [Appendix B: Troubleshooting and Common Footguns](#appendix-b-troubleshooting-and-common-footguns)

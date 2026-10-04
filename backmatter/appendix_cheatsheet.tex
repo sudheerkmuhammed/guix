@@ -81,3 +81,25 @@
 \bottomrule
 \end{tabularx}
 \end{table}
+
+\section*{Standalone Bundles and Distribution (\texttt{guix pack})}
+
+\begin{table}[htbp]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Command} & \textbf{Description} \\
+\midrule
+\guixcmd{guix pack -R -S /bin=bin <pkgs>} & Build relocatable tarball with user-namespace / PRoot wrapper \\
+\guixcmd{guix pack -f docker -S /bin=bin <pkgs>} & Build reproducible Docker / OCI container image \\
+\guixcmd{guix pack -f docker --entry-point=bin/app} & Set default container entry point executable \\
+\guixcmd{guix pack -f appimage -S /bin=bin <pkg>} & Build single-file executable AppImage for desktop Linux \\
+\guixcmd{guix pack -f squashfs <pkgs>} & Build SquashFS image for Singularity / Apptainer \\
+\guixcmd{guix pack -m manifest.scm -f docker} & Pack complete project manifest into Docker image \\
+\guixcmd{guix copy --to=user@host <pkg>} & Synchronize package and missing closure over SSH \\
+\guixcmd{guix archive --export -r <pkg>} & Export signed closure archive for air-gapped systems \\
+\guixcmd{guix archive --import < archive.nar} & Import signed archive directly into local store \\
+\bottomrule
+\end{tabularx}
+\end{table}
+

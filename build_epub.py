@@ -23,7 +23,8 @@ def build():
         ("chapters/ch09_anatomy_of_package.tex", 9, None),
         ("chapters/ch10_phases_and_gexp.tex", 10, None),
         ("chapters/ch11_custom_channels.tex", 11, None),
-        ("chapters/ch12_domain_impact_and_nonguix.tex", 12, None),
+        ("chapters/ch12_guix_pack.tex", 12, None),
+        ("chapters/ch13_domain_impact_and_nonguix.tex", 13, None),
         ("backmatter/appendix_cheatsheet.tex", None, "A"),
         ("backmatter/appendix_troubleshooting.tex", None, "B")
     ]

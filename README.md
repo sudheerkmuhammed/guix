@@ -44,8 +44,9 @@ Whether you run Guix as an unprivileged, transactional package manager on top of
   - [Chapter 9: The Anatomy of a Package](#chapter-9-the-anatomy-of-a-package)
   - [Chapter 10: Build Phases, G-Expressions, and Shebangs](#chapter-10-build-phases-g-expressions-and-shebangs)
   - [Chapter 11: Rolling Your Own Custom Channel](#chapter-11-rolling-your-own-custom-channel)
-- [**Part V: The Real-World Frontier — Domains & Pragmatic Hardware**](#part-v-the-real-world-frontier--domains--pragmatic-hardware)
-  - [Chapter 12: Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix](#chapter-12-guix-in-the-wild-domain-impact-and-taming-real-hardware-with-nonguix)
+- [**Part V: The Real-World Frontier — Deployment, Domains & Pragmatic Hardware**](#part-v-the-real-world-frontier--deployment-domains--pragmatic-hardware)
+  - [Chapter 12: Standalone Bundles: `guix pack` for Docker, AppImage, and HPC](#chapter-12-standalone-bundles-guix-pack-for-docker-appimage-and-hpc)
+  - [Chapter 13: Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix](#chapter-13-guix-in-the-wild-domain-impact-and-taming-real-hardware-with-nonguix)
 - [**Appendices**](#appendices)
   - [Appendix A: The Ultimate Guix Cheat Sheet](#appendix-a-the-ultimate-guix-cheat-sheet)
   - [Appendix B: Troubleshooting and Common Footguns](#appendix-b-troubleshooting-and-common-footguns)
@@ -154,7 +155,7 @@ Yes, there will be parentheses. Many parentheses. But do not be afraid! As you r
   - **Part II: The Development Wonderland**: We ditch Docker and virtualenvs for `guix shell`, explore isolated containers, write `manifest.scm` files, and integrate with `direnv`.
   - **Part III: The Operating System (Guix System & Guix Home)**: We build declarative, fully reproducible operating systems using a single `config.scm`, explore the Scheme-powered Shepherd init system, and manage our personal dotfiles with `guix home`.
   - **Part IV: The Master Craftsman (Packaging with Guix)**: We learn how to write our own package recipes, master build systems, tame build phases, write G-Expressions (`#\~{}`), and publish our own custom channels.
-  - **Part V: The Real-World Frontier (Domains & Nonguix)**: We examine Guix's real-world impact across High-Performance Computing (HPC), bioinformatics, machine learning, and show how Nonguix tames modern laptops, Wi-Fi chips, and NVIDIA GPUs.
+  - **Part V: The Real-World Frontier (Deployment, Domains & Nonguix)**: We escape the Guix bubble with `guix pack` to generate standalone relocatable bundles for HPC clusters, Docker/OCI images without Docker, AppImages for desktop users, and direct store transfers via `guix copy` and `guix archive`. Then, we examine Guix's real-world impact across science and industry, and show how Nonguix tames modern laptops, Wi-Fi chips, and NVIDIA GPUs.
   - **Appendices**: The ultimate cheat sheet and troubleshooting guide for escaping any bind.
 
 Buckle your seatbelt, fire up your terminal, and let us venture into the serene, reproducible promised land of GNU Guix.
@@ -1829,11 +1830,329 @@ Guix provides a built-in notification system. When users of your channel run `gu
 
 ---
 
-# Part V: The Real-World Frontier — Domains & Pragmatic Hardware
+# Part V: The Real-World Frontier — Deployment, Domains & Pragmatic Hardware
 
 
 
-## Chapter 12: Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix
+## Chapter 12: Standalone Bundles: `guix pack` for Docker, AppImage, and HPC
+
+> *""The true test of a reproducible deployment is not whether it runs on your machine, but whether it runs on an ancient Red Hat 7 cluster managed by sysadmins who forbid root access, disable internet connectivity, and refuse to install Guix.""*
+> 
+> — **The HPC Vagabond**
+
+Up to this point in our journey, we have enjoyed the paradise of having GNU Guix installed on our systems. Whether managing user profiles, spawning disposable `guix shell` containers, or declaring our entire workstation via Guix System, the `guix-daemon` and the immutable store (`/gnu/store`) were always there to orchestrate reality.
+
+> [!CAUTION]
+> **😭 Tears of the Imperative Developer: The Real-World Transfer Dilemma**
+>
+> What happens when you need to deploy your software to:
+> 
+>   - A corporate cloud Kubernetes cluster where nodes only accept Docker or OCI container images?
+>   - A massive institutional High-Performance Computing (HPC) supercomputer with thousands of nodes running CentOS 7 or RHEL 8, where sysadmins strictly forbid root access, block outbound internet access, and refuse to install GNU Guix?
+>   - A colleague's vanilla Ubuntu or Fedora laptop where they just want a single, zero-dependency executable they can double-click or run from the terminal without installing Guix?
+> 
+
+Traditional answers to this problem are depressing: you either write a 60-line, non-reproducible `Dockerfile` that pulls mutable APT mirrors and `pip` wheels, or you spend days fighting dynamic linker errors (`version `GLIBC_2.34' not found`) trying to build static binaries.
+
+GNU Guix offers a revolutionary escape hatch: `guix pack`.
+
+### The Philosophy of `guix pack`
+
+In Guix, every package in `/gnu/store` is already a self-contained, immutable artifact whose complete dependency graph is known to the byte. 
+
+Because Guix calculates the exact **closure** (the target package plus every single shared library, interpreter, data file, configuration script, and runtime dependency it requires), Guix can extract that sub-graph from `/gnu/store` and pack it into whatever standalone format the outside world demands:
+
+  - **Standalone Tarballs (`-f tar`)**: Unpack anywhere, with optional execution wrappers.
+  - **Docker / OCI Images (`-f docker`)**: Layered, bit-for-bit reproducible container images with zero base-OS bloat.
+  - **AppImage Bundles (`-f appimage`)**: Single-file executables with embedded squashfs runtimes for any Linux desktop.
+  - **Debian / RPM Packages (`-f deb`, `-f rpm`)**: Standard system packages containing the relocatable Guix closure for legacy server fleets.
+  - **SquashFS Images (`-f squashfs`)**: Read-only compressed images ideal for Singularity, Apptainer, and HPC network filesystems.
+
+Crucially, **Guix does not need Docker to build Docker images**, nor does it need AppImage toolkits or Debian build tools. It creates all of these archives directly from the store graph with bit-for-bit reproducibility.
+
+### The Relocatability Miracle: How Non-Guix Systems Run Store Binaries
+
+There is an obvious technical hurdle: binaries compiled by Guix have their runtime library paths (`RUNPATH`) hardcoded to absolute paths inside `/gnu/store/...`. 
+
+If you copy these binaries to a machine that does not have `/gnu/store` mounted, any attempt to launch them fails immediately with:
+
+`bash: ./bin/python3: No such file or directory`
+
+The Linux dynamic linker (`ld-linux.so`) cannot find its interpreter at `/gnu/store/...`!
+
+How does `guix pack` solve this without requiring root access on the target machine? It provides three distinct **relocation wrappers** via the `-R` (or `–relocatable`) flag:
+
+#### 1. User Namespaces (The Default)
+
+On modern Linux kernels (version 3.10+), an unprivileged user can create a mount namespace (using the `clone(2)` or `unshare(2)` system calls). 
+When you invoke a relocatable binary produced with `guix pack -R`, a lightweight C launcher executes first. It creates an unprivileged user and mount namespace, mounts the unpacked directory onto a virtual `/gnu/store` visible only to that process tree, and executes the target program. To the application, `/gnu/store` exists perfectly, while the host filesystem remains untouched!
+
+#### 2. PRoot Fallback
+
+Some hardened institutional clusters or older Linux kernels disable unprivileged user namespaces (`kernel.unprivileged_userns_clone = 0`). In this scenario, the wrapper automatically falls back to **PRoot** (which intercepts filesystem system calls via `ptrace(2)` to translate `/gnu/store` accesses transparently in user space).
+
+#### 3. Fakechroot Fallback
+
+As a final lightweight fallback, Guix can employ an `LD_PRELOAD` wrapper that intercepts standard C library file functions.
+
+> [!IMPORTANT]
+> **✨ Functional Alchemy & Arcana: The Execution Ladder**
+>
+> By passing `–relocatable` (or `-R`), Guix generates binaries that try:
+>
+> **User Namespaces** → (fallback) → **PRoot**
+>
+> Your package will run on virtually **any** Linux machine from the past 15 years, unprivileged, without installing Guix or Docker!
+
+### Packaging for High-Performance Computing (HPC)
+
+HPC clusters represent the most common battleground for relocatable bundles. Imagine you have built a complex computational pipeline using Python, NumPy, SciPy, and OpenMPI. The target cluster runs Red Hat Enterprise Linux 7 with no internet access and no Guix.
+
+#### Building a Self-Contained Tarball
+
+Let us package Python and your analysis tools into a standalone, relocatable tarball:
+```bash
+# Generate a relocatable tarball with symlinks for convenient execution
+guix pack -R \
+  -S /bin=bin \
+  -S /lib=lib \
+  -S /share=share \
+  python python-numpy python-scipy \
+  -C xz
+```
+
+Let us dissect the flags:
+
+  - `-R` (or `–relocatable`): Wraps all executables with the user-namespace / PRoot relocation launcher.
+  - `-S /bin=bin`: Creates a top-level `bin/` symlink pointing to the profile's `bin/` directory inside the archive. This ensures you can unpack and immediately run `./bin/python3`.
+  - `-C xz`: Compresses the output archive using XZ (options include `gzip`, `bzip2`, `zstd`, `none`).
+
+Guix builds the closure, assembles the archive, and prints the path of the generated tarball:
+
+`/gnu/store/3x9k1p...-tarball-pack.tar.xz`
+
+#### Deploying and Running on the HPC Cluster
+
+Now, transfer this tarball to the remote supercomputer using `scp` or an external drive:
+```bash
+# On your local Guix workstation:
+scp /gnu/store/3x9k1p...-tarball-pack.tar.xz user@cluster.hpc.edu:~/
+
+# On the remote supercomputer (which has NO Guix installed):
+ssh user@cluster.hpc.edu
+mkdir -p ~/my-env && cd ~/my-env
+tar -xf ~/3x9k1p...-tarball-pack.tar.xz
+
+# Execute immediately without root permissions!
+./bin/python3 -c "import numpy, scipy; print('HPC Success with NumPy', numpy.__version__)"
+```
+
+Notice what just happened: the cluster node has no `/gnu/store`, no internet access, and ancient system libraries. Yet Python, NumPy, OpenBLAS, and GCC runtime libraries executed flawlessly in user space!
+
+#### Submitting SLURM Batch Jobs
+
+You can directly submit your relocatable bundle in SLURM or PBS/Torque batch submission scripts:
+```bash
+#!/bin/bash
+#SBATCH --job-name=guix_sim
+#SBATCH --nodes=4
+#SBATCH --ntasks-per-node=16
+#SBATCH --time=12:00:00
+
+# Execute simulation using our unpacked relocatable Guix environment
+~/my-env/bin/python3 ~/scripts/distributed_simulation.py --input /data/raw.h5
+```
+
+### Direct Store Transfers: `guix copy` and `guix archive`
+
+If the remote machine or cluster *does* have GNU Guix installed (such as a cluster where sysadmins run the `guix-daemon`), you do not even need to pack tarballs. You can beam store items directly across SSH connections.
+
+#### Zero-Friction Transfer with `guix copy`
+
+`guix copy` transfers a package and its complete closure over an SSH pipe directly into the remote daemon's store:
+```bash
+# Copy the entire closure of R and Bioconductor to the remote cluster
+guix copy --to=user@cluster.hpc.edu r r-deseq2
+
+# Or pull an environment built on a fast build farm down to your local laptop
+guix copy --from=builder.internal.net /gnu/store/8j29...-large-model
+```
+
+Because Guix checks store hashes on both sides, it transfers **only the missing store items**! If the remote machine already has GLIBC and Python, `guix copy` only beams over the delta.
+
+#### Air-Gapped Transfers with `guix archive`
+
+For military, medical, or secure air-gapped systems that are physically disconnected from the internet and have no SSH access:
+```bash
+# 1. Export package closure to an authenticated binary archive file
+guix archive --export -r python python-pytorch > pytorch-closure.nar
+
+# 2. Walk the USB drive across the air-gap to the secure facility
+
+# 3. Import directly into the secure machine's Guix store
+guix archive --import < pytorch-closure.nar
+```
+
+The archive is cryptographically signed with your private key and authenticated by the recipient machine's authorized keys.
+
+### Docker and OCI Images Without Docker: `-f docker`
+
+Traditional `Dockerfile` workflows are an operational nightmare:
+```bash
+# The Traditional Anti-Pattern: Fragile, non-reproducible, bloated
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y python3 python3-pip curl gcc \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip3 install torch torchvision --extra-index-url https://...
+COPY . /app
+CMD ["python3", "/app/server.py"]
+```
+
+This Dockerfile violates every tenet of engineering reliability:
+
+  - **Non-reproducible**: Running this tomorrow pulls different Ubuntu security patches and different `pip` wheels.
+  - **Bloated**: You ship a package manager (`apt`), systemd stubs, man pages, documentation, and build caches you will never use in production.
+  - **Privileged Daemon**: Building requires the Docker daemon running with root privileges on the host.
+
+#### Building a Minimal Docker Image with `guix pack`
+
+With `guix pack`, Guix constructs the Docker image archive directly from its dependency graph without running Docker:
+```bash
+# Generate an ultra-lean, reproducible Docker image
+guix pack -f docker \
+  -S /bin=bin \
+  -S /lib=lib \
+  --entry-point=bin/guile \
+  guile
+```
+
+Let us examine a real-world web microservice example packaging Python, Uvicorn, and a REST API:
+```bash
+guix pack -f docker \
+  -S /bin=bin \
+  -S /etc=etc \
+  --entry-point=bin/uvicorn \
+  python python-uvicorn python-fastapi nss-certs
+```
+
+<div align="center">
+  <img src="images/guix_pack_diagram.jpg" width="720" alt="Figure 12.1: From pure Scheme store graph to production: `guix pack` producing bit-for-bit identical Docker, AppImage, and HPC tarballs with zero host dependencies."/>
+  <br/>
+  <em>Figure 12.1: From pure Scheme store graph to production: `guix pack` producing bit-for-bit identical Docker, AppImage, and HPC tarballs with zero host dependencies.</em>
+</div>
+
+#### Loading and Running in Docker / Podman
+
+The resulting `.tar.gz` file is a valid OCI/Docker image. You can load and run it on any Kubernetes cluster, AWS ECS, or local Docker daemon:
+```bash
+# Load image into Docker or Podman
+docker load < /gnu/store/7q8m...-docker-pack.tar.gz
+
+# Inspect image size and history
+docker images
+# REPOSITORY          TAG                 IMAGE ID            SIZE
+# guile-fastapi       latest              4f8c9b2a1e0d        82.4MB
+
+# Run the container
+docker run -p 8000:8000 guile-fastapi:latest
+```
+
+> [!IMPORTANT]
+> **✨ Functional Alchemy & Arcana: Why Guix Docker Images Are Superior**
+>
+> 
+>   - **Bit-for-Bit Reproducible**: Two developers compiling the same package commit with `guix pack -f docker` generate Docker images with the exact same SHA-256 image ID!
+>   - **Attack Surface Reduction**: There is no `/bin/sh`, no package manager, no compiler, and no unnecessary binaries inside the container unless you explicitly declare them. If an attacker discovers an injection vulnerability, there are no shells or system utilities to exploit!
+>   - **Minimal Footprint**: A Guix-built Python microservice image often weighs 60MB, compared to 850MB for standard Debian-based Python images.
+> 
+
+### Single-File Desktop Apps: `-f appimage`
+
+Desktop Linux distribution has long suffered from packaging fragmentation. An Ubuntu user wants a `.deb`, a Fedora user wants an `.rpm`, an Arch user wants a PKGBUILD, and someone on an older openSUSE release cannot run your app because their system libraries are too old.
+
+The **AppImage** format packages an application and its runtime dependencies into a single executable file that runs on any modern desktop Linux distribution.
+
+`guix pack` can build AppImages out of the box:
+```bash
+# Package the Inkscape vector graphics editor into a standalone AppImage
+guix pack -f appimage \
+  -S /bin=bin \
+  --entry-point=bin/inkscape \
+  inkscape
+```
+
+Or package a lightweight text editor or custom tool:
+```bash
+# Package a terminal editor into an executable AppImage
+guix pack -f appimage \
+  -S /bin=bin \
+  --entry-point=bin/nano \
+  nano
+```
+
+The output is an executable AppImage file:
+```bash
+# Make executable and run anywhere:
+chmod +x /gnu/store/6v4k...-nano-appimage
+./gnu/store/6v4k...-nano-appimage
+```
+
+You can copy this file to a USB flash drive, email it to a colleague on Linux Mint or Ubuntu, and they can double-click and run it instantly. No installation, no PPA repositories, no root privileges, and no dynamic linker errors!
+
+### Packing from Manifests and Channels
+
+Just like `guix shell`, `guix pack` seamlessly accepts `-m manifest.scm` and combines with `guix time-machine`.
+
+#### 1. Packing from a Project `manifest.scm`
+
+Instead of listing individual packages on the command line, you can pack an entire development or production manifest:
+```scheme
+;; prod-manifest.scm
+(specifications->manifest
+  '("python"
+    "python-scipy"
+    "python-pandas"
+    "python-scikit-learn"
+    "nss-certs"))
+```
+
+Pack this manifest directly into a relocatable tarball or Docker image:
+```bash
+# Pack the entire manifest into a production Docker image
+guix pack -f docker -m prod-manifest.scm -S /bin=bin
+```
+
+#### 2. Time-Traveling Docker Builds
+
+Combine `guix time-machine` and `guix pack` to generate bit-for-bit identical Docker or HPC bundles from a pinned historical state:
+```bash
+# Build a Docker container using the exact package graph from 2024
+guix time-machine -C channels.scm -- \
+  pack -f docker \
+  -m prod-manifest.scm \
+  -S /bin=bin
+```
+
+This is the holy grail of DevOps and scientific computing: a pipeline that can rebuild a bit-for-bit identical production Docker container 5 years from now, completely offline, from source, without relying on external Docker registries or third-party package mirrors.
+
+### Summary: Choosing the Right Deployment Vehicle
+
+| **Format** | \textbf{Flag \ | Options} | **Best For** |
+| :--- | :--- | :--- | :--- |
+| **Relocatable Tarball** | `-R -S /bin=bin -C xz` | HPC clusters, unprivileged shared servers, no Guix or root |  |
+| **Docker / OCI** | `-f docker –entry-point=...` | Kubernetes, cloud deployments, microservices |  |
+| **AppImage** | `-f appimage –entry-point=...` | Desktop applications, non-technical Linux end-users |  |
+| **SquashFS** | `-f squashfs` | Singularity / Apptainer on HPC network filesystems |  |
+| **Guix Copy** | `guix copy –to=host pkg` | Machines with Guix installed, delta-only SSH synchronization |  |
+| **Guix Archive** | `guix archive –export pkg` | Air-gapped secure installations, offline backups |  |
+
+With `guix pack`, you no longer have to convince your company or your university HPC administrators to install GNU Guix before you can reap the rewards of functional reproducibility. You can build in the clean, principled haven of Guix, and distribute to the messy outside world in whatever container or archive format it demands.
+
+[⬆ Back to Table of Contents](#-table-of-contents)
+
+
+
+## Chapter 13: Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix
 
 > *""In theory, there is no difference between theory and practice. In practice, your laptop's Wi-Fi card requires a proprietary binary blob, your university cluster has no root access, and your computational biology pipeline broke because an R package updated at midnight.""*
 > 
@@ -1944,9 +2263,9 @@ Nonguix is an independent, decentralized channel that packages:
 > If you use Nonguix without authorizing its pre-built substitute server, Guix will happily download the 150MB Linux kernel source tarball and compile it on your machine, spinning your laptop fans at 100% for 45 minutes! Always authorize `substitutes.nonguix.org` before running system reconfiguration.
 
 <div align="center">
-  <img src="images/nonguix_laptop.jpg" width="720" alt="Figure 12.1: The GNU Gnu wizard high-fiving a modern laptop: Flawless Wi-Fi, crisp audio, and GPU acceleration through Nonguix without sacrificing declarative purity."/>
+  <img src="images/nonguix_laptop.jpg" width="720" alt="Figure 13.1: The GNU Gnu wizard high-fiving a modern laptop: Flawless Wi-Fi, crisp audio, and GPU acceleration through Nonguix without sacrificing declarative purity."/>
   <br/>
-  <em>Figure 12.1: The GNU Gnu wizard high-fiving a modern laptop: Flawless Wi-Fi, crisp audio, and GPU acceleration through Nonguix without sacrificing declarative purity.</em>
+  <em>Figure 13.1: The GNU Gnu wizard high-fiving a modern laptop: Flawless Wi-Fi, crisp audio, and GPU acceleration through Nonguix without sacrificing declarative purity.</em>
 </div>
 
 ### Case Study: The Ultimate Real-World Workstation / Laptop
@@ -2106,6 +2425,20 @@ Whether deploying computational clusters across hundreds of supercomputer nodes 
 | `guix pull` | Update Guix tool and pull latest package definitions |
 | `guix describe -f channels` | Export current channel commits to `channels.scm` |
 | `guix time-machine -C ch.scm – ...` | Execute commands in a locked historic environment |
+
+### Standalone Bundles and Distribution (`guix pack`)
+
+| **Command** | **Description** |
+| :--- | :--- |
+| `guix pack -R -S /bin=bin <pkgs>` | Build relocatable tarball with user-namespace / PRoot wrapper |
+| `guix pack -f docker -S /bin=bin <pkgs>` | Build reproducible Docker / OCI container image |
+| `guix pack -f docker –entry-point=bin/app` | Set default container entry point executable |
+| `guix pack -f appimage -S /bin=bin <pkg>` | Build single-file executable AppImage for desktop Linux |
+| `guix pack -f squashfs <pkgs>` | Build SquashFS image for Singularity / Apptainer |
+| `guix pack -m manifest.scm -f docker` | Pack complete project manifest into Docker image |
+| `guix copy –to=user@host <pkg>` | Synchronize package and missing closure over SSH |
+| `guix archive –export -r <pkg>` | Export signed closure archive for air-gapped systems |
+| `guix archive –import < archive.nar` | Import signed archive directly into local store |
 
 [⬆ Back to Table of Contents](#-table-of-contents)
 
