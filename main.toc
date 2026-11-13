@@ -140,12 +140,19 @@
 \contentsline {subsection}{\numberline {14.6.1}Diagnosing Shepherd Service Failures}{77}{subsection.14.6.1}%
 \contentsline {subsection}{\numberline {14.6.2}Inspecting Shepherd and System Logs}{77}{subsection.14.6.2}%
 \contentsline {subsection}{\numberline {14.6.3}Zero-Risk Testing with Ephemeral Virtual Machines}{77}{subsection.14.6.3}%
-\contentsline {section}{\numberline {14.7}The Diagnostic Alchemist's Field Guide}{78}{section.14.7}%
-\contentsline {part}{Appendices}{81}{part*.15}%
-\contentsline {chapter}{The Ultimate Guix Cheat Sheet}{81}{chapter*.16}%
-\contentsline {chapter}{Troubleshooting and Common Footguns}{84}{chapter*.22}%
-\contentsline {section}{\numberline {14.8}Footgun 1: ``No such file or directory'' on Existing Scripts}{84}{section.14.8}%
-\contentsline {section}{\numberline {14.9}Footgun 2: Scheme Error: ``Unbound Variable''}{85}{section.14.9}%
-\contentsline {section}{\numberline {14.10}Footgun 3: Test Suite Fails Because of No Network Access}{85}{section.14.10}%
-\contentsline {section}{\numberline {14.11}Footgun 4: Disk Space Running Out in \texttt {/tmp}}{85}{section.14.11}%
-\contentsline {section}{\numberline {14.12}Footgun 5: ``Why didn't \texttt {guix gc} free any space?''}{86}{section.14.12}%
+\contentsline {section}{\numberline {14.7}Real-World Case Studies: Finding Your Way in the Fog}{78}{section.14.7}%
+\contentsline {subsection}{\numberline {14.7.1}Case Study 1: The Missing Module and the Unbound Variable Mystery}{78}{subsection.14.7.1}%
+\contentsline {subsection}{\numberline {14.7.2}Case Study 2: Record Archeology---Taming Cryptic Field Errors}{79}{subsection.14.7.2}%
+\contentsline {subsection}{\numberline {14.7.3}Case Study 3: The Service Collision: ``Service X provided more than once''}{80}{subsection.14.7.3}%
+\contentsline {subsection}{\numberline {14.7.4}Case Study 4: The Build Crime Scene: Missing Headers and the Phantom \texttt {pkg-config}}{81}{subsection.14.7.4}%
+\contentsline {subsection}{\numberline {14.7.5}Case Study 5: Post-Reconfigure Triage: The Crashing Shepherd Daemon}{82}{subsection.14.7.5}%
+\contentsline {subsection}{\numberline {14.7.6}Case Study 6: The Accidental 4-Hour Compile: Diagnosing Substitute Cache Misses}{84}{subsection.14.7.6}%
+\contentsline {section}{\numberline {14.8}The Diagnostic Alchemist's Field Guide}{85}{section.14.8}%
+\contentsline {part}{Appendices}{88}{part*.16}%
+\contentsline {chapter}{The Ultimate Guix Cheat Sheet}{88}{chapter*.17}%
+\contentsline {chapter}{Troubleshooting and Common Footguns}{91}{chapter*.23}%
+\contentsline {section}{\numberline {14.9}Footgun 1: ``No such file or directory'' on Existing Scripts}{91}{section.14.9}%
+\contentsline {section}{\numberline {14.10}Footgun 2: Scheme Error: ``Unbound Variable''}{92}{section.14.10}%
+\contentsline {section}{\numberline {14.11}Footgun 3: Test Suite Fails Because of No Network Access}{92}{section.14.11}%
+\contentsline {section}{\numberline {14.12}Footgun 4: Disk Space Running Out in \texttt {/tmp}}{92}{section.14.12}%
+\contentsline {section}{\numberline {14.13}Footgun 5: ``Why didn't \texttt {guix gc} free any space?''}{93}{section.14.13}%

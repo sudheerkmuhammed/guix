@@ -2852,9 +2852,383 @@ $(guix system vm /etc/config.scm) -m 2048 -smp 2 -net nic -net user,hostfwd=tcp:
 >   - You can SSH into your VM on port 2222 (`ssh -p 2222 user@localhost`) to test daemons, verify network configurations, and validate Shepherd scripts before running `guix system reconfigure` on bare metal.
 > 
 
+### Real-World Case Studies: Finding Your Way in the Fog
+
+Abstract theory is comforting, but true diagnostic wisdom is forged in the fires of actual failure. Here are six battle-tested case studies representing the most frequent stumbling blocks encountered by newcomers, along with the exact step-by-step investigative workflows to resolve them.
+
+#### Case Study 1: The Missing Module and the Unbound Variable Mystery
+
+**The Setup**: You are configuring a developer workstation. You decide to add the Bluetooth service and a Tor daemon to your `services` list in `/etc/config.scm`:
+```scheme
+(operating-system
+  ;; ...
+  (services
+    (cons* (service bluetooth-service-type)
+           (service tor-service-type)
+           %desktop-services)))
+```
+
+**The Error**: You run `sudo guix system reconfigure /etc/config.scm` and get slapped with:
+```bash
+/etc/config.scm:42:19: error: bluetooth-service-type: unbound variable
+hint: Did you forget `(use-modules (gnu services desktop))'?
+```
+
+You dutifully add `(use-modules (gnu services desktop))` at the top of the file and re-run. Now Guix complains:
+```bash
+/etc/config.scm:43:19: error: tor-service-type: unbound variable
+```
+
+Notice that for `tor-service-type`, **Guix offers no hint at all!**
+
+**The Investigation**: Where on earth is `tor-service-type` defined? Do you comb through 1,200 source files in Guix?
+No! You have three immediate tools:
+
+  - **The Geiser Apropos Search (in Emacs)**:
+    Press `C-c C-d C-a` (`geiser-apropos`) and type `tor-service`. Within half a second, Emacs scans all loaded and discovered modules and displays:
+```scheme
+tor-service-type: <service-type> in (gnu services networking)
+```
+
+  - **The Fast Terminal `grep` over Guix Sources**:
+    If you are in a terminal, query the Scheme load path for services:
+```bash
+# Locate the services directory inside the store
+    guix repl -e '(display (search-path %load-path "gnu/services.scm"))'
+```
+
+    Or simply grep the installed module tree:
+```bash
+find $(guix repl -e '(display (dirname (search-path %load-path "gnu/services.scm")))') \
+      -name "*.scm" | xargs grep -l "define-public tor-service-type"
+```
+
+    It reports: `gnu/services/networking.scm`!
+
+**The Resolution**: Add `(gnu services networking)` to your `use-modules` declaration:
+```scheme
+(use-modules (gnu)
+             (gnu services desktop)     ; for bluetooth-service-type
+             (gnu services networking))  ; for tor-service-type
+```
+
+#### Case Study 2: Record Archeology—Taming Cryptic Field Errors
+
+**The Setup**: You want to run the OpenSSH daemon on a custom port and disable password authentication. You write:
+```scheme
+(service openssh-service-type
+  (openssh-configuration
+    (port 2222)
+    (password-authentication? "no")))
+```
+
+**The Error**: You reconfigure, and Guix crashes with:
+```bash
+ice-9/boot-9.scm:1685:16: In procedure struct-vtable: Wrong type argument: #f
+error: invalid field specifier `port`
+```
+
+Or, if you fix the field name to something plausible, you get:
+```bash
+error: value "no" does not match predicate boolean?
+```
+
+**The Investigation**: What are the exact field names and types for `openssh-configuration`?
+Instead of guessing or reading third-party blog posts from 2019, inspect the record definition directly:
+
+  - **In Emacs**: Put cursor on `openssh-configuration` and press `M-.`. You land directly on line 140 of `gnu/services/ssh.scm`.
+  - **In Terminal**: Launch `guix repl` and inspect the record type:
+```scheme
+(use-modules (gnu services ssh))
+    ,describe openssh-configuration
+```
+
+    Even better, instantiate the default configuration and inspect it:
+```scheme
+,inspect (openssh-configuration)
+```
+
+    Guile opens an interactive record browser displaying every field, its name, and its default value:
+```bash
+[0] port-number: 22
+    [1] permit-root-login: #f
+    [2] password-authentication?: #t
+    [3] public-key-authentication?: #t
+    [4] x11-forwarding?: #f
+```
+
+**The Revelation**:
+
+  - The field is not `port`; it is `port-number`, expecting an exact integer.
+  - The field is `password-authentication?`, expecting a Scheme boolean (`#t` or `#f`), not a string like `"no"`.
+
+**The Resolution**:
+```scheme
+(service openssh-service-type
+  (openssh-configuration
+    (port-number 2222)
+    (password-authentication? #f)))
+```
+
+#### Case Study 3: The Service Collision: "Service X provided more than once"
+
+**The Setup**: You just bought a graphic drawing tablet or hardware security key (e.g. YubiKey). To make it work, you must add custom UDev rules. You look up `udev-service-type` and write:
+```scheme
+(operating-system
+  ;; ...
+  (services
+    (cons* (service udev-service-type
+             (udev-configuration
+               (rules (list my-custom-udev-rules))))
+           %desktop-services)))
+```
+
+**The Error**:
+```bash
+guix system: error: service 'udev' provided more than once
+```
+
+> [!CAUTION]
+> **😭 Tears of the Imperative Developer: The Mental Model Collision**
+>
+> Why did this happen? In imperative distros, you just drop a file into `/etc/udev/rules.d/`. In Guix, `%desktop-services` already instantiates and configures a system-wide UDev daemon. 
+>
+> When you declared `(service udev-service-type ...)`, you told Guix to launch a **second, competing UDev daemon** managing the same hardware! Guix's service graph validator detects this collision and aborts before you render your system unbootable.
+
+**The Investigation in the REPL**: Let us verify where the existing UDev service lives:
+```scheme
+(use-modules (gnu) (gnu services) (gnu services base))
+(define svcs %desktop-services)
+
+;; Find all services that are of kind udev-service-type
+(filter (lambda (s) (eq? (service-kind s) udev-service-type)) svcs)
+;; => (#<service udev 7f3b890a2c00>)
+```
+
+Indeed, UDev is already a core member of `%desktop-services`!
+
+**The Resolution**: In Guix, you do not add a duplicate service; you **extend** the existing one. Guix provides a dedicated helper for this exact scenario:
+```scheme
+(use-modules (gnu services base))
+
+(operating-system
+  ;; ...
+  (services
+    (cons* (udev-rules-service 'my-drawing-tablet my-custom-udev-rules)
+           %desktop-services)))
+```
+
+The `udev-rules-service` helper emits a service extension that automatically injects your rules into the existing UDev daemon without collision!
+
+#### Case Study 4: The Build Crime Scene: Missing Headers and the Phantom `pkg-config`
+
+**The Setup**: You are packaging a C utility called `fast-calc` that depends on SQLite. You write your package definition:
+```scheme
+(define-public fast-calc
+  (package
+    (name "fast-calc")
+    (version "1.0")
+    (source (origin ...))
+    (build-system gnu-build-system)
+    (inputs (list sqlite))
+    (synopsis "Ultra fast calculator")
+    ...))
+```
+
+**The Error**: You run `guix build -f fast-calc.scm` and get:
+```bash
+starting phase `configure'
+checking for gcc... gcc
+checking for sqlite3... no
+configure: error: Package requirements (sqlite3 >= 3.0) were not met:
+No package 'sqlite3' found
+Consider adjusting the PKG_CONFIG_PATH environment variable...
+error: in phase 'configure': returned #f
+```
+
+**The Panic**: You scream: *"I literally put `sqlite` in `inputs`! Why does configure say sqlite3 is not found?!"*
+
+**The Forensic Investigation**:
+Run the build with `-K` to capture the sandbox:
+```bash
+guix build -K -f fast-calc.scm
+```
+
+Guix keeps the directory in `/tmp/guix-build-fast-calc-1.0.drv-0`.
+Now, step inside the exact environment:
+```bash
+guix shell -D -f fast-calc.scm -- bash
+cd /tmp/guix-build-fast-calc-1.0.drv-0
+source ./environment-variables
+```
+
+Now interrogate the environment:
+```bash
+# 1. Does SQLite exist in the store?
+echo $CPATH
+# => /gnu/store/...-sqlite-3.40.1/include
+
+# 2. Does the .pc file exist in PKG_CONFIG_PATH?
+echo $PKG_CONFIG_PATH
+# => /gnu/store/...-sqlite-3.40.1/lib/pkgconfig
+
+# 3. Can pkg-config find it?
+pkg-config --modversion sqlite3
+# => bash: pkg-config: command not found!
+```
+
+**The Eureka Moment**: SQLite was present, its headers were present, and its `.pc` file was in `PKG_CONFIG_PATH`. But the `configure` script used the `pkg.m4` macro to look for SQLite, and **`pkg-config` itself was never installed in the build container!**
+
+Because `pkg-config` is a build tool executed on the build host (not a library linked into the target binary), it belongs in `native-inputs`.
+
+**The Resolution**:
+```scheme
+(define-public fast-calc
+  (package
+    (name "fast-calc")
+    ;; ...
+    (native-inputs (list pkg-config))  ; <--- The missing link!
+    (inputs (list sqlite))
+    ;; ...))
+```
+
+Re-running `guix build -f fast-calc.scm` now succeeds in 4 seconds flat.
+
+#### Case Study 5: Post-Reconfigure Triage: The Crashing Shepherd Daemon
+
+**The Setup**: You configured an Nginx web server on your Guix machine to host an internal dashboard:
+```scheme
+(service nginx-service-type
+  (nginx-configuration
+    (server-blocks
+      (list (nginx-server-configuration
+              (listen '("80"))
+              (server-name '("localhost"))
+              (root "/srv/http"))))))
+```
+
+**The Symptom**: `sudo guix system reconfigure /etc/config.scm` completes cleanly. No build errors, no Scheme errors. But when you run `curl http://localhost`, you receive:
+```bash
+curl: (7) Failed to connect to localhost port 80: Connection refused
+```
+
+**The Investigation**:
+Check Shepherd service status:
+```bash
+sudo herd status nginx
+```
+
+Shepherd reports:
+```bash
+Status of nginx:
+  It is stopped.
+  It is enabled.
+  Provides: (nginx httpd)
+  Requires: (user-processes loopback)
+```
+
+Try starting it manually:
+```bash
+sudo herd start nginx
+```
+
+Shepherd prints:
+```bash
+herd: error: Service nginx could not be started.
+```
+
+Why? Ask Shepherd for detailed forensic telemetry:
+```bash
+sudo herd detailed-status nginx
+```
+
+Output:
+```bash
+Last exit code: 1
+  Respawn limit hit: 5 crashes in 3 seconds. Disabled respawning.
+```
+
+Now check the Shepherd daemon log and Nginx error log:
+```bash
+sudo tail -n 25 /var/log/shepherd.log
+sudo cat /var/log/nginx/error.log
+```
+
+The error log reveals the truth in plain English:
+```bash
+2026/11/14 10:15:22 [emerg] 1421#1421: bind() to 0.0.0.0:80 failed (98: Address already in use)
+```
+
+**The Resolution**:
+Run `sudo ss -tulpn | grep :80` to see who owns port 80. You find a stray Apache or lighttpd container running in the background! Terminate the rogue process and run `sudo herd start nginx`. The service starts instantly with `It is started [PID 1842]`.
+
+#### Case Study 6: The Accidental 4-Hour Compile: Diagnosing Substitute Cache Misses
+
+**The Setup**: You want to install a popular desktop application:
+```bash
+guix install inkscape
+```
+
+Instead of downloading pre-built binaries in 30 seconds, your laptop fans spin up to deafening speed. Your terminal prints:
+```bash
+The following derivation will be built:
+  /gnu/store/...-gcc-11.3.0.drv
+building /gnu/store/...-gcc-11.3.0.drv...
+[  1%] Building CXX object ...
+```
+
+Your machine is compiling GCC and LLVM from source!
+
+> [!WARNING]
+> **⚠️ Caution: Footgun Detected!: The Gentoo Nightmare Scenario**
+>
+> Newcomers often panic here: *"I thought Guix had binary substitutes! Why is it compiling the entire C compiler toolchain on my dual-core laptop?!"*
+
+**The Diagnostic Workflow**:
+Stop the build immediately with `Ctrl-C`. Then investigate why substitutes were not found:
+
+  - **Always Dry-Run First (`-n`)**:
+    Before running any install, build, or reconfigure, pass `-n` (or `–dry-run`):
+```bash
+guix install inkscape -n
+```
+
+    Guix will tell you upfront:
+    
+      - `124.5 MB would be downloaded`: Pre-built binaries exist. Safe to proceed!
+      - `The following derivations will be built`: No substitute exists. You will be compiling from source!
+    
+
+  - **Check Substitute Server Health with `guix weather`**:
+```bash
+guix weather inkscape
+```
+
+    This queries the build farm (`bordeaux.guix.gnu.org` or `ci.guix.gnu.org`) and reports whether binary substitutes are currently available for your architecture.
+
+  - **Identify Substitute URL Configuration**:
+    Check whether your `guix-daemon` is configured with authorized substitute keys and servers:
+```bash
+# Check authorized keys
+    ls -l /etc/guix/acl
+```
+
+    If `/etc/guix/acl` is missing or empty, the daemon refuses to download remote substitutes for security reasons! Authorize the official build farm:
+```bash
+sudo guix archive --authorize < \
+      $(guix repl -e '(display (search-path %load-path "gnu/packages/substitutes/bordeaux.guix.gnu.org.pub"))')
+```
+
+  - **Diagnose Channel Drift**:
+    If you ran `guix pull` five minutes after a maintainer committed a change to the core toolchain, the continuous integration servers might still be compiling the binaries in the queue.
+    
+    Using `guix describe`, check your current commit. If you pulled too close to the bleeding edge, use `guix time-machine` to pin to a commit from 24 hours earlier where 100% of binary substitutes are cached.
+
 ### The Diagnostic Alchemist's Field Guide
 
-When things go bump in the night, consult this diagnostic reference matrix:
+When things go bump in the night, consult these diagnostic reference matrices:
+
+#### Evaluation and Build Diagnostics
 
 | **Symptom** | **Diagnostic Tool** | **Alchemical Cure** |
 | :--- | :--- | :--- |
@@ -2862,20 +3236,33 @@ When things go bump in the night, consult this diagnostic reference matrix:
 | `guix system build -d -v 2` \newline `guix repl` |  |  |
 | Build fails during `make` or `make check` in chroot |  |  |
 | `guix build -K <pkg>` \newline `guix shell -D <pkg>` |  |  |
+| Missing C library during `configure` despite `inputs` |  |  |
+| `guix build -K` \newline `environment-variables` |  |  |
 | Unsure why package pulls in huge unwanted dependency |  |  |
 | `guix size <pkg>` \newline `guix graph –path` |  |  |
 | Cannot find where a package or service is defined |  |  |
 | `guix edit <pkg>` \newline `M-.` in Emacs / Geiser |  |  |
+
+*Evaluation and Build Diagnostics.*
+
+#### Service, Runtime, and Substitute Diagnostics
+
+| **Symptom** | **Diagnostic Tool** | **Alchemical Cure** |
+| :--- | :--- | :--- |
 | Syntax error in `modify-services` or system record |  |  |
 | `guix repl` \newline `primitive-load` |  |  |
+| "Service X provided more than once" conflict |  |  |
+| `guix repl` \newline `operating-system-services` |  |  |
 | System service fails to start or crashes on boot |  |  |
 | `herd detailed-status <svc>` \newline `/var/log/shepherd.log` |  |  |
+| Unexpected 4-hour source compilation of core toolchain |  |  |
+| `guix weather` \newline `guix build -n` |  |  |
 | Fear of breaking workstation on reconfigure |  |  |
 | `guix system vm config.scm` |  |  |
 
-*The Diagnostic Alchemist's Field Guide.*
+*Service, Runtime, and Substitute Diagnostics.*
 
-With these tools at your command, the parentheses are no longer an impenetrable barrier. They are a transparent window into the living soul of your operating system.
+With these tools and case studies at your command, the parentheses are no longer an impenetrable barrier. They are a transparent window into the living soul of your operating system.
 
 [⬆ Back to Table of Contents](#-table-of-contents)
 
