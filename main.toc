@@ -1,4 +1,4 @@
-\contentsline {chapter}{Preface: The Imperative Hellscape and the Functional Cure}{vii}{chapter*.3}%
+\contentsline {chapter}{Preface: The Imperative Hellscape and the Functional Cure}{viii}{chapter*.3}%
 \contentsline {part}{I\hspace {1em}The Grand Illusion: Package Management Done Right}{1}{part.1}%
 \contentsline {chapter}{\numberline {1}The Curse of FHS and the Salvation of the Store}{2}{chapter.1}%
 \contentsline {section}{\numberline {1.1}The Myth of the Shared Library}{2}{section.1.1}%
@@ -165,12 +165,23 @@
 \contentsline {subsection}{\numberline {15.7.1}The 3-Step Setup}{94}{subsection.15.7.1}%
 \contentsline {subsection}{\numberline {15.7.2}The Magic in Action}{95}{subsection.15.7.2}%
 \contentsline {section}{\numberline {15.8}The Ultimate Lisp Desktop: EXWM on Guix System}{95}{section.15.8}%
-\contentsline {section}{\numberline {15.9}Summary: An Unbreakable Alliance}{96}{section.15.9}%
-\contentsline {part}{Appendices}{98}{part*.17}%
-\contentsline {chapter}{The Ultimate Guix Cheat Sheet}{98}{chapter*.18}%
-\contentsline {chapter}{Troubleshooting and Common Footguns}{101}{chapter*.24}%
-\contentsline {section}{\numberline {15.10}Footgun 1: ``No such file or directory'' on Existing Scripts}{101}{section.15.10}%
-\contentsline {section}{\numberline {15.11}Footgun 2: Scheme Error: ``Unbound Variable''}{102}{section.15.11}%
-\contentsline {section}{\numberline {15.12}Footgun 3: Test Suite Fails Because of No Network Access}{102}{section.15.12}%
-\contentsline {section}{\numberline {15.13}Footgun 4: Disk Space Running Out in \texttt {/tmp}}{102}{section.15.13}%
-\contentsline {section}{\numberline {15.14}Footgun 5: ``Why didn't \texttt {guix gc} free any space?''}{103}{section.15.14}%
+\contentsline {section}{\numberline {15.9}Complete Real-World Recipes and Concrete Examples}{96}{section.15.9}%
+\contentsline {subsection}{\numberline {15.9.1}Recipe 1: The Production-Grade \texttt {init.el} (System Crafters Style)}{96}{subsection.15.9.1}%
+\contentsline {subsection}{\numberline {15.9.2}Recipe 2: Project-Level LSP Development in Action}{97}{subsection.15.9.2}%
+\contentsline {paragraph}{Step 1: Define the Project Manifest (\texttt {manifest.scm})}{97}{paragraph*.17}%
+\contentsline {paragraph}{Step 2: Create the Direnv Trigger (\texttt {.envrc})}{98}{paragraph*.18}%
+\contentsline {paragraph}{Step 3: Open in Emacs and Develop}{98}{paragraph*.19}%
+\contentsline {subsection}{\numberline {15.9.3}Recipe 3: Step-by-Step Emacs-Guix Workflows}{98}{subsection.15.9.3}%
+\contentsline {paragraph}{Workflow A: Installing Software Visually}{98}{paragraph*.20}%
+\contentsline {paragraph}{Workflow B: Visual Profile Diffing}{98}{paragraph*.21}%
+\contentsline {paragraph}{Workflow C: Reconfiguring Guix System with Streaming Logs}{99}{paragraph*.22}%
+\contentsline {subsection}{\numberline {15.9.4}Recipe 4: Package Authoring Boilerplate with Tempel Snippets}{99}{subsection.15.9.4}%
+\contentsline {section}{\numberline {15.10}Summary: An Unbreakable Alliance}{99}{section.15.10}%
+\contentsline {part}{Appendices}{102}{part*.23}%
+\contentsline {chapter}{The Ultimate Guix Cheat Sheet}{102}{chapter*.24}%
+\contentsline {chapter}{Troubleshooting and Common Footguns}{105}{chapter*.30}%
+\contentsline {section}{\numberline {15.11}Footgun 1: ``No such file or directory'' on Existing Scripts}{105}{section.15.11}%
+\contentsline {section}{\numberline {15.12}Footgun 2: Scheme Error: ``Unbound Variable''}{106}{section.15.12}%
+\contentsline {section}{\numberline {15.13}Footgun 3: Test Suite Fails Because of No Network Access}{106}{section.15.13}%
+\contentsline {section}{\numberline {15.14}Footgun 4: Disk Space Running Out in \texttt {/tmp}}{106}{section.15.14}%
+\contentsline {section}{\numberline {15.15}Footgun 5: ``Why didn't \texttt {guix gc} free any space?''}{107}{section.15.15}%

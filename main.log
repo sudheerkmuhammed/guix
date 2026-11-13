@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  14 NOV 2026 01:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  14 NOV 2026 01:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1069,13 +1069,13 @@ l.29 ...Hello \texttt {guix shell}}{17}{chapter.4}
                                                   % [2
 
 
-] [3] [4] [5])
+] [3] [4] [5] [6])
 \tf@toc=\write4
 \openout4 = `main.toc'.
 
 
-(./frontmatter/preface.tex [6]
-<images/preface_hellscape_zen.jpg, id=414, 331.4784pt x 185.0112pt>
+(./frontmatter/preface.tex [7]
+<images/preface_hellscape_zen.jpg, id=428, 331.4784pt x 185.0112pt>
 File: images/preface_hellscape_zen.jpg Graphic file (type jpg)
 <use images/preface_hellscape_zen.jpg>
 Package pdftex.def Info: images/preface_hellscape_zen.jpg  used on input line 1
@@ -1086,12 +1086,12 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2
  (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-[7
+[8
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <14.4> on input line 53.
- [8 <./images/preface_hellscape_zen.jpg>]) [9] [1
+ [9 <./images/preface_hellscape_zen.jpg>]) [10] [1
 
 
 ]
@@ -1100,7 +1100,7 @@ Chapter 1.
 [2
 
 ]
-<images/store_vs_fridge.jpg, id=445, 331.4784pt x 185.0112pt>
+<images/store_vs_fridge.jpg, id=459, 331.4784pt x 185.0112pt>
 File: images/store_vs_fridge.jpg Graphic file (type jpg)
 <use images/store_vs_fridge.jpg>
 Package pdftex.def Info: images/store_vs_fridge.jpg  used on input line 59.
@@ -1120,7 +1120,7 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
 [12
 
 ] [13] [14]
-<images/time_machine.jpg, id=644, 331.4784pt x 185.0112pt>
+<images/time_machine.jpg, id=658, 331.4784pt x 185.0112pt>
 File: images/time_machine.jpg Graphic file (type jpg)
 <use images/time_machine.jpg>
 Package pdftex.def Info: images/time_machine.jpg  used on input line 139.
@@ -1139,7 +1139,7 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <20.74> not available
 [17
 
 ]
-<images/docker_vs_guix_shell.jpg, id=681, 331.4784pt x 185.0112pt>
+<images/docker_vs_guix_shell.jpg, id=695, 331.4784pt x 185.0112pt>
 File: images/docker_vs_guix_shell.jpg Graphic file (type jpg)
 <use images/docker_vs_guix_shell.jpg>
 Package pdftex.def Info: images/docker_vs_guix_shell.jpg  used on input line 85
@@ -1163,7 +1163,7 @@ ith \T1/lmtt/b/n/10 append \T1/lmr/bx/n/10 (+20) and
  []
 
 [29] [30]
-<images/rollback_button.jpg, id=940, 331.4784pt x 185.0112pt>
+<images/rollback_button.jpg, id=955, 331.4784pt x 185.0112pt>
 File: images/rollback_button.jpg Graphic file (type jpg)
 <use images/rollback_button.jpg>
 Package pdftex.def Info: images/rollback_button.jpg  used on input line 225.
@@ -1218,7 +1218,7 @@ Chapter 12.
 [52
 
 ] [53] [54] [55] [56]
-<images/guix_pack_diagram.jpg, id=1416, 331.4784pt x 185.0112pt>
+<images/guix_pack_diagram.jpg, id=1430, 331.4784pt x 185.0112pt>
 File: images/guix_pack_diagram.jpg Graphic file (type jpg)
 <use images/guix_pack_diagram.jpg>
 Package pdftex.def Info: images/guix_pack_diagram.jpg  used on input line 210.
@@ -1258,7 +1258,7 @@ Overfull \hbox (8.05975pt too wide) in paragraph at lines 109--110
  ded-i-cated build farm at \T1/lmtt/m/n/10 https://substitutes.nonguix.org
  []
 
-<images/nonguix_laptop.jpg, id=1515, 331.4784pt x 185.0112pt>
+<images/nonguix_laptop.jpg, id=1529, 331.4784pt x 185.0112pt>
 File: images/nonguix_laptop.jpg Graphic file (type jpg)
 <use images/nonguix_laptop.jpg>
 Package pdftex.def Info: images/nonguix_laptop.jpg  used on input line 118.
@@ -1737,25 +1737,26 @@ ile di-rectly in Scheme us-ing []\T1/lmtt/b/n/10 home-emacs-service-type[]\T1/l
 mr/m/n/10 (-20) . 
  []
 
-[91] [92] [93] [94] [95]) [96] [97
+[91] [92] [93] [94] [95] [96] [97] [98] [99]) [100] [101
 
 
-] (./backmatter/appendix_cheatsheet.tex
+]
+(./backmatter/appendix_cheatsheet.tex
 Underfull \hbox (badness 10000) in paragraph at lines 82--82
 []|\T1/lmr/m/n/10.95 (+20) Export cur-rent chan-nel com-mits to
  []
 
-[98
+[102
 
-] [99]) (./backmatter/appendix_troubleshooting.tex [100] [101
+] [103]) (./backmatter/appendix_troubleshooting.tex [104] [105
 
-] [102])
-[103] (./main.aux) ) 
+] [106])
+[107] (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 33563 strings out of 480238
- 624842 string characters out of 5895851
- 1021642 words of memory out of 5000000
- 48935 multiletter control sequences out of 15000+600000
+ 33754 strings out of 480238
+ 627964 string characters out of 5895851
+ 1021645 words of memory out of 5000000
+ 48985 multiletter control sequences out of 15000+600000
  568708 words of font info for 247 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  104i,12n,107p,1001b,2039s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1772,10 +1773,10 @@ i12.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fo
 nts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtko10.
 pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/
 type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (115 pages, 8466810 bytes).
+Output written on main.pdf (120 pages, 8489451 bytes).
 PDF statistics:
- 3284 PDF objects out of 3580 (max. 8388607)
- 3097 compressed objects within 31 object streams
- 1708 named destinations out of 1728 (max. 500000)
- 56245 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 3491 PDF objects out of 3580 (max. 8388607)
+ 3297 compressed objects within 33 object streams
+ 1849 named destinations out of 2073 (max. 500000)
+ 56285 words of extra memory for PDF output out of 61914 (max. 10000000)
 
