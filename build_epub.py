@@ -25,6 +25,7 @@ def build():
         ("chapters/ch11_custom_channels.tex", 11, None),
         ("chapters/ch12_guix_pack.tex", 12, None),
         ("chapters/ch13_domain_impact_and_nonguix.tex", 13, None),
+        ("chapters/ch14_practical_debugging_and_repl.tex", 14, None),
         ("backmatter/appendix_cheatsheet.tex", None, "A"),
         ("backmatter/appendix_troubleshooting.tex", None, "B")
     ]

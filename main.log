@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  4 OCT 2026 18:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  14 NOV 2026 01:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1069,13 +1069,13 @@ l.29 ...Hello \texttt {guix shell}}{17}{chapter.4}
                                                   % [2
 
 
-] [3] [4])
+] [3] [4] [5])
 \tf@toc=\write4
 \openout4 = `main.toc'.
 
 
-(./frontmatter/preface.tex [5]
-<images/preface_hellscape_zen.jpg, id=261, 331.4784pt x 185.0112pt>
+(./frontmatter/preface.tex [6]
+<images/preface_hellscape_zen.jpg, id=361, 331.4784pt x 185.0112pt>
 File: images/preface_hellscape_zen.jpg Graphic file (type jpg)
 <use images/preface_hellscape_zen.jpg>
 Package pdftex.def Info: images/preface_hellscape_zen.jpg  used on input line 1
@@ -1086,12 +1086,12 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2
  (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-[6
+[7
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <14.4> on input line 53.
- [7 <./images/preface_hellscape_zen.jpg>]) [8] [1
+ [8 <./images/preface_hellscape_zen.jpg>]) [9] [1
 
 
 ]
@@ -1100,7 +1100,7 @@ Chapter 1.
 [2
 
 ]
-<images/store_vs_fridge.jpg, id=292, 331.4784pt x 185.0112pt>
+<images/store_vs_fridge.jpg, id=393, 331.4784pt x 185.0112pt>
 File: images/store_vs_fridge.jpg Graphic file (type jpg)
 <use images/store_vs_fridge.jpg>
 Package pdftex.def Info: images/store_vs_fridge.jpg  used on input line 59.
@@ -1120,7 +1120,7 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
 [12
 
 ] [13] [14]
-<images/time_machine.jpg, id=491, 331.4784pt x 185.0112pt>
+<images/time_machine.jpg, id=592, 331.4784pt x 185.0112pt>
 File: images/time_machine.jpg Graphic file (type jpg)
 <use images/time_machine.jpg>
 Package pdftex.def Info: images/time_machine.jpg  used on input line 139.
@@ -1139,7 +1139,7 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <20.74> not available
 [17
 
 ]
-<images/docker_vs_guix_shell.jpg, id=528, 331.4784pt x 185.0112pt>
+<images/docker_vs_guix_shell.jpg, id=629, 331.4784pt x 185.0112pt>
 File: images/docker_vs_guix_shell.jpg Graphic file (type jpg)
 <use images/docker_vs_guix_shell.jpg>
 Package pdftex.def Info: images/docker_vs_guix_shell.jpg  used on input line 85
@@ -1163,7 +1163,7 @@ ith \T1/lmtt/b/n/10 append \T1/lmr/bx/n/10 (+20) and
  []
 
 [29] [30]
-<images/rollback_button.jpg, id=787, 331.4784pt x 185.0112pt>
+<images/rollback_button.jpg, id=888, 331.4784pt x 185.0112pt>
 File: images/rollback_button.jpg Graphic file (type jpg)
 <use images/rollback_button.jpg>
 Package pdftex.def Info: images/rollback_button.jpg  used on input line 225.
@@ -1213,27 +1213,371 @@ Overfull \hbox (47.69174pt too wide) in paragraph at lines 64--65
 
 [49]) [50] [51
 
-] (./chapters/ch12_domain_impact_and_nonguix.tex
+] (./chapters/ch12_guix_pack.tex
 Chapter 12.
 [52
 
-] [53] [54]
+] [53] [54] [55] [56]
+<images/guix_pack_diagram.jpg, id=1363, 331.4784pt x 185.0112pt>
+File: images/guix_pack_diagram.jpg Graphic file (type jpg)
+<use images/guix_pack_diagram.jpg>
+Package pdftex.def Info: images/guix_pack_diagram.jpg  used on input line 210.
+(pdftex.def)             Requested size: 403.43115pt x 225.17412pt.
+ [57 <./images/guix_pack_diagram.jpg>] [58]
+Underfull \hbox (badness 6236) in paragraph at lines 328--328
+[]|\T1/lmr/m/n/10.95 (+20) HPC clus-ters, un-priv-i-leged
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 328--328
+[]|[]\T1/lmtt/b/n/10.95 -f docker
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 328--328
+[]|[]\T1/lmtt/b/n/10.95 -f appimage
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 328--328
+[]|\T1/lmr/m/n/10.95 (+20) Desktop ap-pli-ca-tions, non-
+ []
+
+
+Underfull \hbox (badness 2644) in paragraph at lines 328--328
+[]|\T1/lmr/m/n/10.95 (+20) Singularity / App-tainer on
+ []
+
+) (./chapters/ch13_domain_impact_and_nonguix.tex [59] [60]
+Chapter 13.
+[61
+
+] [62] [63]
 Overfull \hbox (8.05975pt too wide) in paragraph at lines 109--110
 []\T1/lmr/bx/n/10 (-20) Pre-Built Bi-nary Sub-sti-tutes\T1/lmr/m/n/10 (-20) : A
  ded-i-cated build farm at \T1/lmtt/m/n/10 https://substitutes.nonguix.org
  []
 
-<images/nonguix_laptop.jpg, id=1204, 331.4784pt x 185.0112pt>
+<images/nonguix_laptop.jpg, id=1462, 331.4784pt x 185.0112pt>
 File: images/nonguix_laptop.jpg Graphic file (type jpg)
 <use images/nonguix_laptop.jpg>
 Package pdftex.def Info: images/nonguix_laptop.jpg  used on input line 118.
 (pdftex.def)             Requested size: 403.43115pt x 225.17412pt.
-[55 <./images/nonguix_laptop.jpg>] [56]
+[64 <./images/nonguix_laptop.jpg>] [65]
 Overfull \hbox (67.69174pt too wide) in paragraph at lines 202--203
 [][][][][][][][][][][][][][][][][][][]  
  []
 
-) [57] [58
+) (./chapters/ch14_practical_debugging_and_repl.tex [66]
+Chapter 14.
+[67
+
+]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[68]
+Overfull \hbox (5.25554pt too wide) in paragraph at lines 76--77
+\T1/lmr/m/n/10 (-20) The sin-gle most valu-able command-line flag for pack-age 
+au-thors and main-tain-ers is []\T1/lmtt/b/n/10 -K[] \T1/lmr/m/n/10 (-20) (or [
+]\T1/lmtt/b/n/10 --keep-failed[]\T1/lmr/m/n/10 (-20) ): 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[69]
+Overfull \hbox (21.04695pt too wide) in paragraph at lines 159--160
+\T1/lmr/m/n/10 (-20) You will im-me-di-ately dis-cover whether the de-pen-dency
+ was in-tro-duced via an ac-ci-den-tal \T1/lmtt/m/n/10 propagated-inputs
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[70]
+Underfull \hbox (badness 10000) in paragraph at lines 194--195
+[]\T1/lmr/m/n/10 (+20) Package def-i-ni-tions live in \T1/lmtt/m/n/10 gnu/packa
+ges/<category>.scm \T1/lmr/m/n/10 (+20) (e.g.
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[71]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[72]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[73]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[74]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[75]
+Overfull \hbox (9.4238pt too wide) in paragraph at lines 448--449
+\T1/lmr/m/n/10 (-20) What hap-pens when your pack-age builds, your \T1/lmtt/m/n
+/10 config.scm \T1/lmr/m/n/10 (-20) eval-u-ates cleanly, []\T1/lmtt/b/n/10 guix
+ system reconfigure[]
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[76]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[77]
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|\T1/lmr/bx/n/10 (+20) Alchemical
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|[]\T1/lmtt/b/n/10 guix system
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|\T1/lmr/m/n/10 (+20) Identify
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) evaluation-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) time syn-tax
+ []
+
+
+Underfull \hbox (badness 6995) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) or record type
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) er-rors; in-spect
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|[]\T1/lmtt/b/n/10 guix build -K
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]\T1/lmtt/b/n/10 guix shell -D
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|\T1/lmr/m/n/10 (+20) Inspect
+ []
+
+
+Overfull \hbox (23.67528pt too wide) in paragraph at lines 552--552
+\T1/lmtt/m/n/10 /tmp/guix-build-...\T1/lmr/m/n/10 (-20) ;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) source
+ []
+
+
+Overfull \hbox (33.36804pt too wide) in paragraph at lines 552--552
+\T1/lmtt/m/n/10 environment-variables
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|[]\T1/lmtt/b/n/10 guix size
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]\T1/lmtt/b/n/10 guix graph
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|\T1/lmr/m/n/10 (+20) Trace short-est
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) de-pen-dency
+ []
+
+
+Underfull \hbox (badness 5504) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) path; elim-i-nate
+ []
+
+
+Underfull \hbox (badness 7081) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) ac-ci-den-tal prop-
+ []
+
+
+Underfull \hbox (badness 4036) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) hard-coded store
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|[]\T1/lmtt/b/n/10 guix edit
+ []
+
+
+Underfull \hbox (badness 4378) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) u-ate record ac-
+ []
+
+
+Underfull \hbox (badness 2142) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) ces-sors and ser-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|[]\T1/lmtt/b/n/10 herd
+ []
+
+
+Overfull \hbox (1.86813pt too wide) in paragraph at lines 552--552
+\T1/lmtt/b/n/10 detailed-status
+ []
+
+
+Overfull \hbox (32.84305pt too wide) in paragraph at lines 552--552
+\T1/lmtt/m/n/10 /var/log/shepherd.log| 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|\T1/lmr/m/n/10 (+20) Check ser-vice
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) respawn counts,
+ []
+
+
+Underfull \hbox (badness 1946) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) exit codes, and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|[]\T1/lmtt/b/n/10 guix system vm
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]|\T1/lmr/m/n/10 (+20) Boot pro-posed
+ []
+
+
+Underfull \hbox (badness 3281) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) sys-tem in a 5-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) second QEMU
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) sand-box be-fore
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+\T1/lmr/m/n/10 (+20) touch-ing bare
+ []
+
+)
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[78]
+
+Package fancyhdr Warning: \headheight is too small (14.0pt): 
+(fancyhdr)                Make it at least 22.48878pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.48878pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
+
+[79] [80
 
 
 ] (./backmatter/appendix_cheatsheet.tex
@@ -1241,18 +1585,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 82--82
 []|\T1/lmr/m/n/10.95 (+20) Export cur-rent chan-nel com-mits to
  []
 
-) (./backmatter/appendix_troubleshooting.tex [59
+[81
 
-] [60] [61
+] [82]) (./backmatter/appendix_troubleshooting.tex [83] [84
 
-] [62]) [63]
+] [85]) [86]
 (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 32332 strings out of 480238
- 607373 string characters out of 5895851
- 1018659 words of memory out of 5000000
- 48491 multiletter control sequences out of 15000+600000
- 566840 words of font info for 228 fonts, out of 8000000 for 9000
+ 32954 strings out of 480238
+ 615972 string characters out of 5895851
+ 1019175 words of memory out of 5000000
+ 48714 multiletter control sequences out of 15000+600000
+ 568049 words of font info for 240 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  104i,12n,107p,1001b,2039s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/
@@ -1268,10 +1612,10 @@ b></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/ty
 pe1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtko10.pfb></
 usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/
 public/lm/lmtti10.pfb>
-Output written on main.pdf (74 pages, 7295511 bytes).
+Output written on main.pdf (98 pages, 8376175 bytes).
 PDF statistics:
- 1956 PDF objects out of 2073 (max. 8388607)
- 1823 compressed objects within 19 object streams
- 969 named destinations out of 1000 (max. 500000)
- 55664 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 2676 PDF objects out of 2984 (max. 8388607)
+ 2511 compressed objects within 26 object streams
+ 1337 named destinations out of 1440 (max. 500000)
+ 56045 words of extra memory for PDF output out of 61914 (max. 10000000)
 
