@@ -22,6 +22,7 @@ LABEL_MAP = {
     "chap:guix-pack": ("[Chapter 12](#chapter-12-standalone-bundles-guix-pack-for-docker-appimage-and-hpc)", "Chapter 12"),
     "chap:domain-impact-and-nonguix": ("[Chapter 13](#chapter-13-guix-in-the-wild-domain-impact-and-taming-real-hardware-with-nonguix)", "Chapter 13"),
     "chap:debugging-and-repl": ("[Chapter 14](#chapter-14-the-alchemists-workbench-practical-debugging-repl-mastery-and-emacs-workflows)", "Chapter 14"),
+    "chap:emacs-and-guix": ("[Chapter 15](#chapter-15-the-twin-souls-gnu-emacs-and-the-living-lisp-machine)", "Chapter 15"),
     "appendix:cheatsheet": ("[Appendix A](#appendix-a-the-ultimate-guix-cheat-sheet)", "Appendix A"),
     "appendix:troubleshooting": ("[Appendix B](#appendix-b-troubleshooting-and-common-footguns)", "Appendix B"),
 }
@@ -336,6 +337,7 @@ def build_full_readme():
         ("chapters/ch12_guix_pack.tex", "Part V: The Real-World Frontier — Deployment, Domains & Pragmatic Hardware", 12, "Standalone Bundles: guix pack for Docker, AppImage, and HPC"),
         ("chapters/ch13_domain_impact_and_nonguix.tex", None, 13, "Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix"),
         ("chapters/ch14_practical_debugging_and_repl.tex", None, 14, "The Alchemist's Workbench: Practical Debugging, REPL Mastery, and Emacs Workflows"),
+        ("chapters/ch15_emacs_and_guix.tex", None, 15, "The Twin Souls: GNU Emacs and the Living Lisp Machine"),
         ("backmatter/appendix_cheatsheet.tex", "Appendices", None, "The Ultimate Guix Cheat Sheet", "A"),
         ("backmatter/appendix_troubleshooting.tex", None, None, "Troubleshooting and Common Footguns", "B"),
     ]
@@ -390,6 +392,7 @@ Whether you run Guix as an unprivileged, transactional package manager on top of
   - [Chapter 12: Standalone Bundles: `guix pack` for Docker, AppImage, and HPC](#chapter-12-standalone-bundles-guix-pack-for-docker-appimage-and-hpc)
   - [Chapter 13: Guix in the Wild: Domain Impact and Taming Real Hardware with Nonguix](#chapter-13-guix-in-the-wild-domain-impact-and-taming-real-hardware-with-nonguix)
   - [Chapter 14: The Alchemist's Workbench: Practical Debugging, REPL Mastery, and Emacs Workflows](#chapter-14-the-alchemists-workbench-practical-debugging-repl-mastery-and-emacs-workflows)
+  - [Chapter 15: The Twin Souls: GNU Emacs and the Living Lisp Machine](#chapter-15-the-twin-souls-gnu-emacs-and-the-living-lisp-machine)
 - [**Appendices**](#appendices)
   - [Appendix A: The Ultimate Guix Cheat Sheet](#appendix-a-the-ultimate-guix-cheat-sheet)
   - [Appendix B: Troubleshooting and Common Footguns](#appendix-b-troubleshooting-and-common-footguns)

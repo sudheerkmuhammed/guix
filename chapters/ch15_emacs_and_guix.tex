@@ -1,0 +1,415 @@
+\chapter{The Twin Souls: GNU Emacs and the Living Lisp Machine}
+\label{chap:emacs-and-guix}
+
+\epigraph{``Emacs outshines all other editing software in approximately the same way that the noonday sun does the stars. It is not just bigger and brighter; it simply makes everything else vanish.''}{--- Neal Stephenson, In the Beginning... Was the Command Line}
+
+\noindent
+Throughout the history of computer science, certain technologies have shared an almost telepathic affinity. Unix and C. The Web and JavaScript. Docker and Go. 
+
+And then there is \textbf{GNU Guix} and \textbf{GNU Emacs}.
+
+To describe Emacs as merely a ``text editor'' for GNU Guix is like describing the ocean as merely a storage medium for fish. In the Guix universe, Emacs occupies a sacred, foundational status. It is the spiritual ancestor, the primary development cockpit, the graphical interface, and the philosophical twin of GNU Guix. 
+
+Together, they represent the modern resurrection of a dream once thought lost to computing history: \textbf{The Living Lisp Machine}.
+
+In this chapter, we explore why Guix and Emacs are inseparable, how to install and configure Emacs on Guix, why Guix is secretly the greatest Emacs package manager on Earth, how to harness \texttt{guix.el} and Geiser, and how to combine \guixcmd{guix shell} with \texttt{envrc} to create the ultimate development environment.
+
+\section{The Philosophy of Twin Souls: Resurrecting the Lisp Machine}
+
+In the late 1970s and 1980s, computer scientists at the MIT Artificial Intelligence Laboratory and Symbolics created the \textbf{Lisp Machine}---a computer where there was no distinction between the operating system, the development environment, and the applications. Everything was Lisp. The code was malleable, self-documenting, and introspectable at runtime. You did not compile a static binary, deploy it, watch it crash, and read a core dump. You stepped directly into the living, running environment and reshaped reality on the fly.
+
+\begin{protipbox}[The Architecture of the Modern Lisp Machine]
+When you pair GNU Guix with GNU Emacs, the computing stack becomes conceptually unified:
+\begin{itemize}
+  \item \textbf{Desktop \& Windows}: EXWM (Emacs Lisp)
+  \item \textbf{Editing \& Workflow}: GNU Emacs buffers, Dired, Magit (Emacs Lisp)
+  \item \textbf{Userland \& Dotfiles}: Guix Home (Guile Scheme)
+  \item \textbf{Package Management}: GNU Guix profiles and derivations (Guile Scheme)
+  \item \textbf{Init System \& PID 1}: GNU Shepherd (Guile Scheme)
+  \item \textbf{Operating System Definition}: \texttt{/etc/config.scm} (Guile Scheme)
+\end{itemize}
+From system boot to the cursor in your text buffer, every layer is programmable, declarative, and inspectable in Lisp.
+\end{protipbox}
+
+The Unix revolution ultimately eclipsed the Lisp Machine. Unix made pragmatic compromises: it was built in C, relied on opaque binary files, and treated the filesystem as a flat hierarchy of mutable text files. 
+
+For forty years, GNU Emacs carried the torch of the Lisp Machine in exile. Inside Emacs, everything was Emacs Lisp (Elisp). Every buffer, every keybinding, every window, and every mode could be inspected, modified, and extended while the editor was running. But the moment Emacs interacted with the underlying host operating system, it collided with the harsh, cold reality of mutable Unix: brittle shared libraries in \texttt{/usr/lib}, broken package updates, and global environment variables.
+
+\begin{alchemybox}[The Full Stack Lisp Reunion]
+GNU Guix completes the circle. Guix took the purely functional principles of Eelco Dolstra's Nix and paired them with \textbf{GNU Guile Scheme}. 
+
+When you run Guix System with Emacs:
+\begin{itemize}
+  \item Your kernel and init system (GNU Shepherd) are controlled by Guile Scheme.
+  \item Your system configuration (\texttt{config.scm}) is Guile Scheme.
+  \item Your user environment (Guix Home) is Guile Scheme.
+  \item Your package recipes and build phases are Guile Scheme.
+  \item Your editor, mail client, terminal emulator, and window manager (EXWM) are Emacs Lisp.
+\end{itemize}
+The boundary between ``the operating system'' and ``the editor'' completely dissolves. You are once again sitting at an introspectable, programmable, unified Lisp Machine.
+\end{alchemybox}
+
+\section{Installing Emacs on Guix: Choosing the Right Flavor}
+
+Because Emacs is a central pillar of the GNU Project, Guix provides first-class, finely tuned packages for every conceivable deployment target. 
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Package Name} & \textbf{Intended Use Case and Architecture} \\
+\midrule
+\texttt{emacs-pgtk} & \textbf{The Modern Standard.} Built with Pure GTK (PGTK). Delivers native Wayland rendering without XWayland blurring or HiDPI scaling issues. Ideal for Sway, Hyprland, and GNOME Wayland. \\
+\addlinespace
+\texttt{emacs} & \textbf{The Classic GUI.} Built with standard X11 and GTK3 support. Recommended for traditional X11 window managers (XFCE, i3, Openbox). \\
+\addlinespace
+\texttt{emacs-no-x} & \textbf{The Headless Server.} Stripped of all graphical, image, and sound libraries. Compiles rapidly and runs directly inside a terminal over SSH. \\
+\addlinespace
+\texttt{emacs-wide-int} & Built with 64-bit integer support on 32-bit hardware architectures. \\
+\bottomrule
+\end{tabularx}
+\caption{The primary Emacs packages available in GNU Guix.}
+\end{table}
+
+\subsection{Native Compilation (\texttt{native-comp}) Out of the Box}
+
+Modern Emacs features \textbf{Native Compilation} (often called \texttt{gccemacs} or \texttt{native-comp}). Instead of interpreting Elisp byte-code (\texttt{.elc}), Emacs uses \texttt{libgccjit} to compile Elisp directly into native machine code (\texttt{.eln}), yielding $2.5\times$ to $5\times$ speedups across syntax highlighting, language servers, and buffer operations.
+
+\begin{protipbox}[Guix Solves the \texttt{libgccjit} ABI Nightmare]
+In traditional distributions (like Ubuntu, Debian, or Arch), setting up native compilation is often a fragile nightmare: you must install experimental \texttt{gcc} development packages, ensure \texttt{libgccjit} matches your running compiler version, and endure spontaneous background compilation locks that freeze the editor.
+
+In GNU Guix, \textbf{native compilation is enabled by default} in the core \texttt{emacs} and \texttt{emacs-pgtk} packages! The \texttt{guix-daemon} compiles core Elisp libraries into native \texttt{.eln} binaries ahead of time inside the hermetic store. You get blazing fast performance with zero compilation stutter on your desktop.
+\end{protipbox}
+
+To install the flagship Wayland-native package into your active profile:
+\begin{lstlisting}[style=guixcli]
+guix install emacs-pgtk
+\end{lstlisting}
+
+\section{Why Guix is the World's Best Emacs Package Manager}
+
+Ask any veteran Emacs user about package management, and their eyes will glaze over with memories of shattered configurations.
+
+Historically, Emacs users relied on \texttt{package.el} pulling packages from \textbf{MELPA} (Milkypostman's Emacs Lisp Package Archive), or more recently on tools like \texttt{straight.el} and \texttt{elpaca} that clone Git repositories directly.
+
+\begin{tearsbox}[The MELPA Fragility Trap]
+Why do traditional Emacs package managers fail?
+\begin{enumerate}
+  \item \textbf{Bleeding Edge Breakage}: MELPA builds packages automatically from the \texttt{master} branch of thousands of upstream Git repositories. You run \texttt{M-x package-upgrade-all} on a Monday morning, a maintainer pushed an untested commit twenty minutes ago, and your editor fails to boot.
+  \item \textbf{The Native C Library Wall}: What happens when an Emacs package needs a compiled C library?
+    \begin{itemize}
+      \item \texttt{vterm} (blazing fast terminal): Needs \texttt{libvterm} and \texttt{cmake}.
+      \item \texttt{pdf-tools} (vector PDF viewer): Needs \texttt{poppler}, \texttt{cairo}, and \texttt{libpng}.
+      \item \texttt{mu4e} (email client): Needs \texttt{mu} and the \texttt{xapian} search engine.
+      \item \texttt{telega} (Telegram client): Needs the C++ \texttt{tdlib} daemon.
+    \end{itemize}
+    Traditional Emacs package managers cannot install C libraries! They fail with cryptic compilation logs, forcing the user to imperatively run \texttt{sudo apt install libvterm-dev} or fiddle with build flags.
+\end{enumerate}
+\end{tearsbox}
+
+GNU Guix completely eliminates this problem. In Guix, **Emacs packages are first-class citizen packages in the store**, prefixed with \texttt{emacs-}:
+
+\begin{lstlisting}[style=guixcli]
+# Search over 1,500+ curated Emacs packages in Guix
+guix search emacs-magit
+guix search emacs-vterm
+guix search emacs-pdf-tools
+\end{lstlisting}
+
+When you install \texttt{emacs-vterm} via Guix:
+\begin{enumerate}
+  \item Guix fetches the verified source code.
+  \item Guix compiles the C module (\texttt{vterm-module.so}) inside a clean chroot against the exact, immutable \texttt{libvterm} in the store.
+  \item Guix natively compiles all Elisp files into \texttt{.eln} machine code.
+  \item When Emacs opens, \texttt{vterm} works instantly. Zero compilation, zero CMake errors, zero missing header warnings!
+\end{enumerate}
+
+Furthermore, because your Emacs packages reside in a transactional Guix profile, upgrading your plugins is protected by \textbf{instant atomic rollbacks}:
+\begin{lstlisting}[style=guixcli]
+# Upgraded your Emacs packages and don't like the new behavior?
+guix package --roll-back
+\end{lstlisting}
+Your previous generation is restored in 20 milliseconds.
+
+\section{The Mechanics: Autoloads, \texttt{EMACSLOADPATH}, and Instant Startup}
+
+How does GNU Emacs find packages installed through Guix?
+
+When you install any \texttt{emacs-*} package in your user profile, Guix creates a dedicated site directory:
+\begin{center}
+\storepath{\textasciitilde/.guix-profile/share/emacs/site-lisp/}
+\end{center}
+Inside this directory, Guix generates a unified autoloads file: \texttt{guix-emacs-autoloads.el}.
+
+\subsection{The System Crafters Instant Startup Pattern}
+
+In traditional setups, Emacs spends hundreds of milliseconds during startup initializing \texttt{package.el}, scanning \texttt{\textasciitilde/.emacs.d/elpa}, and checking for updates over HTTP.
+
+As popularized by David Wilson of \textbf{System Crafters} (\url{https://systemcrafters.net}), when you allow GNU Guix to manage your Emacs packages, you can completely disable \texttt{package.el} at startup!
+
+Create or edit your \texttt{\textasciitilde/.emacs.d/early-init.el}:
+
+\begin{lstlisting}[style=guixscheme]
+;;; early-init.el --- The Instant Startup Hack -*- lexical-binding: t; -*-
+
+;; 1. Prevent package.el from activating packages at startup.
+;; Guix already manages our packages and sets up autoloads!
+(setq package-enable-at-startup nil)
+
+;; 2. Prevent package.el from contacting ELPA/MELPA archives
+(setq package-archives nil)
+
+;; 3. Temporarily raise the garbage collection threshold during startup
+(setq gc-cons-threshold (* 100 1024 1024))
+
+;; 4. Restore normal GC threshold after startup completes
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (setq gc-cons-threshold (* 8 1024 1024))))
+\end{lstlisting}
+
+With this single adjustment, Emacs startup time typically plunges from 3.5 seconds down to **under 0.2 seconds**! All your packages are already natively compiled, indexed by Guix's autoloads, and ready in memory.
+
+\subsection{Using \texttt{use-package} with Guix}
+
+You can still use the beloved \texttt{use-package} macro to structure your configuration cleanly. Since Guix ensures all packages are already installed, you simply omit \texttt{:ensure t}:
+
+\begin{lstlisting}[style=guixscheme]
+;;; init.el --- Clean, Reproducible Configuration
+
+;; Vertico for minimal, vertical completion
+(use-package vertico
+  :init
+  (vertico-mode 1))
+
+;; Orderless for fuzzy space-separated matching
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic)))
+
+;; Corfu for sleek in-buffer completion popups
+(use-package corfu
+  :init
+  (global-corfu-mode 1))
+
+;; Magit: The greatest Git interface ever crafted
+(use-package magit
+  :bind ("C-x g" . magit-status))
+\end{lstlisting}
+
+\section{Declaring Emacs with Guix Home}
+
+In Chapter~\ref{chap:guix-home}, we mastered declarative userlands. Let us see how to declare your entire Emacs installation, every single plugin, and your configuration file directly in Scheme using \guixcmd{home-emacs-service-type}.
+
+Here is a complete, real-world snippet for your \texttt{\textasciitilde/.config/guix/home-configuration.scm}:
+
+\begin{lstlisting}[style=guixscheme]
+(use-modules (gnu home)
+             (gnu home services)
+             (gnu home services shells)
+             (gnu packages emacs)
+             (gnu packages emacs-xyz)
+             (gnu services))
+
+(home-environment
+  (packages
+    (list
+      ;; The Wayland-native editor
+      emacs-pgtk
+
+      ;; Core modern completion UI
+      emacs-vertico
+      emacs-orderless
+      emacs-marginalia
+      emacs-consult
+      emacs-corfu
+
+      ;; Development & Lisp Superpowers
+      emacs-geiser
+      emacs-geiser-guile
+      emacs-guix
+      emacs-magit
+      emacs-vterm
+      emacs-envrc))
+
+  (services
+    (list
+      ;; Manage Emacs daemon as a Shepherd user service
+      (service home-emacs-service-type
+        (home-emacs-configuration
+          (package emacs-pgtk)
+          (server-mode? #t))) ; Starts `emacs --daemon` on login!
+
+      ;; Symlink our version-controlled dotfiles
+      (service home-files-service-type
+        `((".emacs.d/early-init.el" ,(local-file "emacs/early-init.el"))
+          (".emacs.d/init.el"       ,(local-file "emacs/init.el")))))))
+\end{lstlisting}
+
+When you run \guixcmd{guix home reconfigure}, Guix:
+\begin{enumerate}
+  \item Installs \texttt{emacs-pgtk} and all specified plugins into your home profile.
+  \item Hermetically links your native C libraries (like \texttt{vterm}).
+  \item Sets up Shepherd to launch the Emacs server daemon in the background on login.
+  \item Deploys your \texttt{init.el} atomically.
+\end{enumerate}
+
+\section{The Flagship Interface: \texttt{emacs-guix} (\texttt{guix.el})}
+
+If you prefer a rich, visual buffer-based interface for managing your operating system, \textbf{Emacs-Guix} (authored by Alex Kost) turns Emacs into the ultimate Guix control center.
+
+Install it via Guix:
+\begin{lstlisting}[style=guixcli]
+guix install emacs-guix
+\end{lstlisting}
+
+Inside Emacs, type:
+\begin{center}
+\texttt{M-x guix}
+\end{center}
+A magnificent dashboard appears with quick access to package searches, profile generations, system services, and store licenses.
+
+\subsection{Interactive Package Browsing}
+
+Run \texttt{M-x guix-packages-by-name} and type a query (for example, \texttt{firefox} or \texttt{python}). Emacs opens a tabular buffer named \texttt{*Guix Packages*}:
+
+\begin{lstlisting}[style=guixcli]
+  Package          Version   Synopsis
+[ ] emacs-vterm    0.0.2     Fully-fledged terminal emulator inside GNU Emacs
+[I] emacs-magit    3.3.0     It's Magit! A Git porcelain inside Emacs
+[ ] emacs-corfu    0.35      Completion Overlay Region Function
+[D] emacs-company  0.9.13    Modular in-buffer completion framework
+\end{lstlisting}
+
+Inside this buffer, you can navigate using standard Dired-like keystrokes:
+\begin{itemize}
+  \item \texttt{i}: Mark the package at point for \textbf{installation}.
+  \item \texttt{d}: Mark the package at point for \textbf{deletion}.
+  \item \texttt{u}: Mark the package at point for \textbf{upgrade}.
+  \item \texttt{x}: \textbf{Execute!} Applies all marked transactions in a single atomic Guix profile transaction.
+  \item \texttt{Return}: Open a detailed package card displaying its synopsis, full description, direct dependencies, licenses, and store outputs.
+\end{itemize}
+
+\subsection{Visualizing and Diffing Generations}
+
+Run \texttt{M-x guix-generations}. Emacs displays your entire profile history:
+
+\begin{lstlisting}[style=guixcli]
+Generation 41  2026-11-12 09:14:22
+Generation 42  2026-11-13 18:30:05
+Generation 43  (current) 2026-11-14 01:15:00
+\end{lstlisting}
+
+Place your cursor on Generation 42 and press \textbf{\texttt{d}} (\texttt{guix-generation-diff}) against Generation 43. Emacs splits the window and displays a clean diff:
+\begin{lstlisting}[style=guixcli]
+Packages added:
+  ripgrep  13.0.0
+Packages upgraded:
+  gcc-toolchain  11.3.0 -> 12.2.0
+Packages removed:
+  vim-tiny 8.2
+\end{lstlisting}
+You can visually track the exact evolution of your workstation over months of use.
+
+\subsection{System Reconfiguration from Within Emacs}
+
+You don't even need to leave Emacs to update your operating system:
+\begin{center}
+\texttt{M-x guix-system-reconfigure}
+\end{center}
+Emacs prompts for your \texttt{config.scm} path, executes the build with root permissions, and streams the live build logs into an interactive compilation buffer!
+
+\section{Project Isolation: \texttt{guix shell} meets \texttt{envrc-mode}}
+
+One of the greatest headaches for modern software developers is managing conflicting language servers, linters, and compiler versions across multiple repositories:
+\begin{itemize}
+  \item Repository A requires Python 3.9 with \texttt{pyright} and \texttt{black} 22.0.
+  \item Repository B requires Python 3.11 with \texttt{ruff} and \texttt{mypy}.
+  \item Repository C requires a specific Rust nightly toolchain with \texttt{rust-analyzer}.
+\end{itemize}
+
+In traditional setups, developers either litter their home directories with \texttt{nvm}, \texttt{pyenv}, and \texttt{rustup}, or struggle to configure complex editor extensions.
+
+In the Guix + Emacs ecosystem, this problem has a flawless, zero-friction solution: **\guixcmd{guix shell} paired with \texttt{envrc-mode}**.
+
+\subsection{The 3-Step Setup}
+
+\begin{enumerate}
+  \item \textbf{Declare the Project Manifest (\texttt{manifest.scm})}:\\
+    Inside your project directory, declare the exact tools required:
+    \begin{lstlisting}[style=guixscheme]
+    ;; manifest.scm in project root
+    (specifications->manifest
+      '("python@3.11"
+        "python-pytest"
+        "python-requests"
+        "python-lsp-server"))
+    \end{lstlisting}
+
+  \item \textbf{Create the \texttt{.envrc} File}:\\
+    In the same directory, add a one-line \texttt{.envrc} file:
+    \begin{lstlisting}[style=guixcli]
+    # .envrc
+    eval "$(guix shell -m manifest.scm --search-paths)"
+    \end{lstlisting}
+
+  \item \textbf{Enable \texttt{envrc-mode} in Emacs}:\\
+    Install \texttt{emacs-envrc} via Guix and add this hook to your \texttt{init.el}:
+    \begin{lstlisting}[style=guixscheme]
+    (use-package envrc
+      :hook (after-init . envrc-global-mode))
+    \end{lstlisting}
+\end{enumerate}
+
+\subsection{The Magic in Action}
+
+The moment you switch to a buffer containing a file from Repository A, \texttt{envrc-mode} intercepts the buffer and sets its buffer-local \texttt{exec-path} and \texttt{process-environment} to match the Guix shell!
+
+When Emacs launches a language server (via \texttt{eglot} or \texttt{lsp-mode}), it doesn't search your global operating system. It automatically launches the exact \texttt{python-lsp-server} or \texttt{rust-analyzer} provisioned inside that repository's hermetic store closure.
+
+When you switch to a buffer in Repository B, Emacs instantly shifts to that project's compiler and tools. You never have to manually activate virtualenvs, export environment variables, or restart your editor again.
+
+\section{The Ultimate Lisp Desktop: EXWM on Guix System}
+
+For those who wish to achieve computing nirvana, GNU Guix System offers built-in support for \textbf{EXWM} (the Emacs X Window Manager).
+
+Under EXWM, there is no GNOME, no KDE, no XFCE, and no Sway. **Emacs is your window manager.**
+
+\begin{lstlisting}[style=guixscheme]
+;; In /etc/config.scm
+(use-modules (gnu)
+             (gnu services desktop)
+             (gnu packages emacs-xyz))
+
+(operating-system
+  ;; ...
+  (services
+    (cons* (service exwm-service-type
+             (exwm-configuration
+               (package emacs-exwm)))
+           %desktop-services)))
+\end{lstlisting}
+
+When your computer boots:
+\begin{enumerate}
+  \item X11 starts and hands display management directly to GNU Emacs.
+  \item Every external application you open---Firefox, LibreOffice, GIMP, MPV---becomes a standard Emacs buffer!
+  \item You switch between a C source file, an IRC chat, a terminal, and a YouTube video in Firefox using the exact same keystrokes: \texttt{C-x b} (\texttt{switch-to-buffer}).
+  \item You can split windows, save layouts, and apply macros across all applications uniformly.
+\end{enumerate}
+
+Your entire digital existence becomes a single, unified, navigable Lisp expression.
+
+\section{Summary: An Unbreakable Alliance}
+
+GNU Guix and GNU Emacs are not merely compatible programs; they are two halves of the same grand vision:
+
+\begin{itemize}
+  \item \textbf{Guix protects Emacs}: It liberates Emacs from mutable distribution chaos, pre-compiles native C dependencies without hassle, and enables atomic rollbacks for all your editor extensions.
+  \item \textbf{Emacs elevates Guix}: It provides the living, interactive cockpit where Scheme records are interrogated live, service definitions are navigated with \texttt{M-.}, and system generations are browsed visually.
+\end{itemize}
+
+Once you have experienced an operating system where your system configuration, your package manager, your init system, and your editor all speak the same language, returning to traditional operating systems feels like returning to the stone age. 
+
+Welcome to the Living Lisp Machine.

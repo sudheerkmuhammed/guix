@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  14 NOV 2026 01:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  14 NOV 2026 01:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1075,7 +1075,7 @@ l.29 ...Hello \texttt {guix shell}}{17}{chapter.4}
 
 
 (./frontmatter/preface.tex [6]
-<images/preface_hellscape_zen.jpg, id=377, 331.4784pt x 185.0112pt>
+<images/preface_hellscape_zen.jpg, id=414, 331.4784pt x 185.0112pt>
 File: images/preface_hellscape_zen.jpg Graphic file (type jpg)
 <use images/preface_hellscape_zen.jpg>
 Package pdftex.def Info: images/preface_hellscape_zen.jpg  used on input line 1
@@ -1100,7 +1100,7 @@ Chapter 1.
 [2
 
 ]
-<images/store_vs_fridge.jpg, id=409, 331.4784pt x 185.0112pt>
+<images/store_vs_fridge.jpg, id=445, 331.4784pt x 185.0112pt>
 File: images/store_vs_fridge.jpg Graphic file (type jpg)
 <use images/store_vs_fridge.jpg>
 Package pdftex.def Info: images/store_vs_fridge.jpg  used on input line 59.
@@ -1120,7 +1120,7 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
 [12
 
 ] [13] [14]
-<images/time_machine.jpg, id=608, 331.4784pt x 185.0112pt>
+<images/time_machine.jpg, id=644, 331.4784pt x 185.0112pt>
 File: images/time_machine.jpg Graphic file (type jpg)
 <use images/time_machine.jpg>
 Package pdftex.def Info: images/time_machine.jpg  used on input line 139.
@@ -1139,7 +1139,7 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <20.74> not available
 [17
 
 ]
-<images/docker_vs_guix_shell.jpg, id=645, 331.4784pt x 185.0112pt>
+<images/docker_vs_guix_shell.jpg, id=681, 331.4784pt x 185.0112pt>
 File: images/docker_vs_guix_shell.jpg Graphic file (type jpg)
 <use images/docker_vs_guix_shell.jpg>
 Package pdftex.def Info: images/docker_vs_guix_shell.jpg  used on input line 85
@@ -1163,7 +1163,7 @@ ith \T1/lmtt/b/n/10 append \T1/lmr/bx/n/10 (+20) and
  []
 
 [29] [30]
-<images/rollback_button.jpg, id=904, 331.4784pt x 185.0112pt>
+<images/rollback_button.jpg, id=940, 331.4784pt x 185.0112pt>
 File: images/rollback_button.jpg Graphic file (type jpg)
 <use images/rollback_button.jpg>
 Package pdftex.def Info: images/rollback_button.jpg  used on input line 225.
@@ -1218,7 +1218,7 @@ Chapter 12.
 [52
 
 ] [53] [54] [55] [56]
-<images/guix_pack_diagram.jpg, id=1380, 331.4784pt x 185.0112pt>
+<images/guix_pack_diagram.jpg, id=1416, 331.4784pt x 185.0112pt>
 File: images/guix_pack_diagram.jpg Graphic file (type jpg)
 <use images/guix_pack_diagram.jpg>
 Package pdftex.def Info: images/guix_pack_diagram.jpg  used on input line 210.
@@ -1258,7 +1258,7 @@ Overfull \hbox (8.05975pt too wide) in paragraph at lines 109--110
  ded-i-cated build farm at \T1/lmtt/m/n/10 https://substitutes.nonguix.org
  []
 
-<images/nonguix_laptop.jpg, id=1479, 331.4784pt x 185.0112pt>
+<images/nonguix_laptop.jpg, id=1515, 331.4784pt x 185.0112pt>
 File: images/nonguix_laptop.jpg Graphic file (type jpg)
 <use images/nonguix_laptop.jpg>
 Package pdftex.def Info: images/nonguix_laptop.jpg  used on input line 118.
@@ -1717,7 +1717,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
 
-[85])
+[85]) (./chapters/ch15_emacs_and_guix.tex
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 22.48878pt, for example:
@@ -1726,7 +1726,18 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
 
-[86] [87
+[86]
+Chapter 15.
+[87
+
+] [88] [89] [90]
+Overfull \hbox (4.18652pt too wide) in paragraph at lines 203--204
+\T1/lmr/m/n/10 (-20) tion, ev-ery sin-gle plu-gin, and your con-fig-u-ra-tion f
+ile di-rectly in Scheme us-ing []\T1/lmtt/b/n/10 home-emacs-service-type[]\T1/l
+mr/m/n/10 (-20) . 
+ []
+
+[91] [92] [93] [94] [95]) [96] [97
 
 
 ] (./backmatter/appendix_cheatsheet.tex
@@ -1734,37 +1745,37 @@ Underfull \hbox (badness 10000) in paragraph at lines 82--82
 []|\T1/lmr/m/n/10.95 (+20) Export cur-rent chan-nel com-mits to
  []
 
-[88
+[98
 
-] [89]) (./backmatter/appendix_troubleshooting.tex [90] [91
+] [99]) (./backmatter/appendix_troubleshooting.tex [100] [101
 
-] [92]) [93]
-(./main.aux) ) 
+] [102])
+[103] (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 33269 strings out of 480238
- 620516 string characters out of 5895851
- 1021562 words of memory out of 5000000
- 48832 multiletter control sequences out of 15000+600000
- 568337 words of font info for 243 fonts, out of 8000000 for 9000
+ 33563 strings out of 480238
+ 624842 string characters out of 5895851
+ 1021642 words of memory out of 5000000
+ 48935 multiletter control sequences out of 15000+600000
+ 568708 words of font info for 247 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  104i,12n,107p,1001b,2039s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/
-fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc
-}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/enc/dv
-ips/lm/lm-mathsy.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/s
-hare/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/publi
-c/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/
-texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/l
-mr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/texmf/fon
-ts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pf
-b></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/ty
-pe1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtko10.pfb></
-usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/
-public/lm/lmtti10.pfb>
-Output written on main.pdf (105 pages, 8419183 bytes).
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/
+texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-math
+it.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/
+enc/dvips/lm/lm-mathsy.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb><
+/usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1
+/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/
+share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/publi
+c/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/tex
+mf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr
+i12.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fo
+nts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtko10.
+pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/
+type1/public/lm/lmtti10.pfb>
+Output written on main.pdf (115 pages, 8466810 bytes).
 PDF statistics:
- 2959 PDF objects out of 2984 (max. 8388607)
- 2785 compressed objects within 28 object streams
- 1528 named destinations out of 1728 (max. 500000)
- 56101 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 3284 PDF objects out of 3580 (max. 8388607)
+ 3097 compressed objects within 31 object streams
+ 1708 named destinations out of 1728 (max. 500000)
+ 56245 words of extra memory for PDF output out of 61914 (max. 10000000)
 

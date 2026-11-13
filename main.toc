@@ -148,11 +148,29 @@
 \contentsline {subsection}{\numberline {14.7.5}Case Study 5: Post-Reconfigure Triage: The Crashing Shepherd Daemon}{82}{subsection.14.7.5}%
 \contentsline {subsection}{\numberline {14.7.6}Case Study 6: The Accidental 4-Hour Compile: Diagnosing Substitute Cache Misses}{84}{subsection.14.7.6}%
 \contentsline {section}{\numberline {14.8}The Diagnostic Alchemist's Field Guide}{85}{section.14.8}%
-\contentsline {part}{Appendices}{88}{part*.16}%
-\contentsline {chapter}{The Ultimate Guix Cheat Sheet}{88}{chapter*.17}%
-\contentsline {chapter}{Troubleshooting and Common Footguns}{91}{chapter*.23}%
-\contentsline {section}{\numberline {14.9}Footgun 1: ``No such file or directory'' on Existing Scripts}{91}{section.14.9}%
-\contentsline {section}{\numberline {14.10}Footgun 2: Scheme Error: ``Unbound Variable''}{92}{section.14.10}%
-\contentsline {section}{\numberline {14.11}Footgun 3: Test Suite Fails Because of No Network Access}{92}{section.14.11}%
-\contentsline {section}{\numberline {14.12}Footgun 4: Disk Space Running Out in \texttt {/tmp}}{92}{section.14.12}%
-\contentsline {section}{\numberline {14.13}Footgun 5: ``Why didn't \texttt {guix gc} free any space?''}{93}{section.14.13}%
+\contentsline {chapter}{\numberline {15}The Twin Souls: GNU Emacs and the Living Lisp Machine}{87}{chapter.15}%
+\contentsline {section}{\numberline {15.1}The Philosophy of Twin Souls: Resurrecting the Lisp Machine}{87}{section.15.1}%
+\contentsline {section}{\numberline {15.2}Installing Emacs on Guix: Choosing the Right Flavor}{88}{section.15.2}%
+\contentsline {subsection}{\numberline {15.2.1}Native Compilation (\texttt {native-comp}) Out of the Box}{88}{subsection.15.2.1}%
+\contentsline {section}{\numberline {15.3}Why Guix is the World's Best Emacs Package Manager}{89}{section.15.3}%
+\contentsline {section}{\numberline {15.4}The Mechanics: Autoloads, \texttt {EMACSLOADPATH}, and Instant Startup}{90}{section.15.4}%
+\contentsline {subsection}{\numberline {15.4.1}The System Crafters Instant Startup Pattern}{90}{subsection.15.4.1}%
+\contentsline {subsection}{\numberline {15.4.2}Using \texttt {use-package} with Guix}{91}{subsection.15.4.2}%
+\contentsline {section}{\numberline {15.5}Declaring Emacs with Guix Home}{92}{section.15.5}%
+\contentsline {section}{\numberline {15.6}The Flagship Interface: \texttt {emacs-guix} (\texttt {guix.el})}{93}{section.15.6}%
+\contentsline {subsection}{\numberline {15.6.1}Interactive Package Browsing}{93}{subsection.15.6.1}%
+\contentsline {subsection}{\numberline {15.6.2}Visualizing and Diffing Generations}{93}{subsection.15.6.2}%
+\contentsline {subsection}{\numberline {15.6.3}System Reconfiguration from Within Emacs}{94}{subsection.15.6.3}%
+\contentsline {section}{\numberline {15.7}Project Isolation: \texttt {guix shell} meets \texttt {envrc-mode}}{94}{section.15.7}%
+\contentsline {subsection}{\numberline {15.7.1}The 3-Step Setup}{94}{subsection.15.7.1}%
+\contentsline {subsection}{\numberline {15.7.2}The Magic in Action}{95}{subsection.15.7.2}%
+\contentsline {section}{\numberline {15.8}The Ultimate Lisp Desktop: EXWM on Guix System}{95}{section.15.8}%
+\contentsline {section}{\numberline {15.9}Summary: An Unbreakable Alliance}{96}{section.15.9}%
+\contentsline {part}{Appendices}{98}{part*.17}%
+\contentsline {chapter}{The Ultimate Guix Cheat Sheet}{98}{chapter*.18}%
+\contentsline {chapter}{Troubleshooting and Common Footguns}{101}{chapter*.24}%
+\contentsline {section}{\numberline {15.10}Footgun 1: ``No such file or directory'' on Existing Scripts}{101}{section.15.10}%
+\contentsline {section}{\numberline {15.11}Footgun 2: Scheme Error: ``Unbound Variable''}{102}{section.15.11}%
+\contentsline {section}{\numberline {15.12}Footgun 3: Test Suite Fails Because of No Network Access}{102}{section.15.12}%
+\contentsline {section}{\numberline {15.13}Footgun 4: Disk Space Running Out in \texttt {/tmp}}{102}{section.15.13}%
+\contentsline {section}{\numberline {15.14}Footgun 5: ``Why didn't \texttt {guix gc} free any space?''}{103}{section.15.14}%
