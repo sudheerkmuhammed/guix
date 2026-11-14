@@ -3205,7 +3205,7 @@ guix install inkscape -n
 guix weather inkscape
 ```
 
-    This queries the build farm (`bordeaux.guix.gnu.org` or `ci.guix.gnu.org`) and reports whether binary substitutes are currently available for your architecture.
+    This queries the official build farm and reports whether binary substitutes are currently available for your architecture.
 
   - **Identify Substitute URL Configuration**:
     Check whether your `guix-daemon` is configured with authorized substitute keys and servers:
@@ -3216,8 +3216,9 @@ guix weather inkscape
 
     If `/etc/guix/acl` is missing or empty, the daemon refuses to download remote substitutes for security reasons! Authorize the official build farm:
 ```bash
-sudo guix archive --authorize < \
-      $(guix repl -e '(display (search-path %load-path "gnu/packages/substitutes/bordeaux.guix.gnu.org.pub"))')
+PUBKEY=$(guix repl -e \
+      '(display (search-path %load-path "gnu/packages/substitutes/bordeaux.guix.gnu.org.pub"))')
+    sudo guix archive --authorize < "$PUBKEY"
 ```
 
   - **Diagnose Channel Drift**:
@@ -3462,7 +3463,7 @@ You can still use the beloved `use-package` macro to structure your configuratio
 
 ### Declaring Emacs with Guix Home
 
-In [Chapter 8](#chapter-8-guix-home-declarative-dotfiles-and-userland), we mastered declarative userlands. Let us see how to declare your entire Emacs installation, every single plugin, and your configuration file directly in Scheme using `home-emacs-service-type`.
+In [Chapter 8](#chapter-8-guix-home-declarative-dotfiles-and-userland), we mastered declarative userlands. Let us see how to declare your entire Emacs installation, plugins, and configuration files directly in Scheme using `home-emacs-service-type`.
 
 Here is a complete, real-world snippet for your `~/.config/guix/home-configuration.scm`:
 ```scheme

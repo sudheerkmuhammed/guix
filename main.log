@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  14 NOV 2026 01:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2026.7.19)  15 NOV 2026 00:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -810,7 +810,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 File: bkm-pdftex.def 2020-11-06 v1.29 bookmark driver for pdfTeX (HO)
 \BKM@id=\count329
 ))
-Package hyperref Info: Option `colorlinks' set `true' on input line 49.
+Package hyperref Info: Option `colorlinks' set `true' on input line 54.
 )
 LaTeX Font Info:    Trying to load font information for T1+lmr on input line 6.
 
@@ -1074,8 +1074,14 @@ l.29 ...Hello \texttt {guix shell}}{17}{chapter.4}
 \openout4 = `main.toc'.
 
 
-(./frontmatter/preface.tex [7]
-<images/preface_hellscape_zen.jpg, id=428, 331.4784pt x 185.0112pt>
+[7] (./main.lot)
+\tf@lot=\write5
+\openout5 = `main.lot'.
+
+ (./frontmatter/preface.tex [8
+
+]
+<images/preface_hellscape_zen.jpg, id=443, 331.4784pt x 185.0112pt>
 File: images/preface_hellscape_zen.jpg Graphic file (type jpg)
 <use images/preface_hellscape_zen.jpg>
 Package pdftex.def Info: images/preface_hellscape_zen.jpg  used on input line 1
@@ -1083,24 +1089,23 @@ Package pdftex.def Info: images/preface_hellscape_zen.jpg  used on input line 1
 (pdftex.def)             Requested size: 403.43115pt x 225.17412pt.
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2
 9.
- (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
+
+(/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-[8
+) [9
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <14.4> on input line 53.
- [9 <./images/preface_hellscape_zen.jpg>]) [10] [1
+ [10 <./images/preface_hellscape_zen.jpg>]) [11] [1
 
 
-]
-(./chapters/ch01_curse_of_fhs.tex
+] (./chapters/ch01_curse_of_fhs.tex
 Chapter 1.
 [2
 
 ]
-<images/store_vs_fridge.jpg, id=459, 331.4784pt x 185.0112pt>
+<images/store_vs_fridge.jpg, id=474, 331.4784pt x 185.0112pt>
 File: images/store_vs_fridge.jpg Graphic file (type jpg)
 <use images/store_vs_fridge.jpg>
 Package pdftex.def Info: images/store_vs_fridge.jpg  used on input line 59.
@@ -1120,7 +1125,7 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
 [12
 
 ] [13] [14]
-<images/time_machine.jpg, id=658, 331.4784pt x 185.0112pt>
+<images/time_machine.jpg, id=673, 331.4784pt x 185.0112pt>
 File: images/time_machine.jpg Graphic file (type jpg)
 <use images/time_machine.jpg>
 Package pdftex.def Info: images/time_machine.jpg  used on input line 139.
@@ -1139,7 +1144,7 @@ LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <20.74> not available
 [17
 
 ]
-<images/docker_vs_guix_shell.jpg, id=695, 331.4784pt x 185.0112pt>
+<images/docker_vs_guix_shell.jpg, id=711, 331.4784pt x 185.0112pt>
 File: images/docker_vs_guix_shell.jpg Graphic file (type jpg)
 <use images/docker_vs_guix_shell.jpg>
 Package pdftex.def Info: images/docker_vs_guix_shell.jpg  used on input line 85
@@ -1163,7 +1168,7 @@ ith \T1/lmtt/b/n/10 append \T1/lmr/bx/n/10 (+20) and
  []
 
 [29] [30]
-<images/rollback_button.jpg, id=955, 331.4784pt x 185.0112pt>
+<images/rollback_button.jpg, id=970, 331.4784pt x 185.0112pt>
 File: images/rollback_button.jpg Graphic file (type jpg)
 <use images/rollback_button.jpg>
 Package pdftex.def Info: images/rollback_button.jpg  used on input line 225.
@@ -1218,37 +1223,13 @@ Chapter 12.
 [52
 
 ] [53] [54] [55] [56]
-<images/guix_pack_diagram.jpg, id=1430, 331.4784pt x 185.0112pt>
+<images/guix_pack_diagram.jpg, id=1444, 331.4784pt x 185.0112pt>
 File: images/guix_pack_diagram.jpg Graphic file (type jpg)
 <use images/guix_pack_diagram.jpg>
 Package pdftex.def Info: images/guix_pack_diagram.jpg  used on input line 210.
 (pdftex.def)             Requested size: 403.43115pt x 225.17412pt.
- [57 <./images/guix_pack_diagram.jpg>] [58]
-Underfull \hbox (badness 6236) in paragraph at lines 328--328
-[]|\T1/lmr/m/n/10.95 (+20) HPC clus-ters, un-priv-i-leged
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 328--328
-[]|[]\T1/lmtt/b/n/10.95 -f docker
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 328--328
-[]|[]\T1/lmtt/b/n/10.95 -f appimage
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 328--328
-[]|\T1/lmr/m/n/10.95 (+20) Desktop ap-pli-ca-tions, non-
- []
-
-
-Underfull \hbox (badness 2644) in paragraph at lines 328--328
-[]|\T1/lmr/m/n/10.95 (+20) Singularity / App-tainer on
- []
-
-) (./chapters/ch13_domain_impact_and_nonguix.tex [59] [60]
+ [57 <./images/guix_pack_diagram.jpg>] [58])
+(./chapters/ch13_domain_impact_and_nonguix.tex [59] [60]
 Chapter 13.
 [61
 
@@ -1258,7 +1239,7 @@ Overfull \hbox (8.05975pt too wide) in paragraph at lines 109--110
  ded-i-cated build farm at \T1/lmtt/m/n/10 https://substitutes.nonguix.org
  []
 
-<images/nonguix_laptop.jpg, id=1529, 331.4784pt x 185.0112pt>
+<images/nonguix_laptop.jpg, id=1543, 331.4784pt x 185.0112pt>
 File: images/nonguix_laptop.jpg Graphic file (type jpg)
 <use images/nonguix_laptop.jpg>
 Package pdftex.def Info: images/nonguix_laptop.jpg  used on input line 118.
@@ -1444,13 +1425,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 851--852
  []
 
 
-Overfull \hbox (0.48448pt too wide) in paragraph at lines 855--856
-\T1/lmr/m/n/10 (-20) This queries the build farm (\T1/lmtt/m/n/10 bordeaux.guix
-.gnu.org \T1/lmr/m/n/10 (-20) or \T1/lmtt/m/n/10 ci.guix.gnu.org\T1/lmr/m/n/10 
-(-20) ) and re-ports whether
- []
-
-
 Overfull \hbox (19.46603pt too wide) in paragraph at lines 866--867
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][]  
@@ -1464,251 +1438,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
 
-[84]
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]|\T1/lmr/bx/n/10 (+20) Alchemical
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]|[]\T1/lmtt/b/n/10 guix system
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]|\T1/lmr/m/n/10 (+20) Identify
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-\T1/lmr/m/n/10 (+20) evaluation-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-\T1/lmr/m/n/10 (+20) time syn-tax
- []
-
-
-Underfull \hbox (badness 6995) in paragraph at lines 908--908
-\T1/lmr/m/n/10 (+20) or record type
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-\T1/lmr/m/n/10 (+20) er-rors; in-spect
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]|[]\T1/lmtt/b/n/10 guix build -K
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]\T1/lmtt/b/n/10 guix shell -D
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]|\T1/lmr/m/n/10 (+20) Inspect
- []
-
-
-Overfull \hbox (23.67528pt too wide) in paragraph at lines 908--908
-\T1/lmtt/m/n/10 /tmp/guix-build-...\T1/lmr/m/n/10 (-20) ;
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-\T1/lmr/m/n/10 (+20) source
- []
-
-
-Overfull \hbox (33.36804pt too wide) in paragraph at lines 908--908
-\T1/lmtt/m/n/10 environment-variables
- []
-
-
-Overfull \hbox (33.36804pt too wide) in paragraph at lines 908--908
-\T1/lmtt/m/n/10 environment-variables| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]|\T1/lmr/m/n/10 (+20) Check if
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-\T1/lmtt/m/n/10 pkg-config
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-\T1/lmr/m/n/10 (+20) or build tools
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]|[]\T1/lmtt/b/n/10 guix size
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]\T1/lmtt/b/n/10 guix graph
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]|\T1/lmr/m/n/10 (+20) Trace short-est
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-\T1/lmr/m/n/10 (+20) de-pen-dency
- []
-
-
-Underfull \hbox (badness 5504) in paragraph at lines 908--908
-\T1/lmr/m/n/10 (+20) path; elim-i-nate
- []
-
-
-Underfull \hbox (badness 7081) in paragraph at lines 908--908
-\T1/lmr/m/n/10 (+20) ac-ci-den-tal prop-
- []
-
-
-Underfull \hbox (badness 4036) in paragraph at lines 908--908
-\T1/lmr/m/n/10 (+20) hard-coded store
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 908--908
-[]|[]\T1/lmtt/b/n/10 guix edit
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-[]|\T1/lmr/bx/n/10 (+20) Alchemical
- []
-
-
-Overfull \hbox (52.00705pt too wide) in paragraph at lines 941--941
-\T1/lmtt/m/n/10 operating-system-services| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-[]|\T1/lmr/m/n/10 (+20) Avoid du-pli-cate
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) in-stan-ti-a-tion;
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) ex-tend the ex-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) ist-ing ser-vice
- []
-
-
-Underfull \hbox (badness 3271) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) via helpers (e.g.
- []
-
-
-Overfull \hbox (21.79059pt too wide) in paragraph at lines 941--941
-\T1/lmtt/m/n/10 udev-rules-service\T1/lmr/m/n/10 (-20) ).| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-[]|[]\T1/lmtt/b/n/10 herd
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmtt/b/n/10 detailed-status
- []
-
-
-Overfull \hbox (30.48212pt too wide) in paragraph at lines 941--941
-\T1/lmtt/m/n/10 /var/log/shepherd.log| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-[]|\T1/lmr/m/n/10 (+20) Check ser-vice
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) respawn counts,
- []
-
-
-Underfull \hbox (badness 1983) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) exit codes, port
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) col-li-sions, and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-[]|\T1/lmr/m/n/10 (+20) Check sub-sti-
- []
-
-
-Underfull \hbox (badness 1117) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) tute server ACL
- []
-
-
-Underfull \hbox (badness 3872) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) keys; avoid un-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) cached bleeding-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) edge chan-nel
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) com-mits with
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-[]|[]\T1/lmtt/b/n/10 guix system vm
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) QEMU sand-box
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--941
-\T1/lmr/m/n/10 (+20) be-fore touch-ing
- []
-
+[84]) (./chapters/ch15_emacs_and_guix.tex
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 22.48878pt, for example:
@@ -1717,7 +1447,7 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-8.48878pt}.
 
-[85]) (./chapters/ch15_emacs_and_guix.tex
+[85]
 
 Package fancyhdr Warning: \headheight is too small (14.0pt): 
 (fancyhdr)                Make it at least 22.48878pt, for example:
@@ -1730,53 +1460,45 @@ Package fancyhdr Warning: \headheight is too small (14.0pt):
 Chapter 15.
 [87
 
-] [88] [89] [90]
-Overfull \hbox (4.18652pt too wide) in paragraph at lines 203--204
-\T1/lmr/m/n/10 (-20) tion, ev-ery sin-gle plu-gin, and your con-fig-u-ra-tion f
-ile di-rectly in Scheme us-ing []\T1/lmtt/b/n/10 home-emacs-service-type[]\T1/l
-mr/m/n/10 (-20) . 
- []
-
-[91] [92] [93] [94] [95] [96] [97] [98] [99]) [100] [101
+] [88] [89] [90] [91] [92] [93] [94] [95] [96] [97]
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 499.
+ [98] [99]) [100]
+[101
 
 
-]
-(./backmatter/appendix_cheatsheet.tex
-Underfull \hbox (badness 10000) in paragraph at lines 82--82
-[]|\T1/lmr/m/n/10.95 (+20) Export cur-rent chan-nel com-mits to
- []
+] (./backmatter/appendix_cheatsheet.tex [102
 
-[102
+])
+(./backmatter/appendix_troubleshooting.tex [103] [104] [105
 
-] [103]) (./backmatter/appendix_troubleshooting.tex [104] [105
-
-] [106])
-[107] (./main.aux) ) 
+] [106]) [107]
+(./main.aux) ) 
 Here is how much of TeX's memory you used:
- 33754 strings out of 480238
- 627964 string characters out of 5895851
- 1021645 words of memory out of 5000000
- 48985 multiletter control sequences out of 15000+600000
- 568708 words of font info for 247 fonts, out of 8000000 for 9000
+ 33702 strings out of 480238
+ 627147 string characters out of 5895851
+ 1030639 words of memory out of 5000000
+ 48957 multiletter control sequences out of 15000+600000
+ 555693 words of font info for 220 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  104i,12n,107p,1001b,2039s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/
-texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-math
-it.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/
-enc/dvips/lm/lm-mathsy.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb><
-/usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1
-/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/
-share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/publi
-c/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/tex
-mf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmr
-i12.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fo
-nts/type1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtko10.
-pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/
-type1/public/lm/lmtti10.pfb>
-Output written on main.pdf (120 pages, 8489451 bytes).
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/
+fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc
+}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/enc/dv
+ips/lm/lm-mathsy.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/s
+hare/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/publi
+c/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/
+texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm/l
+mr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/texmf/fon
+ts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pf
+b></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/ty
+pe1/public/lm/lmtk10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtko10.pfb></
+usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/texmf/fonts/type1/
+public/lm/lmtti10.pfb>
+Output written on main.pdf (121 pages, 8489799 bytes).
 PDF statistics:
- 3491 PDF objects out of 3580 (max. 8388607)
- 3297 compressed objects within 33 object streams
- 1849 named destinations out of 2073 (max. 500000)
- 56285 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 3504 PDF objects out of 3580 (max. 8388607)
+ 3308 compressed objects within 34 object streams
+ 1852 named destinations out of 2073 (max. 500000)
+ 50141 words of extra memory for PDF output out of 51595 (max. 10000000)
 

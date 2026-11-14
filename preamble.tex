@@ -10,6 +10,11 @@
 \usepackage{fancyhdr}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{array}
+
+% --- Custom Table Columns for Robust Wrapping & No Overlap ---
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \usepackage{epigraph}
 \usepackage{titlesec}
 \usepackage{enumitem}

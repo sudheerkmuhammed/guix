@@ -56,7 +56,7 @@ Because Emacs is a central pillar of the GNU Project, Guix provides first-class,
 \begin{table}[htbp]
 \centering
 \small
-\begin{tabularx}{\textwidth}{lX}
+\begin{tabularx}{\textwidth}{L{0.25\textwidth} Y}
 \toprule
 \textbf{Package Name} & \textbf{Intended Use Case and Architecture} \\
 \midrule
@@ -200,7 +200,7 @@ You can still use the beloved \texttt{use-package} macro to structure your confi
 
 \section{Declaring Emacs with Guix Home}
 
-In Chapter~\ref{chap:guix-home}, we mastered declarative userlands. Let us see how to declare your entire Emacs installation, every single plugin, and your configuration file directly in Scheme using \guixcmd{home-emacs-service-type}.
+In Chapter~\ref{chap:guix-home}, we mastered declarative userlands. Let us see how to declare your entire Emacs installation, plugins, and configuration files directly in Scheme using \guixcmd{home-emacs-service-type}.
 
 Here is a complete, real-world snippet for your \texttt{\textasciitilde/.config/guix/home-configuration.scm}:
 

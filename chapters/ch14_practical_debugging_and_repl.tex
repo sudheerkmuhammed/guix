@@ -337,7 +337,7 @@ Guile's REPL provides built-in metacommands (prefixed with a comma \texttt{,}) t
 \begin{table}[htbp]
 \centering
 \small
-\begin{tabularx}{\textwidth}{lX}
+\begin{tabularx}{\textwidth}{L{0.28\textwidth} Y}
 \toprule
 \textbf{Metacommand} & \textbf{Function and Usage} \\
 \midrule
@@ -852,7 +852,7 @@ Stop the build immediately with \texttt{Ctrl-C}. Then investigate why substitute
     \begin{lstlisting}[style=guixcli]
     guix weather inkscape
     \end{lstlisting}
-    This queries the build farm (\texttt{bordeaux.guix.gnu.org} or \texttt{ci.guix.gnu.org}) and reports whether binary substitutes are currently available for your architecture.
+    This queries the official build farm and reports whether binary substitutes are currently available for your architecture.
 
   \item \textbf{Identify Substitute URL Configuration}:\\
     Check whether your \texttt{guix-daemon} is configured with authorized substitute keys and servers:
@@ -862,8 +862,9 @@ Stop the build immediately with \texttt{Ctrl-C}. Then investigate why substitute
     \end{lstlisting}
     If \texttt{/etc/guix/acl} is missing or empty, the daemon refuses to download remote substitutes for security reasons! Authorize the official build farm:
     \begin{lstlisting}[style=guixcli]
-    sudo guix archive --authorize < \
-      $(guix repl -e '(display (search-path %load-path "gnu/packages/substitutes/bordeaux.guix.gnu.org.pub"))')
+    PUBKEY=$(guix repl -e \
+      '(display (search-path %load-path "gnu/packages/substitutes/bordeaux.guix.gnu.org.pub"))')
+    sudo guix archive --authorize < "$PUBKEY"
     \end{lstlisting}
 
   \item \textbf{Diagnose Channel Drift}:\\
@@ -881,7 +882,7 @@ When things go bump in the night, consult these diagnostic reference matrices:
 \begin{table}[htbp]
 \centering
 \small
-\begin{tabularx}{\textwidth}{lXX}
+\begin{tabularx}{\textwidth}{L{0.27\textwidth} L{0.33\textwidth} Y}
 \toprule
 \textbf{Symptom} & \textbf{Diagnostic Tool} & \textbf{Alchemical Cure} \\
 \midrule
@@ -914,7 +915,7 @@ Cannot find where a package or service is defined &
 \begin{table}[htbp]
 \centering
 \small
-\begin{tabularx}{\textwidth}{lXX}
+\begin{tabularx}{\textwidth}{L{0.27\textwidth} L{0.33\textwidth} Y}
 \toprule
 \textbf{Symptom} & \textbf{Diagnostic Tool} & \textbf{Alchemical Cure} \\
 \midrule
